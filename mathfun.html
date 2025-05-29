@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math Practice App</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #ff6b6b, #4ecdc4);
+            color: #333;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+            padding: 20px;
+            background: #fff;
+            border-radius: 20px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            margin: 20px;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 20px;
+            color: #2d3436;
+        }
+
+        .screen {
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        .button-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        button {
+            padding: 15px;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 12px;
+            background: #ff9f43;
+            color: #fff;
+            cursor: pointer;
+            transition: transform 0.2s, background 0.3s;
+        }
+
+        button:hover {
+            background: #feca57;
+            transform: scale(1.05);
+        }
+
+        button:focus {
+            outline: 3px solid #2d3436;
+            outline-offset: 2px;
+        }
+
+        .formula {
+            font-size: 1.8rem;
+            margin: 20px 0;
+            color: #2d3436;
+        }
+
+        input[type="number"] {
+            padding: 12px;
+            font-size: 1.2rem;
+            border: 3px solid #dfe6e9;
+            border-radius: 8px;
+            width: 100px;
+            margin: 10px 0;
+            transition: border-color 0.3s;
+        }
+
+        input.success {
+            border-color: #00ff00;
+            background: #e6ffe6;
+        }
+
+        input.error {
+            border-color: #ff0000;
+            background: #ffe6e6;
+        }
+
+        input:focus {
+            outline:放下
+
+            outline: 3px solid #2d3436;
+            outline-offset: 2px;
+        }
+
+        .message {
+            margin: 10px 0;
+            font-size: 1.1rem;
+            color: #2d3436;
+        }
+
+        .hint {
+            display: none;
+            margin: 20px 0;
+        }
+
+        .hint.active {
+            display: block;
+        }
+
+        .square {
+            width: 20px;
+            height: 20px;
+            background: #ff9f43;
+            display: inline-block;
+            margin: 2px;
+            border-radius: 4px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        .modal-content {
+            background: #fff;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            animation: bounceIn 0.5s ease-out;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0.7); opacity: 0; }
+            60% { transform: scale(1.2); opacity: 1; }
+            100% { transform: scale(1); }
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            button {
+                font-size: 1rem;
+                padding: 12px;
+            }
+
+            .formula {
+                font-size: 1.4rem;
+            }
+
+            input[type="number"] {
+                font-size: 1rem;
+                width: 80px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="home-screen" class="screen active" role="main">
+            <h1>Math Practice Adventure 🧮</h1>
+            <div class="button-grid">
+                <button onclick="showScreen('addition-screen')" aria-label="Start Addition Practice">Addition</button>
+                <button onclick="showScreen('subtraction-screen')" aria-label="Start Subtraction Practice">Subtraction</button>
+                <button onclick="showScreen('multiplication-screen')" aria-label="Start Multiplication Practice">Multiplication</button>
+            </div>
+        </div>
+
+        <div id="addition-screen" class="screen" role="main">
+            <h1>Addition Adventure 🧮</h1>
+            <div id="addition-hint" class="hint" role="img" aria-label="Visual representation of addition formula using squares"></div>
+            <button onclick="toggleHint('addition-hint')" aria-label="Toggle addition hint">Show Hint</button>
+            <div id="addition-formula" class="formula" aria-live="polite"></div>
+            <input type="number" id="addition-input" aria-label="Enter your answer for the addition problem">
+            <button onclick="checkAnswer('addition')" aria-label="Submit addition answer">Submit</button>
+            <div id="addition-message" class="message" aria-live="assertive"></div>
+            <button onclick="continuePractice('addition')" style="display: none;" id="addition-continue" aria-label="Continue to next addition problem">Continue</button>
+            <button onclick="showScreen('home-screen')" aria-label="Return to home screen">Back to Home</button>
+        </div>
+
+        <div id="subtraction-screen" class="screen" role="main">
+            <h1>Subtraction Challenge 🧮</h1>
+            <div id="subtraction-hint" class="hint" role="img" aria-label="Visual representation of subtraction formula using squares"></div>
+            <button onclick="toggleHint('subtraction-hint')" aria-label="Toggle subtraction hint">Show Hint</button>
+            <div id="subtraction-formula" class="formula" aria-live="polite"></div>
+            <input type="number" id="subtraction-input" aria-label="Enter your answer for the subtraction problem">
+            <button onclick="checkAnswer('subtraction')" aria-label="Submit subtraction answer">Submit</button>
+            <div id="subtraction-message" class="message" aria-live="assertive"></div>
+            <button onclick="continuePractice('subtraction')" style="display: none;" id="subtraction-continue" aria-label="Continue to next subtraction problem">Continue</button>
+            <button onclick="showScreen('home-screen')" aria-label="Return to home screen">Back to Home</button>
+        </div>
+
+        <div id="multiplication-screen" class="screen" role="main">
+            <h1>Multiplication Mania 🧮</h1>
+            <div class="button-grid">
+                <button onclick="selectTable(1)" aria-label="Practice multiplication table of 1">Table of 1</button>
+                <button onclick="selectTable(2)" aria-label="Practice multiplication table of 2">Table of 2</button>
+                <button onclick="selectTable(3)" aria-label="Practice multiplication table of 3">Table of 3</button>
+                <button onclick="selectTable(4)" aria-label="Practice multiplication table of 4">Table of 4</button>
+                <button onclick="selectTable(5)" aria-label="Practice multiplication table of 5">Table of 5</button>
+                <button onclick="selectTable(6)" aria-label="Practice multiplication table of 6">Table of 6</button>
+                <button onclick="selectTable(7)" aria-label="Practice multiplication table of 7">Table of 7</button>
+                <button onclick="selectTable(8)" aria-label="Practice multiplication table of 8">Table of 8</button>
+                <button onclick="selectTable(9)" aria-label="Practice multiplication table of 9">Table of 9</button>
+                <button onclick="selectTable(10)" aria-label="Practice multiplication table of 10">Table of 10</button>
+            </div>
+            <div id="multiplication-practice" style="display: none;">
+                <div id="multiplication-hint" class="hint" role="img" aria-label="Visual representation of multiplication formula using squares"></div>
+                <button onclick="toggleHint('multiplication-hint')" aria-label="Toggle multiplication hint">Show Hint</button>
+                <div id="multiplication-formula" class="formula" aria-live="polite"></div>
+                <input type="number" id="multiplication-input" aria-label="Enter your answer for the multiplication problem">
+                <button onclick="checkAnswer('multiplication')" aria-label="Submit multiplication answer">Submit</button>
+                <div id="multiplication-message" class="message" aria-live="assertive"></div>
+                <button onclick="continuePractice('multiplication')" style="display: none;" id="multiplication-continue" aria-label="Continue to next multiplication problem">Continue</button>
+                <button onclick="showScreen('home-screen')" aria-label="Return to home screen">Back to Home</button>
+            </div>
+        </div>
+
+        <div id="modal" class="modal" role="dialog" aria-modal="true">
+            <div class="modal-content">
+                <h2 id="modal-title" aria-live="polite"></h2>
+                <p id="modal-message" aria-live="polite"></p>
+                <button onclick="closeModal()" aria-label="Close modal">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let correctStreak = 0;
+        let incorrectStreak = 0;
+        let currentAnswer = 0;
+        let selectedTable = null;
+
+        // Sound effects
+        const correctSound = new Audio('data:audio/mpeg;base64,/+MYICB4Q29tcGF0aWJpbGl0eSBNb2RlKSAtIEludGVybmV0IEV4cGxvcmVyAA==');
+        const errorSound = new Audio('data:audio/mpeg;base64,/+MYICB4Q29tcGF0aWJpbGl0eSBNb2RlKSAtIEludGVybmV0IEV4cGxvcmVyAA==');
+        const modalSound = new Audio('data:audio/mpeg;base64,/+MYICB4Q29tcGF0aWJpbGl0eSBNb2RlKSAtIEludGVybmV0IEV4cGxvcmVyAA==');
+
+        // Play sound (placeholder for actual audio, using silent base64 for compatibility)
+        function playSound(sound) {
+            sound.play().catch(() => console.log('Sound playback failed'));
+        }
+
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+                screen.setAttribute('aria-hidden', 'true');
+            });
+            const activeScreen = document.getElementById(screenId);
+            activeScreen.classList.add('active');
+            activeScreen.setAttribute('aria-hidden', 'false');
+            if (screenId === 'addition-screen') {
+                generateAddition();
+                document.getElementById('addition-input').focus();
+            } else if (screenId === 'subtraction-screen') {
+                generateSubtraction();
+                document.getElementById('subtraction-input').focus();
+            } else if (screenId === 'multiplication-screen') {
+                document.getElementById('multiplication-practice').style.display = 'none';
+                document.querySelector('.button-grid button').focus();
+            }
+            resetStreaks();
+        }
+
+        function selectTable(table) {
+            selectedTable = table;
+            document.getElementById('multiplication-practice').style.display = 'block';
+            generateMultiplication();
+            document.getElementById('multiplication-input').focus();
+        }
+
+        function generateAddition() {
+            const a = Math.floor(Math.random() * 10) + 1;
+            const b = Math.floor(Math.random() * 10) + 1;
+            currentAnswer = a + b;
+            document.getElementById('addition-formula').textContent = `${a} + ${b} = ?`;
+            document.getElementById('addition-hint').innerHTML = generateSquares(a, b, '+');
+            resetInput('addition');
+        }
+
+        function generateSubtraction() {
+            let a = Math.floor(Math.random() * 10) + 1;
+            let b = Math.floor(Math.random() * a) + 1;
+            currentAnswer = a - b;
+            document.getElementById('subtraction-formula').textContent = `${a} - ${b} = ?`;
+            document.getElementById('subtraction-hint').innerHTML = generateSquares(a, b, '-');
+            resetInput('subtraction');
+        }
+
+        function generateMultiplication() {
+            const a = selectedTable;
+            const b = Math.floor(Math.random() * 10) + 1;
+            currentAnswer = a * b;
+            document.getElementById('multiplication-formula').textContent = `${a} × ${b} = ?`;
+            document.getElementById('multiplication-hint').innerHTML = generateSquares(a, b, '×');
+            resetInput('multiplication');
+        }
+
+        function generateSquares(a, b, operation) {
+            let squares = '';
+            if (operation === '+') {
+                for (let i = 0; i < a; i++) squares += '<span class="square" role="img" aria-label="Square representing one unit"></span>';
+                squares += ' + ';
+                for (let i = 0; i < b; i++) squares += '<span class="square" role="img" aria-label="Square representing one unit"></span>';
+            } else if (operation === '-') {
+                for (let i = 0; i < a; i++) squares += '<span class="square" role="img" aria-label="Square representing one unit"></span>';
+                squares += ' - ';
+                for (let i = 0; i < b; i++) squares += '<span class="square" style="background: #ff6b6b;" role="img" aria-label="Square representing subtracted unit"></span>';
+            } else if (operation === '×') {
+                for (let i = 0; i < a; i++) {
+                    for (let j = 0; j < b; j++) {
+                        squares += '<span class="square" role="img" aria-label="Square representing multiplication unit"></span>';
+                    }
+                    squares += '<br>';
+                }
+            }
+            return squares;
+        }
+
+        function toggleHint(hintId) {
+            const hint = document.getElementById(hintId);
+            hint.classList.toggle('active');
+            hint.setAttribute('aria-hidden', hint.classList.contains('active') ? 'false' : 'true');
+        }
+
+        function checkAnswer(type) {
+            const input = document.getElementById(`${type}-input`);
+            const message = document.getElementById(`${type}-message`);
+            const continueBtn = document.getElementById(`${type}-continue`);
+            const userAnswer = parseInt(input.value);
+
+            if (isNaN(userAnswer)) {
+                message.textContent = 'Oops! Please enter a number! 😅';
+                input.classList.add('error');
+                playSound(errorSound);
+                return;
+            }
+
+            const messages = {
+                addition: {
+                    correct: ['Awesome! You nailed it! 🎉', 'Superb! That’s the right answer! 😄', 'Wow, you’re a math star! 🌟'],
+                    incorrect: [`Not quite! The answer is ${currentAnswer}. Try the hint! 😊`, `Oh no! It’s ${currentAnswer}. Let’s try again! 🙌`, `Close, but it’s ${currentAnswer}. Check the hint! 😉`]
+                },
+                subtraction: {
+                    correct: ['Fantastic! You got it! 🎉', 'Great work! That’s correct! 😄', 'You’re crushing it! 🌟'],
+                    incorrect: [`Oops! The answer is ${currentAnswer}. Use the hint! 😊`, `Not quite! It’s ${currentAnswer}. Try again! 🙌`, `Almost! The answer is ${currentAnswer}. Check the hint! 😉`]
+                },
+                multiplication: {
+                    correct: ['Yay! Perfect answer! 🎉', 'You’re a multiplication master! 😄', 'Amazing! Right on! 🌟'],
+                    incorrect: [`Nope! It’s ${currentAnswer}. Try the hint! 😊`, `Not there yet! Answer is ${currentAnswer}. Keep going! 🙌`, `Missed it! It’s ${currentAnswer}. Use the hint! 😉`]
+                }
+            };
+
+            if (userAnswer === currentAnswer) {
+                const randomMsg = messages[type].correct[Math.floor(Math.random() * messages[type].correct.length)];
+                message.textContent = randomMsg;
+                input.classList.add('success');
+                input.classList.remove('error');
+                correctStreak++;
+                incorrectStreak = 0;
+                playSound(correctSound);
+                if (correctStreak >= 5) {
+                    showModal('Math Wizard! 🪄', 'Wow! 5 correct answers in a row! You’re unstoppable! 🚀');
+                    playSound(modalSound);
+                    resetStreaks();
+                }
+            } else {
+                const randomMsg = messages[type].incorrect[Math.floor(Math.random() * messages[type].incorrect.length)];
+                message.textContent = randomMsg;
+                input.classList.add('error');
+                input.classList.remove('success');
+                document.getElementById(`${type}-hint`).classList.add('active');
+                document.getElementById(`${type}-hint`).setAttribute('aria-hidden', 'false');
+                incorrectStreak++;
+                correctStreak = 0;
+                playSound(errorSound);
+                if (incorrectStreak >= 2) {
+                    showModal('You’ve Got This! 💪', 'Mistakes are part of learning! Keep practicing, you’re almost there! 😄');
+                    playSound(modalSound);
+                    resetStreaks();
+                }
+            }
+
+            continueBtn.style.display = 'block';
+            input.disabled = true;
+            document.querySelector(`button[onclick="checkAnswer('${type}')"]`).disabled = true;
+        }
+
+        function continuePractice(type) {
+            resetInput(type);
+            if (type === 'addition') generateAddition();
+            else if (type === 'subtraction') generateSubtraction();
+            else if (type === 'multiplication') generateMultiplication();
+            document.getElementById(`${type}-input`).focus();
+        }
+
+        function resetInput(type) {
+            const input = document.getElementById(`${type}-input`);
+            const message = document.getElementById(`${type}-message`);
+            const continueBtn = document.getElementById(`${type}-continue`);
+            const submitBtn = document.querySelector(`button[onclick="checkAnswer('${type}')"]`);
+            input.value = '';
+            input.classList.remove('success', 'error');
+            input.disabled = false;
+            message.textContent = '';
+            continueBtn.style.display = 'none';
+            submitBtn.disabled = false;
+            document.getElementById(`${type}-hint`).classList.remove('active');
+            document.getElementById(`${type}-hint`).setAttribute('aria-hidden', 'true');
+        }
+
+        function showModal(title, message) {
+            document.getElementById('modal-title').textContent = title;
+            document.getElementById('modal-message').textContent = message;
+            document.getElementById('modal').classList.add('active');
+            document.getElementById('modal').focus();
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.remove('active');
+            document.querySelector(`button[onclick="closeModal()"]`).focus();
+        }
+
+        function resetStreaks() {
+            correctStreak = 0;
+            incorrectStreak = 0;
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && document.getElementById('modal').classList.contains('active')) {
+                closeModal();
+            }
+        });
+
+        // Initialize home screen
+        showScreen('home-screen');
+    </script>
+</body>
+</html>

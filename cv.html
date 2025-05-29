@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional CV Generator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9fafb;
+            color: #2d2d2d;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 50px auto;
+            background: #ffffff;
+            padding: 40px;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.05);
+            border-radius: 12px;
+        }
+
+        .banner {
+            background: linear-gradient(90deg, #1a2a44, #3b5998);
+            color: #ffffff;
+            text-align: center;
+            padding: 30px;
+            font-size: 2.4em;
+            font-weight: 700;
+            letter-spacing: 1.2px;
+            border-radius: 12px 12px 0 0;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .section {
+            margin: 40px 0;
+            padding: 25px;
+            background: #ffffff;
+            border-radius: 8px;
+            border-left: 5px solid #3b5998;
+        }
+
+        .section h2 {
+            margin: 0 0 20px 0;
+            color: #1a2a44;
+            font-size: 1.8em;
+            font-weight: 700;
+            border-bottom: 2px solid #3b5998;
+            padding-bottom: 8px;
+        }
+
+        .editable:hover {
+            background: #f0f2f5;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .form-container {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            background: #f5f6f5;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .form-container label {
+            display: block;
+            margin: 10px 0 5px;
+            font-weight: 400;
+            color: #1a2a44;
+        }
+
+        .form-container input, .form-container textarea {
+            width: 100%;
+            margin-bottom: 15px;
+            padding: 12px;
+            border: 1px solid #d1d1d1;
+            border-radius: 6px;
+            font-size: 0.95em;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .form-container button {
+            background: #3b5998;
+            color: #ffffff;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.95em;
+            margin-right: 15px;
+            transition: background 0.3s ease;
+        }
+
+        .form-container button:hover {
+            background: #1a2a44;
+        }
+
+        .item {
+            background: #ffffff;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s ease;
+        }
+
+        .item:hover {
+            transform: translateY(-2px);
+        }
+
+        .item p {
+            margin: 8px 0;
+        }
+
+        .expertise-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 25px;
+        }
+
+        .expertise-card {
+            background: #ffffff;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s ease;
+        }
+
+        .expertise-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .circular-progress {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 15px;
+        }
+
+        .circular-progress svg {
+            transform: rotate(-90deg);
+        }
+
+        .circular-progress circle {
+            fill: none;
+            stroke-width: 6;
+        }
+
+        .circular-progress .bg {
+            stroke: #e0e0e0;
+        }
+
+        .circular-progress .fg {
+            stroke: #3b5998;
+            stroke-linecap: round;
+        }
+
+        button.add-btn {
+            background: #28a745;
+            color: #ffffff;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.95em;
+            margin: 20px 0;
+            transition: background 0.3s ease;
+        }
+
+        button.add-btn:hover {
+            background: #218838;
+        }
+
+        @media print {
+            body {
+                background: #ffffff;
+            }
+            .container {
+                box-shadow: none;
+                margin: 0;
+                padding: 0;
+                width: 100%;
+            }
+            .section {
+                background: none;
+                border-left: none;
+                padding: 15px 0;
+            }
+            .item {
+                border: none;
+                box-shadow: none;
+                padding: 10px 0;
+                margin-bottom: 10px;
+            }
+            button, .add-btn {
+                display: none;
+            }
+            .form-container {
+                display: none;
+            }
+            .banner {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="banner" id="banner">Your Name</div>
+    <div class="container">
+        <div class="section" id="applicant-section">
+            <h2>Contact Information</h2>
+            <div id="applicant-display" class="editable item">
+                <p><strong>Name:</strong> <span id="applicant-name">Your Name</span></p>
+                <p><strong>Phone:</strong> <span id="applicant-phone">123-456-7890</span></p>
+                <p><strong>Email:</strong> <span id="applicant-email">your.email@example.com</span></p>
+            </div>
+            <div id="applicant-form" class="form-container">
+                <label for="applicant-name-input">Name</label>
+                <input type="text" id="applicant-name-input" placeholder="Name">
+                <label for="applicant-phone-input">Phone</label>
+                <input type="text" id="applicant-phone-input" placeholder="Phone">
+                <label for="applicant-email-input">Email</label>
+                <input type="email" id="applicant-email-input" placeholder="Email">
+                <button onclick="saveApplicant()">Save</button>
+                <button onclick="cancelEdit('applicant')">Cancel</button>
+            </div>
+        </div>
+
+        <div class="section" id="summary-section">
+            <h2>Professional Summary</h2>
+            <div id="summary-display" class="editable item">
+                <p id="summary-text">A results-driven professional with a proven track record in delivering innovative solutions and fostering team collaboration.</p>
+            </div>
+            <div id="summary-form" class="form-container">
+                <label for="summary-input">Professional Summary</label>
+                <textarea id="summary-input" rows="5" placeholder="Professional Summary"></textarea>
+                <button onclick="saveSummary()">Save</button>
+                <button onclick="cancelEdit('summary')">Cancel</button>
+            </div>
+        </div>
+
+        <div class="section" id="studies-section">
+            <h2>Education</h2>
+            <button class="add-btn" onclick="showAddForm('studies')">Add Education</button>
+            <div id="studies-list"></div>
+            <div id="studies-form" class="form-container">
+                <label for="studies-location-input">Institution</label>
+                <input type="text" id="studies-location-input" placeholder="Institution">
+                <label for="studies-diploma-input">Degree/Diploma</label>
+                <input type="text" id="studies-diploma-input" placeholder="Degree/Diploma">
+                <label for="studies-start-input">Start Date</label>
+                <input type="date" id="studies-start-input" placeholder="Start Date">
+                <label for="studies-end-input">End Date</label>
+                <input type="date" id="studies-end-input" placeholder="End Date">
+                <label><input type="checkbox" id="studies-current"> Currently Enrolled</label>
+                <label for="studies-summary-input">Description</label>
+                <textarea id="studies-summary-input" rows="5" placeholder="Description"></textarea>
+                <button onclick="saveStudy()">Save</button>
+                <button onclick="cancelEdit('studies')">Cancel</button>
+            </div>
+        </div>
+
+        <div class="section" id="work-section">
+            <h2>Professional Experience</h2>
+            <button class="add-btn" onclick="showAddForm('work')">Add Experience</button>
+            <div id="work-list"></div>
+            <div id="work-form" class="form-container">
+                <label for="work-company-input">Company</label>
+                <input type="text" id="work-company-input" placeholder="Company">
+                <label for="work-role-input">Role</label>
+                <input type="text" id="work-role-input" placeholder="Role">
+                <label for="work-start-input">Start Date</label>
+                <input type="date" id="work-start-input" placeholder="Start Date">
+                <label for="work-end-input">End Date</label>
+                <input type="date" id="work-end-input" placeholder="End Date">
+                <label><input type="checkbox" id="work-current"> Current Position</label>
+                <label for="work-summary-input">Description</label>
+                <textarea id="work-summary-input" rows="5" placeholder="Description"></textarea>
+                <button onclick="saveWork()">Save</button>
+                <button onclick="cancelEdit('work')">Cancel</button>
+            </div>
+        </div>
+
+        <div class="section" id="expertise-section">
+            <h2>Skills</h2>
+            <button class="add-btn" onclick="showAddForm('expertise')">Add Skill</button>
+            <div class="expertise-container" id="expertise-list"></div>
+            <div id="expertise-form" class="form-container">
+                <label for="expertise-skill-input">Skill</label>
+                <input type="text" id="expertise-skill-input" placeholder="Skill">
+                <label for="expertise-level-input">Proficiency (0-100)</label>
+                <input type="number" id="expertise-level-input" min="0" max="100" placeholder="Proficiency (0-100)">
+                <button onclick="saveExpertise()">Save</button>
+                <button onclick="cancelEdit('expertise')">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initial JSON data
+        let cvData = {
+            applicant: {
+                name: "Your Name",
+                phone: "123-456-7890",
+                email: "your.email@example.com"
+            },
+            summary: "A results-driven professional with a proven track record in delivering innovative solutions and fostering team collaboration.",
+            studies: [],
+            work: [],
+            expertise: []
+        };
+
+        // Initialize displays
+        function init() {
+            updateApplicantDisplay();
+            updateSummaryDisplay();
+            updateStudiesDisplay();
+            updateWorkDisplay();
+            updateExpertiseDisplay();
+        }
+
+        // Update applicant display
+        function updateApplicantDisplay() {
+            document.getElementById('banner').textContent = cvData.applicant.name;
+            document.getElementById('applicant-name').textContent = cvData.applicant.name;
+            document.getElementById('applicant-phone').textContent = cvData.applicant.phone;
+            document.getElementById('applicant-email').textContent = cvData.applicant.email;
+        }
+
+        // Update summary display
+        function updateSummaryDisplay() {
+            document.getElementById('summary-text').textContent = cvData.summary;
+        }
+
+        // Update studies display
+        function updateStudiesDisplay() {
+            const list = document.getElementById('studies-list');
+            list.innerHTML = '';
+            cvData.studies.forEach((study, index) => {
+                const div = document.createElement('div');
+                div.className = 'item editable';
+                div.innerHTML = `
+                    <p><strong>${study.diploma}</strong> - ${study.location}</p>
+                    <p><strong>Duration:</strong> ${study.start} - ${study.end}</p>
+                    <p>${study.summary}</p>
+                    <button onclick="editStudy(${index})">Edit</button>
+                `;
+                list.appendChild(div);
+            });
+        }
+
+        // Update work experience display
+        function updateWorkDisplay() {
+            const list = document.getElementById('work-list');
+            list.innerHTML = '';
+            cvData.work.forEach((job, index) => {
+                const div = document.createElement('div');
+                div.className = 'item editable';
+                div.innerHTML = `
+                    <p><strong>${job.role}</strong> - ${job.company}</p>
+                    <p><strong>Duration:</strong> ${job.start} - ${job.end}</p>
+                    <p>${job.summary}</p>
+                    <button onclick="editWork(${index})">Edit</button>
+                `;
+                list.appendChild(div);
+            });
+        }
+
+        // Update expertise display with SVG circular progress
+        function updateExpertiseDisplay() {
+            const list = document.getElementById('expertise-list');
+            list.innerHTML = '';
+            cvData.expertise.forEach((skill, index) => {
+                const circumference = 2 * Math.PI * 22;
+                const strokeDashoffset = circumference - (skill.level / 100) * circumference;
+                const div = document.createElement('div');
+                div.className = 'expertise-card';
+                div.innerHTML = `
+                    <div class="circular-progress">
+                        <svg width="60" height="60">
+                            <circle class="bg" cx="30" cy="30" r="22" />
+                            <circle class="fg" cx="30" cy="30" r="22" style="stroke-dasharray: ${circumference}; stroke-dashoffset: ${strokeDashoffset};" />
+                        </svg>
+                    </div>
+                    <p><strong>${skill.skill}</strong> (${skill.level}%)</p>
+                    <button onclick="editExpertise(${index})">Edit</button>
+                `;
+                list.appendChild(div);
+            });
+        }
+
+        // Show edit form for sections
+        function showEditForm(section) {
+            document.getElementById(`${section}-form`).style.display = 'block';
+            document.getElementById(`${section}-display`).style.display = 'none';
+        }
+
+        // Show add form for list sections
+        function showAddForm(section) {
+            const form = document.getElementById(`${section}-form`);
+            form.style.display = 'block';
+            form.dataset.index = '-1';
+            form.querySelectorAll('input, textarea').forEach(input => input.value = '');
+            form.querySelector('input[type="checkbox"]').checked = false;
+        }
+
+        // Cancel edit
+        function cancelEdit(section) {
+            document.getElementById(`${section}-form`).style.display = 'none';
+            if (section === 'applicant' || section === 'summary') {
+                document.getElementById(`${section}-display`).style.display = 'block';
+            }
+        }
+
+        // Save applicant details
+        function saveApplicant() {
+            cvData.applicant = {
+                name: document.getElementById('applicant-name-input').value || cvData.applicant.name,
+                phone: document.getElementById('applicant-phone-input').value || cvData.applicant.phone,
+                email: document.getElementById('applicant-email-input').value || cvData.applicant.email
+            };
+            updateApplicantDisplay();
+            cancelEdit('applicant');
+        }
+
+        // Save summary
+        function saveSummary() {
+            cvData.summary = document.getElementById('summary-input').value || cvData.summary;
+            updateSummaryDisplay();
+            cancelEdit('summary');
+        }
+
+        // Save study
+        function saveStudy() {
+            const index = document.getElementById('studies-form').dataset.index;
+            const study = {
+                location: document.getElementById('studies-location-input').value || 'Unknown Institution',
+                diploma: document.getElementById('studies-diploma-input').value || 'Unknown Degree',
+                start: document.getElementById('studies-start-input').value || 'Unknown',
+                end: document.getElementById('studies-current').checked ? 'Now' : document.getElementById('studies-end-input').value || 'Unknown',
+                summary: document.getElementById('studies-summary-input').value || ''
+            };
+            if (index === '-1') {
+                cvData.studies.push(study);
+            } else {
+                cvData.studies[index] = study;
+            }
+            updateStudiesDisplay();
+            cancelEdit('studies');
+        }
+
+        // Save work experience
+        function saveWork() {
+            const index = document.getElementById('work-form').dataset.index;
+            const job = {
+                company: document.getElementById('work-company-input').value || 'Unknown Company',
+                role: document.getElementById('work-role-input').value || 'Unknown Role',
+                start: document.getElementById('work-start-input').value || 'Unknown',
+                end: document.getElementById('work-current').checked ? 'Now' : document.getElementById('work-end-input').value || 'Unknown',
+                summary: document.getElementById('work-summary-input').value || ''
+            };
+            if (index === '-1') {
+                cvData.work.push(job);
+            } else {
+                cvData.work[index] = job;
+            }
+            updateWorkDisplay();
+            cancelEdit('work');
+        }
+
+        // Save expertise
+        function saveExpertise() {
+            const index = document.getElementById('expertise-form').dataset.index;
+            const skill = {
+                skill: document.getElementById('expertise-skill-input').value || 'Unknown Skill',
+                level: parseInt(document.getElementById('expertise-level-input').value) || 0
+            };
+            if (index === '-1') {
+                cvData.expertise.push(skill);
+            } else {
+                cvData.expertise[index] = skill;
+            }
+            updateExpertiseDisplay();
+            cancelEdit('expertise');
+        }
+
+        // Edit study
+        function editStudy(index) {
+            const form = document.getElementById('studies-form');
+            const study = cvData.studies[index];
+            document.getElementById('studies-location-input').value = study.location;
+            document.getElementById('studies-diploma-input').value = study.diploma;
+            document.getElementById('studies-start-input').value = study.start;
+            document.getElementById('studies-end-input').value = study.end === 'Now' ? '' : study.end;
+            document.getElementById('studies-current').checked = study.end === 'Now';
+            document.getElementById('studies-summary-input').value = study.summary;
+            form.style.display = 'block';
+            form.dataset.index = index;
+        }
+
+        // Edit work
+        function editWork(index) {
+            const form = document.getElementById('work-form');
+            const job = cvData.work[index];
+            document.getElementById('work-company-input').value = job.company;
+            document.getElementById('work-role-input').value = job.role;
+            document.getElementById('work-start-input').value = job.start;
+            document.getElementById('work-end-input').value = job.end === 'Now' ? '' : job.end;
+            document.getElementById('work-current').checked = job.end === 'Now';
+            document.getElementById('work-summary-input').value = job.summary;
+            form.style.display = 'block';
+            form.dataset.index = index;
+        }
+
+        // Edit expertise
+        function editExpertise(index) {
+            const form = document.getElementById('expertise-form');
+            const skill = cvData.expertise[index];
+            document.getElementById('expertise-skill-input').value = skill.skill;
+            document.getElementById('expertise-level-input').value = skill.level;
+            form.style.display = 'block';
+            form.dataset.index = index;
+        }
+
+        // Event listeners for editable sections
+        document.getElementById('applicant-display').addEventListener('click', () => {
+            document.getElementById('applicant-name-input').value = cvData.applicant.name;
+            document.getElementById('applicant-phone-input').value = cvData.applicant.phone;
+            document.getElementById('applicant-email-input').value = cvData.applicant.email;
+            showEditForm('applicant');
+        });
+
+        document.getElementById('summary-display').addEventListener('click', () => {
+            document.getElementById('summary-input').value = cvData.summary;
+            showEditForm('summary');
+        });
+
+        // Initialize
+        init();
+    </script>
+</body>
+</html>

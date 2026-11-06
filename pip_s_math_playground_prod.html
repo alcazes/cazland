@@ -1,0 +1,1036 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Pip’s Math Playground (P4–P6)</title>
+<style>
+:root{--bg:#f6f4ff;--card:#fff;--text:#2a2250;--muted:#6b6490;--line:#e4defa;--pri:#7c5cff;--ok:#1fa968;--bad:#e5484d;--yel:#ffd23f;--a:#7c5cff;--b:#22b573;--c:#ffb300;--r:#ff5c7a;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#16122b;--card:#221c42;--text:#f1eeff;--muted:#a79fd0;--line:#352d5e;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#16122b;--card:#221c42;--text:#f1eeff;--muted:#a79fd0;--line:#352d5e;color-scheme:dark}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--text);font-family:"Nunito","Trebuchet MS",system-ui,sans-serif;font-size:17px;line-height:1.45}
+#root{max-width:860px;margin:0 auto;padding:14px 14px 50px}
+header{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+header h1{font-size:1.25rem;margin:0;flex:1}
+.pill{background:var(--card);border:2px solid var(--line);border-radius:99px;padding:4px 12px;font-weight:800;white-space:nowrap}
+button{font:inherit;color:inherit;cursor:pointer}
+.btn{background:var(--pri);color:#fff;border:0;border-radius:14px;padding:10px 18px;font-weight:800;box-shadow:0 3px 0 rgba(0,0,0,.2)}
+.btn.sec{background:var(--card);color:var(--text);border:2px solid var(--line);box-shadow:none}
+.btn.ok{background:var(--ok)}.btn.warn{background:var(--bad)}
+.btn:disabled{opacity:.45;cursor:default}
+.btn:focus-visible,.tile:focus-visible,.chim:focus-visible,input:focus-visible{outline:3px solid var(--yel);outline-offset:2px}
+.card{background:var(--card);border:2px solid var(--line);border-radius:22px;padding:16px;margin-bottom:14px}
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.tile{background:var(--card);border:2px solid var(--line);border-radius:20px;padding:14px 8px;text-align:center;font-weight:800}
+.tile:hover{border-color:var(--pri);transform:translateY(-2px)}
+.tile big{display:block;font-size:2.4rem;line-height:1.1;color:var(--pri)}
+.tile small{display:block;color:var(--muted);font-weight:600;font-size:.8rem}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.hero{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.pip{flex:none}.pip svg{width:100%;height:auto;overflow:visible}
+.bubble{background:var(--card);border:2px solid var(--line);border-radius:18px;padding:10px 14px;flex:1;min-width:180px}
+.q{font-size:2.6rem;font-weight:900;display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:6px 0}
+input.num{width:130px;font:inherit;font-size:2.2rem;font-weight:900;text-align:center;border:3px solid var(--line);border-radius:14px;padding:2px 6px;background:var(--bg);color:var(--text)}
+input.num.sm{width:46px;font-size:1.7rem;padding:0;border-radius:10px;border-color:var(--pri)}
+.msg{font-weight:700;min-height:1.5em}.msg.ok{color:var(--ok)}.msg.bad{color:var(--bad)}
+.seg{display:inline-flex;border:2px solid var(--line);border-radius:12px;overflow:hidden}
+.seg button{background:var(--card);border:0;padding:6px 12px;font-weight:700}.seg button.on{background:var(--pri);color:#fff}
+.hint{border:2px dashed var(--c);border-radius:16px;padding:12px;background:color-mix(in srgb,var(--c) 10%,transparent)}
+.dots{display:flex;flex-wrap:wrap;gap:4px;align-items:center;margin:6px 0}
+.dot{width:16px;height:16px;border-radius:50%;background:var(--a);display:inline-block;position:relative}
+.dot.b{background:var(--b)}.dot.c{background:var(--c)}.dot.r{background:var(--r)}
+.dot.x{opacity:.4}.dot.x::after{content:"";position:absolute;left:-2px;right:-2px;top:7px;height:3px;background:var(--text);transform:rotate(-35deg)}
+.gap{width:14px}
+.blocks{display:inline-flex;gap:4px;align-items:flex-end;flex-wrap:wrap;max-width:260px}
+.bh{width:28px;height:28px;border-radius:4px;background:var(--a)}.bh.b{background:var(--b)}.bh.r{background:var(--r)}
+.bt{width:9px;height:28px;border-radius:3px;background:var(--a)}.bt.b{background:var(--b)}.bt.r{background:var(--r)}
+.bo{width:9px;height:9px;border-radius:50%;background:var(--a)}.bo.b{background:var(--b)}.bo.r{background:var(--r)}
+.vis{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin:8px 0}
+.vis .op{font-size:2rem;font-weight:900}
+.grid2{display:grid;gap:3px;margin:8px 0}
+.groups{display:flex;gap:8px;flex-wrap:wrap}.groups>div{border:2px solid var(--line);border-radius:12px;padding:6px;display:flex;flex-wrap:wrap;gap:3px;max-width:120px}
+.area{display:flex;gap:6px;margin:8px 0;flex-wrap:wrap}.area div{border:2px solid var(--a);border-radius:10px;padding:8px 12px;font-weight:800;text-align:center}
+.steps{display:flex;gap:6px;align-items:center;flex-wrap:wrap;font-weight:800}
+.steps em{font-style:normal;color:var(--muted);font-size:.9rem}.steps b{background:var(--card);border:2px solid var(--line);border-radius:8px;padding:0 8px}
+.stack{display:grid;gap:4px;justify-content:start;font-weight:900;font-size:2rem;margin:10px 0;align-items:center}
+.stack .cell{height:48px;text-align:center;line-height:48px;border-radius:10px}
+.stack .cell.act{background:color-mix(in srgb,var(--yel) 30%,transparent)}
+.stack .cell.x{text-decoration:line-through;color:var(--muted)}
+.stack .ans{border-top:4px solid var(--text);border-radius:0 0 10px 10px;color:var(--pri)}
+.stack .sgn{text-align:center;color:var(--muted)}
+.chim{height:42px;border:2px dashed var(--line);border-radius:10px;background:transparent;font:inherit;font-size:1.3rem;font-weight:900;color:var(--text);padding:0}
+.chim.tap{border-color:var(--pri);background:color-mix(in srgb,var(--pri) 12%,transparent)}
+.chim.on{background:var(--yel);border:2px solid var(--text);color:#2a2250}
+.chim.pulse{animation:pulse .9s infinite}
+@keyframes pulse{50%{box-shadow:0 0 0 7px color-mix(in srgb,var(--c) 45%,transparent)}}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.tabs button{background:var(--card);border:2px solid var(--line);border-radius:12px;padding:6px 12px;font-weight:700}.tabs button.on{background:var(--pri);color:#fff;border-color:var(--pri)}
+.tt{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:6px}
+.tt button{background:var(--bg);border:2px solid var(--line);border-radius:10px;padding:6px;font-weight:800;text-align:left}.tt button.on{border-color:var(--pri);background:color-mix(in srgb,var(--pri) 14%,transparent)}
+h2{margin:0 0 8px;font-size:1.35rem}h3{margin:12px 0 4px;font-size:1.1rem}
+ul{margin:4px 0;padding-left:22px}
+.a-bounce{animation:bounce 1.6s ease-in-out infinite;transform-origin:50% 90%}.a-hop{animation:hop .7s ease-in-out infinite;transform-origin:50% 90%}.a-shake{animation:shake .5s ease-in-out 2;transform-origin:50% 90%}
+@keyframes bounce{50%{transform:translateY(-5px)}}@keyframes hop{50%{transform:translateY(-14px)}}@keyframes shake{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important}}
+html{-webkit-text-size-adjust:100%}
+button{touch-action:manipulation;-webkit-tap-highlight-color:transparent;min-height:44px}
+#root{max-width:980px}
+.btn{min-height:46px}
+.stack{--cw:clamp(42px,12vw,60px);font-size:clamp(1.6rem,7vw,2.1rem)}
+.stack .cell{height:var(--cw);line-height:var(--cw)}
+.chim{height:calc(var(--cw)*.85);font-size:clamp(1rem,4.5vw,1.4rem)}
+input.num.sm{width:calc(var(--cw) - 6px);height:calc(var(--cw) - 6px);font-size:clamp(1.4rem,6vw,1.8rem)}
+.q{font-size:clamp(1.9rem,8vw,2.8rem)}
+.cgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px}
+.sp{background:var(--bg);border:2px solid var(--line);border-radius:18px;padding:8px;text-align:center;font-weight:800;font-size:.9rem;width:100%}
+.sp svg{width:100%;height:auto;display:block}
+.sp.lock svg{filter:brightness(0) opacity(.18)}
+.sp small{display:block;color:var(--muted);font-weight:600;font-size:.75rem}
+.modal{position:fixed;inset:0;background:rgba(20,12,50,.65);display:flex;align-items:center;justify-content:center;padding:max(16px,env(safe-area-inset-top)) 16px max(16px,env(safe-area-inset-bottom));z-index:50}
+.sheet{background:var(--card);border-radius:24px;max-width:440px;width:100%;max-height:92vh;overflow:auto;padding:18px;text-align:center;border:3px solid var(--pri)}
+.sheet svg{width:min(230px,58vw);height:auto}
+.bar{display:flex;gap:6px}.bar i{flex:1;height:14px;border-radius:7px;background:var(--line)}.bar i.on{background:var(--yel)}
+.badge{display:inline-block;background:var(--pri);color:#fff;border-radius:99px;padding:2px 12px;font-size:.8rem;font-weight:800}
+@media (min-width:700px){#root{padding:22px 28px 60px}body{font-size:18px}.stack{--cw:68px;font-size:2.4rem}.q{font-size:3.2rem}.tiles{grid-template-columns:repeat(3,1fr)}.cgrid{grid-template-columns:repeat(5,1fr)}.tile big{font-size:2.8rem}}
+@media (max-width:560px){.hero{flex-direction:column;align-items:stretch;text-align:center}.hero .pip{width:min(130px,36vw)!important;margin:0 auto}.hero .bubble{text-align:left}.q{justify-content:center}.hero .row{justify-content:center}header h1{font-size:1.05rem}.tiles{grid-template-columns:repeat(2,1fr);gap:10px}.tile big{font-size:2rem}.btn{padding:10px 14px}.cgrid{grid-template-columns:repeat(2,1fr)}.pill{padding:2px 9px;font-size:.9rem}}
+.say{display:flex;gap:10px;align-items:center;margin:10px 0}.say .pip{width:82px!important;flex:none}
+.eq{font-weight:800;background:var(--bg);border:2px solid var(--line);border-radius:10px;padding:4px 10px;margin:4px 0}
+.minis{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px;margin:8px 0}
+.minicard{border:2px solid var(--line);border-radius:14px;padding:10px;background:var(--card)}.minicard>b{display:block;margin-bottom:4px}
+.chip{display:inline-block;background:var(--bg);border:2px solid var(--line);border-radius:10px;padding:2px 10px;margin:3px;font-weight:800}.chip small{color:var(--muted)}
+.pv{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:10px 0}
+.pvc{background:var(--bg);border:2px solid var(--line);border-radius:12px;padding:6px 2px;text-align:center;display:flex;flex-direction:column;min-height:92px;overflow-wrap:anywhere}
+.pvc small{font-size:.66rem;color:var(--muted);font-weight:700}.pvc b{font-size:1.9rem}.pvc span{font-size:.68rem}.pvc.off{opacity:.35}
+.rl{width:100%;max-width:520px;display:block;margin:6px auto}
+.rl text{fill:var(--text);font-weight:800;font-size:14px;font-family:inherit}.rl line{stroke:var(--text)}
+.rl .rb{fill:var(--card);stroke:var(--text);stroke-width:2}.rl .mid{stroke:#ff9a3c}.rl text.mt{fill:#ff9a3c}
+.clock{width:min(280px,76vw);display:block;margin:6px auto}
+.clock text{fill:var(--text);font-weight:800;font-family:inherit}.clock .face{fill:var(--card);stroke:var(--text);stroke-width:3}.clock .tk{stroke:var(--text)}.clock text.ml{fill:#ff5c7a}
+.rbox{font-size:2rem;font-weight:900;letter-spacing:.08em;min-height:56px;border:3px dashed var(--line);border-radius:14px;padding:4px 12px;margin:6px 0;display:flex;align-items:center;justify-content:center;word-break:break-all}
+.key{min-width:48px;font-size:1.3rem;font-weight:900}
+.mc{display:grid;grid-template-columns:repeat(10,1fr);gap:3px;max-width:420px;margin:6px 0}
+.mcb{min-height:0;aspect-ratio:1;font-size:.7rem;padding:0;border:1px solid var(--line);background:var(--bg);border-radius:6px;font-weight:700}
+.mcb.on{background:color-mix(in srgb,var(--pri) 28%,transparent)}.mcb.hit{background:var(--yel);color:#2a2250}
+@media (max-width:560px){.say{align-items:flex-start}.say .pip{width:64px!important}.pvc b{font-size:1.5rem}}
+.gcv{width:100%;max-width:420px;display:block;margin:0 auto;border-radius:18px;border:3px solid var(--line);touch-action:none;background:#1b1640;user-select:none;-webkit-user-select:none}
+.board{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;max-width:420px;margin:10px auto}
+.sqr{position:relative;aspect-ratio:1;border:3px solid var(--line);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:clamp(1.1rem,5vw,1.6rem);font-weight:900;background:var(--bg)}
+.sqr.done{background:color-mix(in srgb,var(--ok) 25%,transparent);border-color:var(--ok)}
+.sqr.cur{border-color:var(--yel);animation:pulse .9s infinite}
+.tok{position:absolute;bottom:-6px;right:-6px;width:52%;pointer-events:none}.tok svg{width:100%;height:auto}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js"></script>
+<script>
+const {useState,useEffect,useRef}=React,h=React.createElement;
+const rnd=(a,b)=>Math.floor(Math.random()*(b-a+1))+a,num=d=>d===""||d==null?0:+d;
+/* ---------- storage (localStorage only, no cookies) ---------- */
+const KEY="pip-math-v2",fresh=()=>({stars:0,best:0,lvl:{},stats:{},touched:false,right:0,rewards:[],grw:[],gw:{}});
+const win=d=>{const r=(d.right||0)+1,rw=d.rewards||[];return {right:r,rewards:r%5===0&&rw.length<30?[...rw,rw.length]:rw}};
+const load=()=>{for(const k of [KEY,"pip-math-v1"]){try{const v=JSON.parse(localStorage.getItem(k));if(v&&v.stats)return {cm:{},...v}}catch(e){}}return fresh()};
+const save=d=>{try{localStorage.setItem(KEY,JSON.stringify(d))}catch(e){}};
+const wipe=()=>{try{localStorage.removeItem(KEY);localStorage.removeItem("pip-math-v1")}catch(e){}};
+/* ---------- Pip sprites ---------- */
+const C={body:"#7c5cff",dark:"#5a3fd6",belly:"#a99bff",ink:"#2a2250",yel:"#ffd23f",pink:"#ff8fb1"};
+const arm=d=>`<path d="${d}" fill="none" stroke="${C.dark}" stroke-width="13" stroke-linecap="round"/>`;
+const ARMS={down:arm("M44 128 Q28 148 36 166")+arm("M156 128 Q172 148 164 166"),up:arm("M44 122 Q22 98 30 70")+arm("M156 122 Q178 98 170 70"),wave:arm("M44 128 Q28 148 36 166")+arm("M156 122 Q180 100 172 72"),chin:arm("M44 128 Q28 148 36 166")+arm("M156 128 Q160 150 128 146"),shrug:arm("M46 124 Q24 130 22 112")+arm("M154 124 Q176 130 178 112"),hips:arm("M46 122 Q22 132 52 156")+arm("M154 122 Q178 132 148 156")};
+const dot=(x,y,dx=0,dy=0)=>`<circle cx="${x}" cy="${y}" r="12" fill="#fff"/><circle cx="${x+dx}" cy="${y+dy}" r="7" fill="${C.ink}"/><circle cx="${x+dx+2}" cy="${y+dy-2}" r="2.4" fill="#fff"/>`;
+const arc=(x,u)=>`<path d="M${x-10} ${u?110:104} Q${x} ${u?94:116} ${x+10} ${u?110:104}" fill="none" stroke="${C.ink}" stroke-width="5" stroke-linecap="round"/>`;
+const star=x=>`<text x="${x}" y="116" font-size="26" text-anchor="middle" fill="${C.yel}" stroke="${C.ink}" stroke-width="1.5">★</text>`;
+const EYES={open:dot(78,106)+dot(122,106),happy:arc(78,1)+arc(122,1),wink:dot(78,106)+arc(122,1),up:dot(78,106,3,-4)+dot(122,106,3,-4),worry:dot(78,108,0,3)+dot(122,108,0,3)+`<path d="M64 90 L90 96 M136 90 L110 96" stroke="${C.ink}" stroke-width="4" stroke-linecap="round"/>`,closed:arc(78,0)+arc(122,0),stars:star(78)+star(122)};
+const MOUTH={smile:`<path d="M84 128 Q100 146 116 128" fill="none" stroke="${C.ink}" stroke-width="5" stroke-linecap="round"/>`,big:`<path d="M80 124 Q100 160 120 124 Z" fill="${C.ink}"/><path d="M89 142 Q100 134 111 142 Q100 152 89 142Z" fill="${C.pink}"/>`,o:`<ellipse cx="104" cy="136" rx="6" ry="7" fill="${C.ink}"/>`,frown:`<path d="M86 140 Q100 126 114 140" fill="none" stroke="${C.ink}" stroke-width="5" stroke-linecap="round"/>`,grin:`<path d="M82 126 Q100 148 118 126" fill="#fff" stroke="${C.ink}" stroke-width="4" stroke-linejoin="round"/>`};
+const tx=(x,y,s,sz,f,r=0)=>`<text x="${x}" y="${y}" font-size="${sz}" font-weight="800" font-family="Nunito,sans-serif" fill="${f}" stroke="${C.ink}" stroke-width="1.2" text-anchor="middle" transform="rotate(${r} ${x} ${y})">${s}</text>`;
+const PROPS={none:"",hi:tx(176,60,"hi!",20,"#fff",12),think:tx(160,50,"?",42,"#fff",12),sparkle:tx(34,60,"✦",22,C.yel)+tx(168,52,"✦",26,C.yel)+tx(176,110,"✦",16,C.yel),party:tx(28,56,"+",30,C.pink,-15)+tx(172,48,"×",34,C.yel,10)+tx(20,110,"÷",28,"#fff",-10)+tx(182,106,"−",30,C.pink,8),oops:`<path d="M156 70 Q146 90 156 96 Q166 90 156 70Z" fill="#7fd4ff" stroke="${C.ink}" stroke-width="1.5"/>`,bulb:`<g transform="translate(150 28)"><circle r="16" fill="${C.yel}" stroke="${C.ink}" stroke-width="2"/><rect x="-7" y="14" width="14" height="8" rx="3" fill="${C.belly}" stroke="${C.ink}" stroke-width="1.5"/><path d="M-26 -8 L-34 -12 M26 -8 L34 -12 M0 -26 L0 -34" stroke="${C.yel}" stroke-width="3" stroke-linecap="round"/></g>`,zzz:tx(150,64,"z",26,"#fff")+tx(166,44,"Z",32,"#fff")};
+const POSE={idle:["open","smile","down","none"],hello:["happy","big","wave","hi"],think:["up","o","chin","think"],correct:["happy","big","up","sparkle"],level:["stars","big","up","party"],oops:["worry","frown","shrug","oops"],hint:["wink","grin","hips","bulb"],sleepy:["closed","o","down","zzz"]};
+const ANIM={idle:"a-bounce",hello:"a-bounce",think:"a-bounce",correct:"a-hop",level:"a-hop",oops:"a-shake",hint:"a-bounce",sleepy:""};
+function pipSvg(p){const [e,m,a,pr]=POSE[p];return `<svg viewBox="0 0 200 215" role="img" aria-label="Pip the mascot" xmlns="http://www.w3.org/2000/svg"><ellipse cx="100" cy="204" rx="52" ry="7" fill="${C.ink}" opacity=".15"/><ellipse cx="76" cy="190" rx="20" ry="11" fill="${C.dark}"/><ellipse cx="124" cy="190" rx="20" ry="11" fill="${C.dark}"/>${ARMS[a]}<path d="M100 56 Q96 44 100 32" fill="none" stroke="${C.dark}" stroke-width="5" stroke-linecap="round"/><circle cx="100" cy="26" r="14" fill="${C.yel}" stroke="${C.ink}" stroke-width="2.5"/><text x="100" y="35" font-size="22" font-weight="800" text-anchor="middle" fill="${C.ink}">+</text><path d="M100 52 C 52 52 36 96 38 134 C 40 172 66 192 100 192 C 134 192 160 172 162 134 C 164 96 148 52 100 52Z" fill="${C.body}"/><path d="M62 70 Q74 58 92 58" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" opacity=".35"/><ellipse cx="100" cy="160" rx="34" ry="26" fill="${C.belly}"/><text x="100" y="172" font-size="34" font-weight="800" font-family="Georgia,serif" text-anchor="middle" fill="#fff">π</text><circle cx="62" cy="128" r="8" fill="${C.pink}" opacity=".75"/><circle cx="138" cy="128" r="8" fill="${C.pink}" opacity=".75"/>${EYES[e]}${MOUTH[m]}${PROPS[pr]}</svg>`}
+const Pip=({pose="idle",w=120})=>h("div",{className:"pip "+ANIM[pose],style:{width:w},dangerouslySetInnerHTML:{__html:pipSvg(pose)}});
+/* ---------- reward costumes (30 sprites) ---------- */
+const S=` stroke="#2a2250" stroke-width="3" stroke-linejoin="round"`,S2=` stroke="#2a2250" stroke-width="2" stroke-linejoin="round"`;
+const P0=[C.body,C.dark,C.belly],GRN=["#3fbf6a","#26914c","#9be3b0"],RED=["#e5484d","#b3262b","#ff9aa0"],BLU=["#3b82f6","#2257c4","#9cc1ff"],ORG=["#ff9a3c","#d9711a","#ffcf9a"],TEAL=["#17b5a8","#0e857b","#8be6dc"],PNK=["#ff6fa8","#d63d7e","#ffb3d1"],GRY=["#9aa4b2","#6b7686","#d5dbe3"],YEL=["#ffd23f","#d9a900","#ffe99a"],DRK=["#3a3560","#26223f","#7a72b8"],WHT=["#f1eeff","#c2bbe6","#ffffff"];
+const HAT={
+crown:c=>`<path d="M64 70 L64 42 L82 56 L100 34 L118 56 L136 42 L136 70Z" fill="${c}"${S}/><circle cx="100" cy="58" r="5" fill="#ff5c7a"/><circle cx="76" cy="62" r="3.5" fill="#4fc3ff"/><circle cx="124" cy="62" r="3.5" fill="#4fc3ff"/>`,
+helm:c=>`<path d="M100 38 Q96 14 124 12 Q112 24 112 40Z" fill="#ff5c7a"${S}/><path d="M58 86 Q56 40 100 38 Q144 40 142 86Z" fill="${c}"${S}/><rect x="60" y="70" width="80" height="10" rx="4" fill="#2a2250"/>`,
+wizard:c=>`<path d="M54 74 L108 2 L146 74Z" fill="${c}"${S}/><ellipse cx="100" cy="74" rx="56" ry="11" fill="${c}"${S}/><path d="M72 62 Q100 74 130 60" stroke="#ffd23f" stroke-width="7" fill="none"/><text x="100" y="42" font-size="20" text-anchor="middle" fill="#ffd23f">★</text>`,
+pirate:c=>`<path d="M46 72 Q56 20 100 22 Q144 20 154 72 Q100 56 46 72Z" fill="#26233a"${S}/><path d="M52 66 Q100 52 148 66" stroke="${c}" stroke-width="4" fill="none"/><circle cx="100" cy="42" r="8" fill="#fff"/><circle cx="97" cy="41" r="1.8" fill="#26233a"/><circle cx="103" cy="41" r="1.8" fill="#26233a"/>`,
+viking:c=>`<path d="M62 52 Q38 48 36 20 Q54 32 68 40Z M138 52 Q162 48 164 20 Q146 32 132 40Z" fill="#fff4d6"${S}/><path d="M58 80 Q58 40 100 40 Q142 40 142 80Z" fill="${c}"${S}/><rect x="58" y="68" width="84" height="10" fill="#ffd23f"${S}/>`,
+bubble:c=>`<ellipse cx="100" cy="106" rx="72" ry="74" fill="#bfeaff" fill-opacity=".25" stroke="${c}" stroke-width="7"/><path d="M58 66 Q68 46 90 40" stroke="#fff" stroke-width="6" fill="none" stroke-linecap="round" opacity=".8"/>`,
+cowboy:c=>`<path d="M36 72 Q48 86 100 76 Q152 86 164 72 Q150 68 144 58 Q142 34 100 34 Q58 34 56 58 Q50 68 36 72Z" fill="${c}"${S}/><path d="M60 62 Q100 74 140 62" stroke="#3b2a1a" stroke-width="6" fill="none"/>`,
+chef:c=>`<circle cx="74" cy="46" r="18" fill="#fff"${S}/><circle cx="126" cy="46" r="18" fill="#fff"${S}/><circle cx="100" cy="36" r="22" fill="#fff"${S}/><rect x="68" y="56" width="64" height="18" rx="4" fill="#fff"${S}/>`,
+tophat:c=>`<rect x="68" y="10" width="64" height="58" rx="4" fill="${c}"${S}/><rect x="68" y="48" width="64" height="10" fill="#ff5c7a"/><ellipse cx="100" cy="68" rx="52" ry="9" fill="${c}"${S}/>`,
+safari:c=>`<path d="M54 70 Q56 34 100 34 Q144 34 146 70Z" fill="${c}"${S}/><ellipse cx="100" cy="70" rx="58" ry="9" fill="${c}"${S}/><rect x="58" y="56" width="84" height="8" fill="#7a5a2e"/>`,
+ninja:c=>`<rect x="42" y="76" width="116" height="16" rx="6" fill="${c}"${S}/><path d="M156 82 L186 70 L182 92Z" fill="${c}"${S}/>`,
+samurai:c=>`<path d="M100 40 L82 6 M100 40 L118 6" stroke="#ffd23f" stroke-width="6" stroke-linecap="round"/><path d="M42 82 L60 94 L60 66Z M158 82 L140 94 L140 66Z" fill="${c}"${S}/><path d="M56 82 Q56 38 100 38 Q144 38 144 82Z" fill="${c}"${S}/><rect x="56" y="70" width="88" height="9" fill="#ffd23f"/>`,
+mohawk:c=>`<path d="M82 60 L86 26 L94 50 L100 14 L106 50 L114 26 L118 60Z" fill="${c}"${S}/>`,
+jester:c=>`<path d="M64 70 Q36 58 40 22 Q56 34 74 52Z" fill="${c}"${S}/><path d="M136 70 Q164 58 160 22 Q144 34 126 52Z" fill="#22b573"${S}/><circle cx="40" cy="20" r="7" fill="#ffd23f"${S}/><circle cx="160" cy="20" r="7" fill="#ffd23f"${S}/><path d="M62 66 Q100 52 138 66" stroke="#ffd23f" stroke-width="8" fill="none"/>`,
+hood:c=>`<path d="M126 44 Q150 22 162 6 Q154 36 134 54Z" fill="#ff5c7a"${S}/><path d="M54 104 Q48 40 100 36 Q152 40 146 104 L134 82 Q100 56 66 82Z" fill="${c}"${S}/>`,
+elfhat:c=>`<path d="M126 46 Q152 30 166 8 Q158 40 134 56Z" fill="#ffd23f"${S}/><path d="M58 74 Q58 36 104 34 Q136 34 150 56 Q128 46 128 72Z" fill="${c}"${S}/>`,
+unicorn:c=>`<path d="M62 70 Q44 50 56 36 Q58 56 72 62Z" fill="#ff8fb1"${S}/><path d="M138 70 Q156 50 144 36 Q142 56 128 62Z" fill="#a78bfa"${S}/><path d="M90 58 L100 4 L110 58Z" fill="#fff4d6"${S}/><path d="M92 44 L108 38 M94 28 L106 24" stroke="#ff8fb1" stroke-width="3.5"/>`,
+horns:c=>`<path d="M66 64 Q44 44 52 8 Q76 28 84 58Z M134 64 Q156 44 148 8 Q124 28 116 58Z" fill="${c}"${S}/>`,
+flowers:c=>[[62,68],[70,52],[84,44],[100,40],[116,44],[130,52],[138,68]].map((p,i)=>`<circle cx="${p[0]}" cy="${p[1]}" r="8" fill="${["#ff8fb1","#fff","#ffd23f","#ff8fb1"][i%4]}" stroke="#2a2250" stroke-width="2"/><circle cx="${p[0]}" cy="${p[1]}" r="2.5" fill="#ff9a3c"/>`).join(""),
+alien:c=>`<path d="M84 56 Q74 30 64 22 M116 56 Q126 30 136 22" stroke="${c}" stroke-width="5" fill="none" stroke-linecap="round"/><circle cx="64" cy="20" r="8" fill="#ffd23f"${S}/><circle cx="136" cy="20" r="8" fill="#ff5c7a"${S}/>`,
+robot:c=>`<rect x="96" y="20" width="8" height="34" fill="${c}"/><circle cx="100" cy="18" r="9" fill="#ff5c7a"${S}/><rect x="40" y="94" width="16" height="28" rx="5" fill="${c}"${S}/><rect x="144" y="94" width="16" height="28" rx="5" fill="${c}"${S}/>`,
+pilot:c=>`<path d="M58 76 Q58 38 100 38 Q142 38 142 76Z" fill="${c}"${S}/><rect x="54" y="68" width="92" height="10" rx="4" fill="#26233a"/><path d="M82 52 H118" stroke="#ffd23f" stroke-width="5"/>`,
+pharaoh:c=>`<path d="M54 100 L48 152 L66 144 L62 84 Q100 62 138 84 L134 144 L152 152 L146 100 Q146 42 100 42 Q54 42 54 100Z" fill="${c}"${S}/><path d="M56 70 Q100 52 144 70" stroke="#4fc3ff" stroke-width="8" fill="none"/><path d="M56 112 L58 140 M144 112 L142 140" stroke="#4fc3ff" stroke-width="5"/>`,
+hair:c=>[[66,62],[80,48],[100,42],[120,48],[134,62]].map(p=>`<circle cx="${p[0]}" cy="${p[1]}" r="14" fill="${c}" stroke="#2a2250" stroke-width="2"/>`).join(""),
+dino:c=>`<path d="M68 64 L76 34 L88 56Z M90 54 L100 22 L110 54Z M112 56 L124 34 L132 64Z" fill="${c}"${S}/>`,
+beanie:c=>`<path d="M60 76 Q60 38 100 38 Q140 38 140 76Z" fill="${c}"${S}/><rect x="56" y="66" width="88" height="14" rx="6" fill="#fff"${S}/><circle cx="100" cy="32" r="10" fill="#fff"${S}/>`,
+laurel:c=>[[56,100,-70],[54,86,-50],[58,72,-30],[66,60,-10],[78,52,15],[92,46,35]].flatMap(p=>[p,[200-p[0],p[1],-p[2]]]).map(p=>`<ellipse cx="${p[0]}" cy="${p[1]}" rx="10" ry="5" transform="rotate(${p[2]} ${p[0]} ${p[1]})" fill="${c}" stroke="#2a2250" stroke-width="1.5"/>`).join("")};
+const FACE={
+mask:c=>`<path d="M50 98 Q78 82 100 94 Q122 82 150 98 Q146 126 118 118 Q100 110 82 118 Q54 126 50 98Z" fill="${c}"${S}/>${dot(78,106)}${dot(122,106)}`,
+goggles:c=>[78,122].map(x=>`<circle cx="${x}" cy="106" r="16" fill="#bfeaff" fill-opacity=".35" stroke="${c}" stroke-width="5"/>`).join("")+`<path d="M38 104 H62 M138 104 H162 M94 106 H106" stroke="${c}" stroke-width="5"/>`,
+shades:c=>`<rect x="58" y="94" width="40" height="24" rx="9" fill="#1b1830"/><rect x="102" y="94" width="40" height="24" rx="9" fill="#1b1830"/><path d="M98 102 H102" stroke="#1b1830" stroke-width="4"/><path d="M64 99 L76 99" stroke="#fff" stroke-width="3" opacity=".6"/>`,
+ears:(c,b)=>`<path d="M42 100 L12 80 L44 120Z M158 100 L188 80 L156 120Z" fill="${b}"${S}/>`,
+diver:c=>`<path d="M144 100 Q176 96 170 36" stroke="${c}" stroke-width="8" fill="none" stroke-linecap="round"/><rect x="54" y="86" width="92" height="42" rx="20" fill="#bfeaff" fill-opacity=".4" stroke="${c}" stroke-width="7"/>`,
+robot:c=>`<rect x="62" y="92" width="32" height="28" rx="6" fill="#1b1830"/><rect x="106" y="92" width="32" height="28" rx="6" fill="#1b1830"/><rect x="70" y="101" width="16" height="10" fill="#4fffa0"/><rect x="114" y="101" width="16" height="10" fill="#4fffa0"/><rect x="80" y="128" width="40" height="14" rx="3" fill="#1b1830"/><path d="M90 128 V142 M100 128 V142 M110 128 V142" stroke="#9aa4b2" stroke-width="2"/>`,
+patch:c=>`<path d="M44 82 L140 100" stroke="#1b1830" stroke-width="4"/><circle cx="78" cy="106" r="16" fill="#1b1830"/>`,
+scarf:c=>`<path d="M50 148 Q100 172 150 148 L152 164 Q100 188 48 164Z" fill="${c}"${S}/><rect x="126" y="160" width="18" height="32" rx="6" fill="${c}"${S}/>`,
+mustache:c=>`<path d="M78 128 Q90 118 100 126 Q110 118 122 128 Q112 138 100 131 Q88 138 78 128Z" fill="#26233a"/>`};
+const BACK={
+cape:c=>`<path d="M50 86 Q22 150 34 198 L166 198 Q178 150 150 86Z" fill="${c}"${S}/>`,
+wings:c=>`<ellipse cx="34" cy="112" rx="26" ry="50" transform="rotate(22 34 112)" fill="${c}" fill-opacity=".85"${S}/><ellipse cx="166" cy="112" rx="26" ry="50" transform="rotate(-22 166 112)" fill="${c}" fill-opacity=".85"${S}/>`};
+const HOLD={
+sword:c=>`<rect x="-3.5" y="-56" width="7" height="50" rx="2" fill="#e3e9f0"${S2}/><rect x="-13" y="-8" width="26" height="7" rx="3" fill="${c||"#ffd23f"}"${S2}/><rect x="-3.5" y="-2" width="7" height="14" rx="2" fill="#8a5a2b"${S2}/>`,
+glow:c=>`<rect x="-8" y="-60" width="16" height="56" rx="8" fill="${c}" opacity=".35"/><rect x="-4" y="-58" width="8" height="52" rx="4" fill="${c}"/><rect x="-1.5" y="-56" width="3" height="48" rx="1.5" fill="#fff"/><rect x="-5" y="-6" width="10" height="18" rx="2" fill="#8d96a6"${S2}/>`,
+wand:c=>`<path d="M2 10 L-10 -38" stroke="#6b4a2b" stroke-width="5" stroke-linecap="round"/><text x="-10" y="-40" font-size="24" text-anchor="middle" fill="${c}"${S2}>★</text>`,
+bow:c=>`<path d="M-4 -46 Q26 -10 -4 26" fill="none" stroke="#8a5a2b" stroke-width="5" stroke-linecap="round"/><path d="M-4 -46 L-4 26" stroke="#fff" stroke-width="1.5"/>`,
+trophy:c=>`<path d="M-15 -40 H15 Q15 -12 0 -10 Q-15 -12 -15 -40Z" fill="#ffd23f"${S2}/><path d="M-15 -34 Q-26 -34 -22 -22 Q-18 -16 -13 -18 M15 -34 Q26 -34 22 -22 Q18 -16 13 -18" fill="none" stroke="#ffd23f" stroke-width="4"/><rect x="-3" y="-10" width="6" height="12" fill="#ffd23f"/><rect x="-11" y="0" width="22" height="8" rx="2" fill="#d9a900"${S2}/>`,
+flask:c=>`<path d="M-6 -34 H6 V-18 L18 2 Q21 10 13 10 H-13 Q-21 10 -18 2 L-6 -18Z" fill="#dff4ff"${S2}/><path d="M-13 0 H13 L18 4 Q20 10 13 10 H-13 Q-20 10 -18 4Z" fill="${c}"/><circle cx="-2" cy="-8" r="2.5" fill="${c}"/>`,
+flag:c=>`<rect x="-2" y="-56" width="4" height="64" fill="#8a5a2b"/><path d="M2 -56 L38 -45 L2 -33Z" fill="${c}"${S2}/>`,
+axe:c=>`<rect x="-2.5" y="-50" width="5" height="60" fill="#8a5a2b"/><path d="M2.5 -50 Q30 -48 30 -32 Q30 -16 2.5 -18Z" fill="#cfd6df"${S2}/>`,
+mic:c=>`<rect x="-4" y="-26" width="8" height="34" rx="3" fill="#444"/><circle cx="0" cy="-32" r="10" fill="#9aa4b2"${S2}/><path d="M-8 -34 H8 M-7 -29 H7" stroke="#5a6372" stroke-width="2"/>`,
+ladle:c=>`<rect x="-2.5" y="-40" width="5" height="50" rx="2" fill="#b0b8c4"${S2}/><ellipse cx="0" cy="-46" rx="12" ry="9" fill="#b0b8c4"${S2}/>`,
+ankh:c=>`<ellipse cx="0" cy="-42" rx="8" ry="11" fill="none" stroke="#ffd23f" stroke-width="5"/><path d="M0 -31 V10 M-12 -18 H12" stroke="#ffd23f" stroke-width="5" stroke-linecap="round"/>`};
+const TH=["Medieval","Fantasy","Space","Adventure","Heroes","Fun & Games"],TC=["#ffb347","#b388ff","#4fc3ff","#2dd4bf","#ff6b81","#a3e635"];
+const COS=[
+{n:"Sir Pip the Brave",h:["helm","#b8c4d4"],k:["cape","#e5484d"],o:["sword"],s:"Sir Pip guards the Castle of Numbers. When a sum looks as big as a dragon, he tackles it one column at a time and always wins."},
+{n:"King Pip the Wise",h:["crown","#ffd23f"],k:["cape","#7a1fa2"],s:"King Pip rules the Kingdom of Tables. His royal secret: every times table is just repeated adding, and a good king never forgets it."},
+{n:"Pip the Archer",h:["hood","#2e8b57"],o:["bow"],s:"Pip never misses a target in the Number Forest. Aim, count carefully, and the answer lands right in the middle."},
+{n:"Pip the Viking",b:ORG,h:["viking","#9aa4b2"],o:["axe"],s:"Pip sails icy seas, sharing treasure fairly. Twelve gold coins for three crewmates? Four each, and a mighty cheer!"},
+{n:"Pip the Jester",b:BLU,h:["jester","#e5484d"],m:"big",s:"Pip juggles numbers for the royal court: 3, 6, 9, 12! The audience claps whenever a tricky sum turns out right."},
+{n:"Pip the Wizard",h:["wizard","#3b3fb5"],o:["wand","#ffd23f"],f:["mustache"],s:"In the Tower of Tricks, Pip mixes spells with numbers. His favourite: any number times ten grows a magic zero."},
+{n:"Dragon Pip",b:GRN,h:["horns","#ffb300"],k:["wings","#ff8a65"],m:"big",s:"Pip made friends with a dragon and borrowed its wings. Dragons love counting their gold in fives, so Pip does too!"},
+{n:"Unicorn Pip",b:WHT,h:["unicorn"],e:"happy",s:"On Rainbow Hill, Pip’s horn glows whenever someone solves a puzzle. Today it’s shining extra bright!"},
+{n:"Fairy Pip",b:PNK,h:["flowers"],k:["wings","#ffe0ef"],o:["wand","#ff8fb1"],e:"happy",s:"Fairy Pip scatters sparkles in sets of ten. Ten sparkles make one glitter star, just like ten ones make a ten."},
+{n:"Elf Pip",b:TEAL,h:["elfhat","#2e8b57"],f:["ears"],s:"Deep in the Whispering Woods, Pip spots hidden patterns. Look: the digits in the 9 times table always add up to 9!"},
+{n:"Astronaut Pip",b:WHT,h:["bubble","#ffffff"],o:["flag","#ff5c7a"],s:"Pip planted a flag on the Moon after counting down: 10, 9, 8… Subtraction got the rocket there safely."},
+{n:"Star Guardian Pip",h:["hood","#2b3a8c"],k:["cape","#1b2466"],o:["glow","#4fc3ff"],s:"Pip protects the galaxy with a blade of pure starlight. It only glows brighter when the answer is right!"},
+{n:"Alien Pip",b:GRN,h:["alien","#26914c"],e:"up",m:"big",s:"Pip comes from planet Zorp, where they count in tens too! Earth maths felt just like home."},
+{n:"Robot Pip",b:GRY,h:["robot","#9aa4b2"],f:["robot"],s:"Beep boop! Pip’s circuits are quick, but he says a clever brain with a good hint is even better."},
+{n:"Rocket Pilot Pip",b:ORG,h:["pilot","#e5484d"],f:["goggles","#ffb300"],m:"big",s:"Pip steers the rocket through an asteroid field of numbers. Dodge the wrong answers and zoom to the right ones!"},
+{n:"Captain Pip",h:["pirate","#ffd23f"],f:["patch"],o:["sword"],s:"Captain Pip hunts buried treasure with maps full of sums. X marks the spot where the right answer lies!"},
+{n:"Explorer Pip",b:ORG,h:["safari","#c9a46b"],o:["flag","#22b573"],s:"Pip hacks through the jungle to find the Lost Temple of Multiplication. Every correct answer opens one more door."},
+{n:"Cowboy Pip",b:YEL,h:["cowboy","#a8693a"],f:["scarf","#e5484d"],m:"big",s:"Yeehaw! Pip counts cattle in groups: 7 cows in each of 6 fields makes 42. Nobody has lost a cow on Pip’s ranch."},
+{n:"Deep-Sea Diver Pip",b:TEAL,f:["diver","#ffb300"],s:"Down in the blue, Pip counts fish in rows and shells in tens. The deeper the dive, the bigger the numbers!"},
+{n:"Pharaoh Pip",b:BLU,h:["pharaoh","#ffd23f"],o:["ankh"],s:"Long ago, Pip helped build pyramids with careful counting. The ancient Egyptians were maths masters, and so is Pip."},
+{n:"Ninja Pip",b:DRK,h:["ninja","#e5484d"],o:["sword","#e5484d"],s:"Silent, quick and accurate, Ninja Pip solves sums in a flash. A little practice every day makes the fastest ninja."},
+{n:"Samurai Pip",b:RED,h:["samurai","#7a1f24"],o:["sword"],s:"Pip trains with patience and focus. A samurai checks every answer twice before calling a sum finished."},
+{n:"Super Pip",b:BLU,f:["mask","#e5484d"],k:["cape","#e5484d"],m:"big",s:"With a mask and a cape, Super Pip rescues puzzled numbers. The secret power? Never giving up after a wrong answer!"},
+{n:"Chef Pip",h:["chef"],o:["ladle"],m:"big",s:"Chef Pip scales recipes up and down. Doubling a dinner for 4 to feed 8? That’s multiplication on the menu!"},
+{n:"Professor Pip",b:WHT,h:["hair","#ffffff"],f:["goggles","#22b573"],o:["flask","#4fc3ff"],s:"Professor Pip experiments with numbers in the lab. His big discovery: mistakes are the best clues in science."},
+{n:"Dino Pip",b:GRN,h:["dino","#ffb300"],m:"big",s:"Roar! Dino Pip stomps through prehistoric times. A herd of 8 dinosaurs with 4 legs each? That’s 32 stomping feet!"},
+{n:"Rock Star Pip",b:DRK,h:["mohawk","#ff5c7a"],f:["shades"],o:["mic"],m:"big",s:"Pip’s band plays at 120 beats per minute. Count the beat, count the crowd, and rock the maths!"},
+{n:"Magician Pip",h:["tophat","#2a2250"],k:["cape","#7a1fa2"],o:["wand","#ffffff"],f:["mustache"],s:"Abracadabra! Pip makes numbers vanish and reappear. Add something, take it away, and the magic brings you back to the start."},
+{n:"Winter Pip",b:WHT,h:["beanie","#e5484d"],f:["scarf","#3b82f6"],e:"happy",s:"Brr! Pip builds snowmen in rows: 5 rows of 3 snowmen makes 15 frosty friends. Time for hot chocolate."},
+{n:"Champion Pip",b:YEL,h:["laurel","#3fbf6a"],k:["cape","#ffd23f"],o:["trophy"],e:"happy",m:"big",s:"You did it! You collected every Pip and became a true maths champion. Pip is very, very proud of you!"}];
+function costSvg(cs,idx){
+ const [b,d,l]=cs.b||P0,k=TC[thIdx(idx)],x=(M,a)=>a?M[a[0]](a[1],b):"",arms=(cs.o?ARMS.wave:ARMS.down).split(C.dark).join(d);
+ return `<svg viewBox="0 0 200 215" role="img" aria-label="${cs.n}" xmlns="http://www.w3.org/2000/svg"><circle cx="100" cy="112" r="98" fill="${k}" opacity=".22"/><ellipse cx="100" cy="204" rx="52" ry="7" fill="#2a2250" opacity=".15"/>${x(BACK,cs.k)}<ellipse cx="76" cy="190" rx="20" ry="11" fill="${d}"/><ellipse cx="124" cy="190" rx="20" ry="11" fill="${d}"/>${arms}${cs.h?"":`<path d="M100 56 Q96 44 100 32" fill="none" stroke="${d}" stroke-width="5" stroke-linecap="round"/><circle cx="100" cy="26" r="14" fill="#ffd23f"${S}/><text x="100" y="35" font-size="22" font-weight="800" text-anchor="middle" fill="#2a2250">+</text>`}<path d="M100 52 C 52 52 36 96 38 134 C 40 172 66 192 100 192 C 134 192 160 172 162 134 C 164 96 148 52 100 52Z" fill="${b}"/><path d="M62 70 Q74 58 92 58" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" opacity=".35"/><ellipse cx="100" cy="160" rx="34" ry="26" fill="${l}"/><text x="100" y="172" font-size="34" font-weight="800" font-family="Georgia,serif" text-anchor="middle" fill="#fff">π</text><circle cx="62" cy="128" r="8" fill="#ff8fb1" opacity=".75"/><circle cx="138" cy="128" r="8" fill="#ff8fb1" opacity=".75"/>${EYES[cs.e||"open"]}${MOUTH[cs.m||"smile"]}${x(FACE,cs.f)}${x(HAT,cs.h)}${cs.o?`<g transform="translate(172 72)">${HOLD[cs.o[0]](cs.o[1])}</g>`:""}</svg>`}
+function Modal({close,children}){useEffect(()=>{const f=e=>{if(e.key==="Escape")close()};window.addEventListener("keydown",f);return()=>window.removeEventListener("keydown",f)},[]);return h("div",{className:"modal",onClick:close},h("div",{className:"sheet",role:"dialog","aria-modal":"true",onClick:e=>e.stopPropagation()},children))}
+const Story=({i})=>h("div",null,h("div",{className:"a-hop",style:{display:"inline-block"},dangerouslySetInnerHTML:{__html:costSvg(COS[i],i)}}),h("div",null,h("span",{className:"badge"},TH[thIdx(i)]+" · #"+(i+1))),h("h2",{style:{margin:"8px 0 4px"}},COS[i].n),h("p",{style:{margin:"0 0 12px"}},COS[i].s));
+function Reward({i,close,see}){return h(Modal,{close},h("h2",{style:{marginTop:0}},"🎉 New sprite unlocked!"),h(Story,{i}),h("div",{className:"row",style:{justifyContent:"center"}},h("button",{className:"btn ok",onClick:close},"Yay!"),h("button",{className:"btn sec",onClick:see},"See my sprites")))}
+/* ---------- visual helpers ---------- */
+const Dots=({g})=>{const o=[];let k=0;g.forEach(x=>{for(let i=0;i<x.n;i++){if(k>0&&k%10===0)o.push(h("i",{key:"g"+k,className:"gap"}));o.push(h("span",{key:"d"+k,className:"dot "+x.c+(x.x?" x":"")}));k++}});return h("div",{className:"dots"},o)};
+const Blocks=({n,c})=>{const o=[];for(let i=0;i<Math.floor(n/100);i++)o.push(h("span",{key:"h"+i,className:"bh "+c}));for(let i=0;i<Math.floor(n%100/10);i++)o.push(h("span",{key:"t"+i,className:"bt "+c}));for(let i=0;i<n%10;i++)o.push(h("span",{key:"o"+i,className:"bo "+c}));return h("div",{className:"blocks"},o)};
+const Grid=({r,c})=>h("div",{className:"grid2",style:{gridTemplateColumns:`repeat(${c},16px)`}},Array.from({length:r*c},(_,i)=>h("span",{key:i,className:"dot"})));
+const parts=n=>[Math.floor(n/100)*100,Math.floor(n%100/10)*10,n%10].filter(x=>x>0);
+const SY={add:"+",sub:"−",mul:"×",div:"÷"};
+/* ---------- practice questions ---------- */
+function makeQ(mode,lvl,table){
+ const L={e:0,m:1,h:2}[lvl];let a,b,ans,op=mode;
+ if(mode==="add"){const r=[[5,50],[20,500],[100,999]][L];a=rnd(...r);b=rnd(...r);ans=a+b}
+ else if(mode==="sub"){const r=[[10,50],[50,500],[200,999]][L];a=rnd(...r);b=rnd(2,a-1);ans=a-b}
+ else if(mode==="mul"||mode==="tbl"){op="mul";if(mode==="tbl"){a=table;b=rnd(1,12);if(Math.random()<.5)[a,b]=[b,a]}else{const r=[[2,5,1,10],[2,12,2,12],[11,25,3,9]][L];a=rnd(r[0],r[1]);b=rnd(r[2],r[3])}ans=a*b}
+ else{const r=[[2,5,2,10],[2,10,2,12],[3,12,6,25]][L],d=rnd(r[0],r[1]),q=rnd(r[2],r[3]);a=d*q;b=d;ans=q}
+ return {op,a,b,ans}}
+function Hint({q}){
+ const {op,a,b}=q;
+ if(op==="add"||op==="sub"){const p=parts(b),sg=op==="add"?1:-1;let run=a;const st=[a];p.forEach(x=>{run+=sg*x;st.push(run)});
+  return h("div",null,h("p",null,op==="add"?"Add the pieces of "+b+" one at a time, biggest first:":"Take away the pieces of "+b+" one at a time, biggest first:"),
+   h("div",{className:"steps"},st.map((s,i)=>h("span",{key:i,className:"steps"},i>0&&h("em",null,(sg>0?"+ ":"− ")+p[i-1]),h("b",null,s)))),
+   h("div",{className:"vis"},h(Blocks,{n:a,c:"a"}),h("span",{className:"op"},SY[op]),h(Blocks,{n:b,c:op==="add"?"b":"r"})),
+   h("small",null,"Big square = 100, bar = 10, dot = 1."))}
+ if(op==="mul"){
+  if(a<=12&&b<=12)return h("div",null,h("p",null,a+" rows with "+b+" dots in each row. Count in "+b+"s: "+Array.from({length:a},(_,i)=>b*(i+1)).join(", ")),h(Grid,{r:a,c:b}));
+  const t=a-a%10,o=a%10;return h("div",null,h("p",null,"Split "+a+" into "+t+" and "+o+", multiply each by "+b+", then add:"),h("div",{className:"area"},h("div",null,t+" × "+b,h("br"),"= "+t*b),h("span",{className:"op"},"+"),h("div",null,o+" × "+b,h("br"),"= "+o*b)))}
+ const q_=a/b;
+ if(a<=60)return h("div",null,h("p",null,"Share "+a+" dots equally between "+b+" boxes. How many in each box?"),h("div",{className:"groups"},Array.from({length:b},(_,i)=>h("div",{key:i},Array.from({length:q_},(_,j)=>h("span",{key:j,className:"dot b"}))))));
+ return h("div",null,h("p",null,"Think: "+b+" × ? = "+a+". Count in "+b+"s until you reach "+a+":"),h("div",{className:"steps"},Array.from({length:q_},(_,i)=>h("b",{key:i},b*(i+1)))))}
+/* ---------- practice screen ---------- */
+function Practice({mode,table,data,setData}){
+ const lvl=data.lvl[mode]||"e";
+ const [q,setQ]=useState(()=>makeQ(mode,lvl,table)),[val,setVal]=useState(""),[st,setSt]=useState("idle"),[tries,setTries]=useState(0),[hint,setHint]=useState(false),[ses,setSes]=useState({s:0,n:0}),ref=useRef();
+ useEffect(()=>{ref.current&&ref.current.focus()},[q]);
+ const next=l=>{setQ(makeQ(mode,l||lvl,table));setVal("");setSt("idle");setTries(0);setHint(false)};
+ const done=(first,ok)=>{const s=first?ses.s+1:0;setSes({s,n:ses.n+1});setData(d=>{const o=d.stats[mode]||{c:0,t:0};return {...d,...(ok?win(d):{}),touched:true,stars:d.stars+(first?1:0),best:Math.max(d.best,s),cm:cmx(d,mode,first,ok),stats:{...d.stats,[mode]:{c:o.c+(first?1:0),t:o.t+1}}}})};
+ const check=()=>{if(val.trim()==="")return;if(parseInt(val,10)===q.ans){done(tries===0&&!hint,true);setSt("right")}else{setTries(tries+1);setSt("wrong")}};
+ const reveal=()=>{done(false);setSt("revealed")};
+ const fin=st==="right"||st==="revealed";
+ const pose=st==="right"?(ses.s>0&&ses.s%5===0?"level":"correct"):st==="wrong"?"oops":hint?"hint":st==="revealed"?"think":"idle";
+ const msg=st==="right"?(tries===0&&!hint?"Correct! +1 ⭐"+(ses.s>0&&ses.s%5===0?"  Streak of "+ses.s+"! 🎉":""):"Correct! Try without hints for a star."):st==="wrong"?(tries>1?"Still not it. Try the hint, or skip.":"Not quite. Have another go!"):st==="revealed"?"The answer is "+q.ans+". On to the next one!":"Type your answer and press Enter.";
+ return h("div",null,
+  mode!=="tbl"&&h("div",{className:"row",style:{marginBottom:10}},h("span",null,"Level:"),h("div",{className:"seg"},[["e","Easy"],["m","Medium"],["h","Hard"]].map(([k,n])=>h("button",{key:k,className:lvl===k?"on":"",onClick:()=>{setData(d=>({...d,touched:true,lvl:{...d.lvl,[mode]:k}}));next(k)}},n)))),
+  h("div",{className:"card hero"},h(Pip,{pose}),
+   h("div",{className:"bubble"},
+    h("div",{className:"q"},h("span",null,q.a+" "+SY[q.op]+" "+q.b+" ="),
+     h("input",{ref,className:"num",inputMode:"numeric",pattern:"[0-9]*","aria-label":"Your answer",value:val,disabled:fin,onChange:e=>setVal(e.target.value.replace(/\D/g,"").slice(0,5)),onKeyDown:e=>{if(e.key==="Enter")fin?next():check()}})),
+    h("div",{className:"msg "+(st==="right"?"ok":st==="wrong"?"bad":""),role:"status"},msg),
+    h("div",{className:"row",style:{marginTop:8}},
+     fin?h("button",{className:"btn ok",onClick:()=>next()},"Next ▶"):h("button",{className:"btn",onClick:check},"Check ✓"),
+     !fin&&h("button",{className:"btn sec",onClick:()=>setHint(!hint)},"💡 Hint"),
+     !fin&&h("button",{className:"btn sec",onClick:reveal},"Skip")))),
+  hint&&!fin&&h("div",{className:"hint"},h(Hint,{q})),
+  h("p",{style:{color:"var(--muted)"}},"This round: "+ses.n+" done · streak "+ses.s+" · 🎁 "+(data.right||0)%5+"/5 to the next sprite"))}
+/* ---------- chimney logic ---------- */
+const dig=(x,n)=>{const s=String(x);return Array.from({length:n},(_,i)=>i<s.length?s[s.length-1-i]:"")};
+function planAdd(a,b){const n=Math.max(String(a).length,String(b).length)+1,da=dig(a,n),db=dig(b,n),s=dig(a+b,n),cin=[],cout=[];let c=0;for(let i=0;i<n;i++){cin[i]=c;const t=num(da[i])+num(db[i])+c;cout[i]=t>=10?1:0;c=cout[i]}return {n,da,db,s,cin,cout}}
+function planSub(a,b){const n=String(a).length,da=dig(a,n),db=dig(b,n),take=[],eff=[],res=[];for(let i=0;i<n;i++){const lost=i>0&&take[i-1]?1:0,top=num(da[i])-lost;take[i]=top<num(db[i]);eff[i]=top+(take[i]?10:0);res[i]=eff[i]-num(db[i])}return {n,da,db,take,eff,res,lead:res.map((_,i)=>i>0&&res.slice(i).every(x=>x===0))}}
+function mkPlan(op,lvl,yr){const d={e:2,m:3,h:4}[lvl]+({p5:1,p6:2}[yr]||0),lo=Math.pow(10,d-1),hi=Math.pow(10,d)-1;let p;for(let k=0;k<300;k++){if(op==="add"){const a=rnd(lo,hi),b=rnd(lo,hi);p={...planAdd(a,b),a,b};if(p.cout.some(x=>x))return p}else{const a=rnd(Math.max(lo,20),hi),b=rnd(d>2?Math.pow(10,d-2):10,a-1);p={...planSub(a,b),a,b};if(p.take.some(x=>x))return p}}return p}
+const COL=["ones","tens","hundreds","thousands","ten-thousands","hundred-thousands","millions"];
+function derive(op,pl,mark,tapIdx){const chim=[],tops=[];for(let i=0;i<pl.n;i++){if(op==="add"){chim.push({txt:mark[i]?"1":"",tap:i===tapIdx});tops.push({})}else{const lost=i>0&&mark[i-1],mod=mark[i]||lost;chim.push({txt:mod?String(num(pl.da[i])-(lost?1:0)+(mark[i]?10:0)):"",tap:i===tapIdx});tops.push({x:mod})}}return {chim,tops}}
+function View({op,pl,mark,ans,active,node,tapIdx,onChim,pulse}){
+ const {chim,tops}=derive(op,pl,mark,tapIdx),cols=[...Array(pl.n).keys()].reverse(),r=[];
+ r.push(h("div",{key:"s0"}));cols.forEach(i=>r.push(h("button",{key:"c"+i,className:"chim"+(chim[i].tap?" tap":"")+(chim[i].txt?" on":"")+(pulse===i?" pulse":""),disabled:!chim[i].tap,onClick:()=>onChim&&onChim(i),"aria-label":"Chimney above "+COL[i]+" column"},chim[i].txt)));
+ r.push(h("div",{key:"s1"}));cols.forEach(i=>r.push(h("div",{key:"t"+i,className:"cell"+(tops[i].x?" x":"")+(active===i?" act":"")},pl.da[i])));
+ r.push(h("div",{key:"s2",className:"sgn"},SY[op]));cols.forEach(i=>r.push(h("div",{key:"b"+i,className:"cell"+(active===i?" act":"")},pl.db[i])));
+ r.push(h("div",{key:"s3"}));cols.forEach(i=>r.push(h("div",{key:"a"+i,className:"cell ans"+(active===i?" act":"")},active===i?node:ans[i])));
+ return h("div",{className:"stack",style:{gridTemplateColumns:`30px repeat(${pl.n},var(--cw))`}},r)}
+function ChimHint({op,pl,mark,i}){
+ if(op==="add"){const da=num(pl.da[i]),db=num(pl.db[i]),c=pl.cin[i],t=da+db+c;
+  return h("div",null,h("div",{className:"dots"},h(Dots,{g:[{n:da,c:"a"},{n:db,c:"b"},{n:c,c:"c"}]})),h("p",null,da+" + "+db+(c?" + "+c+" (the carry from the chimney)":"")+" = "+t+". "+(t>=10?"Ten dots make a full group! Write "+t%10+" below and tap the glowing chimney to carry 1 to the next column.":"That is less than 10, so write "+t+" below. No carry.")))}
+ const lost=i>0&&pl.take[i-1],top=num(pl.da[i])-(lost?1:0),b=num(pl.db[i]);
+ return h("div",null,h(Dots,{g:[{n:pl.res[i],c:"a"},{n:b,c:"a",x:true}]}),h("p",null,(lost&&top<0?"This digit is 0, but the column on its right needs 1 from it. Tap the chimney: it borrows 10 from the left and gives 1 away, so it shows "+pl.eff[i]+". Then "+pl.eff[i]+" − "+b+" = "+pl.res[i]+".":(lost?"The neighbour on the right borrowed 1, so this top digit is "+top+". ":"")+(pl.take[i]?top+" is smaller than "+b+": tap the glowing chimney to borrow 10 from the left. Now it is "+pl.eff[i]+", and "+pl.eff[i]+" − "+b+" = "+pl.res[i]+".":top+" − "+b+" = "+pl.res[i]+". No borrowing needed."))))}
+function Chimney({op,data,setData,onDone,onWrong,fixedLvl}){
+ const key=op==="add"?"cadd":"csub",lvl=fixedLvl||data.lvl[key]||"e";
+ const init=l=>mkPlan(op,l,data.year);
+ const [pl,setPl]=useState(()=>init(lvl)),[mark,setMark]=useState(()=>Array(12).fill(0)),[ans,setAns]=useState([]),[dn,setDn]=useState(0),[val,setVal]=useState(""),[msg,setMsg]=useState(""),[bad,setBad]=useState(false),[hint,setHint]=useState(false),[used,setUsed]=useState(false),ref=useRef();
+ const fin=dn>=pl.n,i=dn;
+ useEffect(()=>{ref.current&&ref.current.focus()},[dn,pl]);
+ const newRound=l=>{setPl(init(l||lvl));setMark(Array(12).fill(0));setAns([]);setDn(0);setVal("");setMsg("");setBad(false);setHint(false);setUsed(false)};
+ const fail=m=>{setMsg(m);setBad(true);if(onWrong)onWrong()};
+ const check=()=>{const t=val.trim();
+  if(op==="add"){const e=pl.s[i];
+   if(!(t===e||(e===""&&t==="0")))return fail("Not quite. Add the digits in this column"+(pl.cin[i]?" and don’t forget the carry in the chimney!":"."));
+   if(i<pl.n-1){const need=pl.cout[i],got=mark[i+1]?1:0;if(need&&!got)return fail("Right digit! But the sum is 10 or more: tap the chimney on the next column to carry 1.");if(!need&&got)return fail("Right digit, but there is nothing to carry. Tap the chimney again to clear it.")}}
+  else{if(i<pl.n-1){const need=pl.take[i],got=!!mark[i];if(need&&!got)return fail("The top digit is too small! Tap the chimney above this column to borrow 10.");if(!need&&got)return fail("No need to borrow here. Tap the chimney again to clear it.")}
+   const e=String(pl.res[i]);if(!(t===e||(pl.lead[i]&&(t===""||t==="0"))))return fail("Not quite. Subtract the bottom digit from the top one"+(mark[i]||(i>0&&mark[i-1])?" (use the new number in the chimney)":"")+".")}
+  const a=[...ans];a[i]=(t==="0"&&(op==="add"?pl.s[i]==="":pl.lead[i]))?"":t;setAns(a);setVal("");setBad(false);
+  if(i+1>=pl.n){setMsg(op==="add"?"Perfect! "+pl.a+" + "+pl.b+" = "+(pl.a+pl.b):"Perfect! "+pl.a+" − "+pl.b+" = "+(pl.a-pl.b));setDn(i+1);setHint(false);
+   const first=!used;setData(d=>{const o=d.stats[key]||{c:0,t:0};return {...d,...win(d),touched:true,stars:d.stars+(first?1:0),stats:{...d.stats,[key]:{c:o.c+(first?1:0),t:o.t+1}}}})}
+  else{setMsg("Nice! Now the "+COL[i+1]+" column.");setDn(i+1)}};
+ const tapIdx=fin?-1:op==="add"?(i+1<pl.n?i+1:-1):(i<pl.n-1?i:-1);
+ const pulse=hint&&!fin?(op==="add"?(pl.cout[i]&&!mark[i+1]?i+1:-1):(pl.take[i]&&!mark[i]?i:-1)):-1;
+ const pose=fin?"correct":bad?"oops":hint?"hint":"idle";
+ const guide=fin?msg:msg||(op==="add"?"Start with the ones column. Add the digits. If the answer is 10 or more, tap the chimney on the next column to carry 1.":"Start with the ones column. If the top digit is smaller than the bottom one, tap its chimney to borrow 10 from the neighbour.");
+ const node=h("input",{ref,className:"num sm",inputMode:"numeric","aria-label":"Answer for the "+COL[i]+" column",value:val,maxLength:1,onChange:e=>setVal(e.target.value.replace(/\D/g,"").slice(0,1)),onKeyDown:e=>{if(e.key==="Enter")check()}});
+ return h("div",null,
+  !onDone&&h("div",{className:"row",style:{marginBottom:10}},h("span",null,"Level:"),h("div",{className:"seg"},[["e","2 digits"],["m","3 digits"],["h","4 digits"]].map(([k,n])=>h("button",{key:k,className:lvl===k?"on":"",onClick:()=>{setData(d=>({...d,touched:true,lvl:{...d.lvl,[key]:k}}));newRound(k)}},n)))),
+  h("div",{className:"card hero"},h(Pip,{pose}),h("div",{className:"bubble"},
+   h("div",{className:"msg "+(bad?"bad":fin?"ok":""),role:"status"},guide),
+   h(View,{op,pl,mark,ans,active:fin?-1:i,node,tapIdx,onChim:j=>setMark(m=>{const c=[...m];c[j]=c[j]?0:1;return c}),pulse}),
+   h("div",{className:"row"},fin?h("button",{className:"btn ok",onClick:()=>onDone?onDone(true):newRound()},onDone?"Continue ▶":"Next ▶"):h("button",{className:"btn",onClick:check},"Check column ✓"),!fin&&h("button",{className:"btn sec",onClick:()=>{setHint(!hint);setUsed(true)}},"💡 Hint")))),
+  hint&&!fin&&h("div",{className:"hint"},h(ChimHint,{op,pl,mark,i})))}
+/* ---------- times tables ---------- */
+const TIPS={1:"Anything × 1 stays the same.",2:"Double the number.",3:"Double it, then add one more group.",4:"Double, then double again.",5:"Answers end in 0 or 5. Half of the ×10 answer!",6:"Do ×5, then add one more group.",7:"Learn 7×7=49 and 7×8=56, the tricky ones!",8:"Double, double, double again.",9:"The digits of the answer add up to 9 (up to 9×10).",10:"Put a 0 at the end.",11:"For 1–9, repeat the digit: 11×4=44.",12:"Do ×10 then add ×2."};
+function Tables({go}){
+ const [n,setN]=useState(7),[k,setK]=useState(null);
+ return h("div",null,h("div",{className:"card"},h("h2",null,"Pick a table"),
+  h("div",{className:"tabs"},Array.from({length:12},(_,i)=>h("button",{key:i,className:n===i+1?"on":"",onClick:()=>{setN(i+1);setK(null)}},i+1))),
+  h("p",null,"💡 "+TIPS[n]),
+  h("div",{className:"tt"},Array.from({length:12},(_,i)=>h("button",{key:i,className:k===i+1?"on":"",onClick:()=>setK(i+1)},n+" × "+(i+1)+" = "+n*(i+1)))),
+  k&&h("div",null,h("p",null,"Tap shows "+k+" rows of "+n+" dots:"),h(Grid,{r:k,c:n})),
+  h("div",{className:"row",style:{marginTop:12}},h("button",{className:"btn",onClick:()=>go("tbl",{table:n})},"🎯 Test me on the "+n+" table"))))}
+/* ---------- extra exercises: rounding, ruler, roman numerals, clocks ---------- */
+const award=(setData,key,first,ok,cs)=>setData(d=>{const o=d.stats[key]||{c:0,t:0};return {...d,cm:cmx(d,key,first,ok,cs),...(ok?win(d):{}),touched:true,stars:d.stars+(first?1:0),stats:{...d.stats,[key]:{c:o.c+(first?1:0),t:o.t+1}}}});
+function Ruler({lo,hi,n,mid,win}){
+ const X=v=>20+(v-lo)/(hi-lo)*280,md=(lo+hi)/2;let t=`<rect x="10" y="38" width="300" height="34" rx="6" class="rb"/>`;
+ for(let i=0;i<=10;i++){const x=20+i*28,big=i%5===0;t+=`<line x1="${x}" y1="38" x2="${x}" y2="${big?62:52}" stroke-width="${big?3:2}"/>`}
+ if(win!=null)t+=`<circle cx="${X(win)}" cy="86" r="16" fill="#1fa968" fill-opacity=".3"/>`;
+ t+=`<text x="${X(lo)}" y="91" text-anchor="middle">${lo}</text><text x="${X(hi)}" y="91" text-anchor="middle">${hi}</text>`;
+ if(mid)t+=`<line x1="${X(md)}" y1="30" x2="${X(md)}" y2="72" stroke-width="3" stroke-dasharray="5 4" class="mid"/><text x="${X(md)}" y="91" text-anchor="middle" class="mt">${md}</text><text x="${X(md)}" y="107" text-anchor="middle" class="mt" style="font-size:11px">halfway</text>`;
+ t+=`<path d="M${X(n)} 38 l-8 -17 h16Z" fill="#ff5c7a" stroke="#2a2250" stroke-width="2"/><text x="${X(n)}" y="14" text-anchor="middle">${n}</text>`;
+ return h("svg",{className:"rl",viewBox:"0 0 320 112",role:"img","aria-label":"Ruler from "+lo+" to "+hi+" with a pointer at "+n,dangerouslySetInnerHTML:{__html:t}})}
+/* generic exercise frame used by the new activities */
+function Ex({concepts,mode,labels,gen,init,view,check,sol,hintView,idle,noCheck,onResult,onWrong,compact,lvlOverride,data,setData}){
+ const lvl=lvlOverride||data.lvl[mode]||"e",[q,setQ]=useState(()=>gen(lvl,data.year)),[ans,setAns]=useState(()=>init(q)),[st,setSt]=useState("idle"),[tries,setTries]=useState(0),[hint,setHint]=useState(false);
+ const next=l=>{const nq=gen(l||lvl,data.year);setQ(nq);setAns(init(nq));setSt("idle");setTries(0);setHint(false)};
+ const fin=st==="right"||st==="skipped";
+ const submit=v=>{if(fin)return;const r=check(q,v);if(r==null)return;if(r){award(setData,mode,tries===0&&!hint,true,typeof concepts==="function"?concepts(q):concepts);setSt("right")}else{setTries(tries+1);setSt("wrong");if(onWrong)onWrong()}};
+ const skip=()=>{award(setData,mode,false,false);setSt("skipped");if(onWrong)onWrong()};
+ const pose=st==="right"?"correct":st==="wrong"?"oops":hint?"hint":st==="skipped"?"think":"idle";
+ const msg=st==="right"?(tries===0&&!hint?"Correct! +1 ⭐":"Correct! Try without hints for a star."):st==="wrong"?(tries>1?"Still not it. Try the hint, or skip.":"Not quite. Have another go!"):st==="skipped"?"The answer is "+sol(q)+". On to the next one!":(idle||"Type your answer, then press Check.");
+ const ctx={ans,setAns,fin,lvl,submit,go:()=>submit(ans)};
+ return h("div",null,
+  labels&&!compact&&h("div",{className:"row",style:{marginBottom:10}},h("span",null,"Level:"),h("div",{className:"seg"},labels.map(([k,n])=>h("button",{key:k,className:lvl===k?"on":"",onClick:()=>{setData(d=>({...d,touched:true,lvl:{...d.lvl,[mode]:k}}));next(k)}},n)))),
+  h("div",{className:"card hero"},h(Pip,{pose}),h("div",{className:"bubble"},
+   h("div",{key:q.id},view(q,ctx)),
+   h("div",{className:"msg "+(st==="right"?"ok":st==="wrong"?"bad":""),role:"status"},msg),
+   h("div",{className:"row",style:{marginTop:8}},
+    fin?h("button",{className:"btn ok",onClick:()=>onResult?onResult(st==="right"):next()},onResult?"Continue ▶":"Next ▶"):(noCheck?null:h("button",{className:"btn",onClick:ctx.go},"Check ✓")),
+    !fin&&h("button",{className:"btn sec",onClick:()=>setHint(!hint)},"💡 Hint"),
+    !fin&&h("button",{className:"btn sec",onClick:skip},"Skip")))),
+  hint&&!fin&&h("div",{className:"hint"},hintView(q,ans)),
+  !compact&&h("p",{style:{color:"var(--muted)"}},"🎁 "+(data.right||0)%5+"/5 to the next sprite"))}
+const NumIn=({ctx,w=130,max=5})=>h("input",{className:"num",style:{width:w},inputMode:"numeric",pattern:"[0-9]*","aria-label":"Your answer",autoFocus:true,value:ctx.ans,disabled:ctx.fin,onChange:e=>ctx.setAns(e.target.value.replace(/\D/g,"").slice(0,max)),onKeyDown:e=>{if(e.key==="Enter")ctx.go()}});
+const Chip=({a,b})=>h("span",{className:"chip"},a,h("small",null," → "),b);
+/* ----- rounding (numbers + ruler) ----- */
+const genRnd=l=>{const u={e:10,m:100,h:1000}[l];let n;do{n=rnd(u===10?11:u===100?101:1001,u===10?99:u===100?999:9999)}while(n%u===0);return {n,u,lo:Math.floor(n/u)*u,ans:Math.floor(n/u+.5)*u,id:Math.random()}};
+const RL=[["e","nearest 10"],["m","nearest 100"],["h","nearest 1000"]];
+const RoundHint=({q})=>h("div",null,h(Ruler,{lo:q.lo,hi:q.lo+q.u,n:q.n,mid:true}),h("p",null,"The two neighbours are "+q.lo+" and "+(q.lo+q.u)+". The orange dashed line is halfway ("+(q.lo+q.u/2)+"). Pointer left of it → round down. On it or right of it → round up."),h("p",null,"Number trick: look at the digit just right of the place you are rounding to. 0–4 stays, 5–9 goes up."));
+const RoundNum=p=>h(Ex,{...p,mode:"rnd",labels:RL,gen:genRnd,init:()=>"",
+ view:(q,c)=>h("div",{className:"q"},h("span",null,"Round "+q.n+" to the nearest "+q.u+" ="),h(NumIn,{ctx:c,w:150})),
+ check:(q,a)=>a===""?null:parseInt(a,10)===q.ans,sol:q=>q.ans,hintView:q=>h(RoundHint,{q})});
+const RoundRuler=p=>h(Ex,{...p,mode:"rul",labels:RL,noCheck:true,gen:genRnd,init:()=>null,idle:"Look where the red pointer sits, then tap the nearer end.",
+ view:(q,c)=>h("div",null,h("div",{className:"q"},"Round "+q.n+" to the nearest "+q.u),h(Ruler,{lo:q.lo,hi:q.lo+q.u,n:q.n,win:c.fin?q.ans:null}),h("p",{style:{margin:"4px 0"}},"Tap the end of the ruler that the pointer is nearer to:"),h("div",{className:"row"},[q.lo,q.lo+q.u].map(v=>h("button",{key:v,className:"btn",disabled:c.fin,onClick:()=>c.submit(v)},v)))),
+ check:(q,a)=>a===q.ans,sol:q=>q.ans,hintView:q=>h(RoundHint,{q})});
+/* ----- roman numerals ----- */
+const RM=[[1000,"M"],[900,"CM"],[500,"D"],[400,"CD"],[100,"C"],[90,"XC"],[50,"L"],[40,"XL"],[10,"X"],[9,"IX"],[5,"V"],[4,"IV"],[1,"I"]];
+const romParts=n=>{const o=[];RM.forEach(([v,r])=>{while(n>=v){o.push([v,r]);n-=v}});return o};
+const toRom=n=>romParts(n).map(p=>p[1]).join("");
+const romTok=s=>{const o=[];for(let i=0;i<s.length;){const f=RM.find(x=>x[1]===s.slice(i,i+2));if(f){o.push(f);i+=2}else{o.push(RM.find(x=>x[1]===s[i]));i++}}return o};
+const RS={e:"IVX",m:"IVXLC",h:"IVXLCDM"};
+const RomanEx=p=>h(Ex,{...p,mode:"rom",labels:[["e","1–20"],["m","up to 100"],["h","up to 3999"]],init:()=>"",idle:"Convert the number. Use the symbol keys to write Roman numerals.",
+ gen:l=>{const n=l==="e"?rnd(1,20):l==="m"?rnd(21,100):rnd(101,3999);return {n,r:toRom(n),dir:Math.random()<.5?"toRom":"toNum",id:Math.random()}},
+ view:(q,c)=>q.dir==="toNum"?h("div",{className:"q"},h("span",null,q.r+" ="),h(NumIn,{ctx:c,w:150,max:4})):h("div",null,h("div",{className:"q"},"Write "+q.n+" in Roman numerals:"),h("div",{className:"rbox","aria-live":"polite"},c.ans||"…"),h("div",{className:"row"},RS[c.lvl].split("").map(s=>h("button",{key:s,className:"btn sec key",disabled:c.fin,onClick:()=>c.setAns(c.ans+s)},s)),h("button",{className:"btn sec key","aria-label":"Delete last symbol",disabled:c.fin,onClick:()=>c.setAns(c.ans.slice(0,-1))},"⌫"))),
+ check:(q,a)=>a===""?null:(q.dir==="toNum"?parseInt(a,10)===q.n:a===q.r),sol:q=>q.dir==="toNum"?q.n:q.r,
+ hintView:q=>q.dir==="toRom"?h("div",null,h("p",null,"Build it from the biggest place value down: thousands, hundreds, tens, ones. Split "+q.n+" into these pieces and write them one after another:"),romParts(q.n).map((p,i)=>h(Chip,{key:i,a:p[0],b:p[1]}))):h("div",null,h("p",null,"Cut the numeral into pieces and add them up. A smaller symbol in front of a bigger one is taken away (IV = 5 − 1 = 4):"),romTok(q.r).map((p,i)=>h(Chip,{key:i,a:p[1],b:p[0]})))});
+/* ----- clocks ----- */
+const fmt=(hh,m)=>hh+":"+String(m).padStart(2,"0");
+const words=(hh,m)=>{const nx=hh%12+1;return m===0?hh+" o’clock":m===15?"quarter past "+hh:m===30?"half past "+hh:m===45?"quarter to "+nx:m<30?m+" past "+hh:(60-m)+" to "+nx};
+const genClk=l=>({h:rnd(1,12),m:l==="e"?[0,30][rnd(0,1)]:l==="m"?rnd(0,11)*5:rnd(0,59),id:Math.random()});
+const CL=[["e","o’clock & half past"],["m","5 minutes"],["h","any minute"]];
+function Clock({hh,mm,labels,onM}){
+ const ref=useRef(),dr=useRef(false),P=(a,r)=>[100+r*Math.sin(a*Math.PI/180),100-r*Math.cos(a*Math.PI/180)],ln=(k,a,r,w,c)=>{const p=P(a,r);return h("line",{key:k,x1:100,y1:100,x2:p[0],y2:p[1],stroke:c,strokeWidth:w,strokeLinecap:"round"})};
+ const mv=e=>{const r=ref.current.getBoundingClientRect();let a=Math.atan2(e.clientX-r.left-r.width/2,-(e.clientY-r.top-r.height/2))*180/Math.PI;if(a<0)a+=360;onM(Math.round(a/6)%60)};
+ const el=[h("circle",{key:"f",cx:100,cy:100,r:96,className:"face"})];
+ for(let i=0;i<60;i++){const a=i*6,p=P(a,i%5?90:84),q=P(a,95);el.push(h("line",{key:"t"+i,x1:p[0],y1:p[1],x2:q[0],y2:q[1],className:"tk",strokeWidth:i%5?1:3}))}
+ for(let i=1;i<=12;i++){const p=P(i*30,68);el.push(h("text",{key:"n"+i,x:p[0],y:p[1]+7,textAnchor:"middle",style:{fontSize:20}},i))}
+ if(labels)for(let i=1;i<=12;i++){const p=P(i*30,108);el.push(h("text",{key:"m"+i,x:p[0],y:p[1]+4,textAnchor:"middle",className:"ml",style:{fontSize:12}},i*5%60))}
+ el.push(ln("h",(hh%12)*30+mm*.5,46,7,"#7c5cff"),ln("m",mm*6,72,4,"#ff5c7a"),h("circle",{key:"c",cx:100,cy:100,r:6,fill:"#2a2250"}));
+ return h("svg",{ref,viewBox:"-18 -18 236 236",className:"clock",role:"img","aria-label":"Analog clock",style:onM?{touchAction:"none",cursor:"pointer"}:null,onPointerDown:onM?e=>{dr.current=true;e.currentTarget.setPointerCapture(e.pointerId);mv(e)}:null,onPointerMove:onM?e=>{if(dr.current)mv(e)}:null,onPointerUp:()=>{dr.current=false}},el)}
+const clkIn=(c,k,w,lab)=>h("input",{className:"num",style:{width:w},inputMode:"numeric","aria-label":lab,autoFocus:k==="h",value:c.ans[k],disabled:c.fin,onChange:e=>c.setAns({...c.ans,[k]:e.target.value.replace(/\D/g,"").slice(0,2)}),onKeyDown:e=>{if(e.key==="Enter")c.go()}});
+const ClockRead=p=>h(Ex,{...p,mode:"clk",labels:CL,gen:genClk,init:()=>({h:"",m:""}),idle:"Short hand = hours, long hand = minutes. Type the time.",
+ view:(q,c)=>h("div",null,h(Clock,{hh:q.h,mm:q.m}),h("div",{className:"q",style:{justifyContent:"center"}},clkIn(c,"h",84,"Hours"),h("span",null,":"),clkIn(c,"m",96,"Minutes"))),
+ check:(q,a)=>a.h===""||a.m===""?null:parseInt(a.h,10)===q.h&&parseInt(a.m,10)===q.m,sol:q=>fmt(q.h,q.m),
+ hintView:q=>h("div",null,h(Clock,{hh:q.h,mm:q.m,labels:true}),h("p",null,"The short purple hand shows the hour: it points at or just past the "+q.h+". The long pink hand shows the minutes: count in 5s around the pink numbers"+(q.m%5?" and add the extra little ticks":"")+". That makes "+q.m+" minutes. We say: "+words(q.h,q.m)+"."))});
+const ClockSet=p=>h(Ex,{...p,mode:"cset",labels:CL,gen:genClk,init:()=>({h:12,m:0}),idle:"Drag or tap the clock to point the long hand. Use the buttons for the hour.",
+ view:(q,c)=>{const A=c.ans,hr=d=>c.setAns({...A,h:((A.h-1+d+12)%12)+1}),mn=d=>c.setAns({...A,m:(A.m+d+60)%60}),B=(t,f,l)=>h("button",{className:"btn sec",disabled:c.fin,"aria-label":l,onClick:f},t);
+  return h("div",null,h("div",{className:"q",style:{justifyContent:"center"}},"Set the clock to "+fmt(q.h,q.m)),h(Clock,{hh:A.h,mm:A.m,onM:c.fin?null:m=>c.setAns({...A,m})}),h("div",{className:"row",style:{justifyContent:"center"}},B("− hour",()=>hr(-1),"One hour back"),B("+ hour",()=>hr(1),"One hour forward"),B("− 5 min",()=>mn(-5),"Five minutes back"),B("+ 5 min",()=>mn(5),"Five minutes forward"),B("− 1",()=>mn(-1),"One minute back"),B("+ 1",()=>mn(1),"One minute forward")),h("p",{style:{textAlign:"center",margin:"4px 0"}},"Your clock shows "+fmt(A.h,A.m)))},
+ check:(q,a)=>a.h===q.h&&a.m===q.m,sol:q=>fmt(q.h,q.m),
+ hintView:q=>h("div",null,h(Clock,{hh:q.h,mm:q.m,labels:true}),h("p",null,"This is how it should look: "+words(q.h,q.m)+". The long pink hand points at the pink number for the minutes. The short purple hand sits at or just past the "+q.h+"."))});
+const EXS={rnd:RoundNum,rul:RoundRuler,rom:RomanEx,clk:ClockRead,cset:ClockSet};
+/* ---------- 20 game sprites ---------- */
+Object.assign(HAT,{hardhat:c=>`<path d="M58 78 Q58 36 100 36 Q142 36 142 78Z" fill="${c}"${S}/><rect x="50" y="68" width="100" height="12" rx="5" fill="${c}"${S}/><rect x="90" y="30" width="20" height="14" rx="4" fill="${c}"${S}/>`});
+Object.assign(HOLD,{
+blaster:c=>`<rect x="-9" y="-26" width="18" height="34" rx="5" fill="#5a6372"${S2}/><rect x="-4" y="-50" width="8" height="26" rx="3" fill="${c}"${S2}/><circle cx="0" cy="-54" r="6" fill="${c}" opacity=".6"/><rect x="-5" y="6" width="10" height="12" rx="3" fill="#3b4251"${S2}/>`,
+shield:c=>`<path d="M-17 -38 H17 V-10 Q17 8 0 16 Q-17 8 -17 -10Z" fill="${c}"${S2}/><path d="M0 -34 V10 M-12 -18 H12" stroke="#fff" stroke-width="3" opacity=".7"/>`,
+bomb:c=>`<circle cx="0" cy="-14" r="17" fill="#26233a"${S2}/><path d="M6 -30 Q12 -40 20 -38" stroke="#8a5a2b" stroke-width="3" fill="none"/><circle cx="21" cy="-39" r="4" fill="#ffd23f"/><circle cx="-6" cy="-20" r="4" fill="#fff" opacity=".4"/>`,
+hammer:c=>`<rect x="-2.5" y="-40" width="5" height="52" rx="2" fill="#8a5a2b"/><rect x="-16" y="-52" width="32" height="16" rx="3" fill="#9aa4b2"${S2}/>`});
+TH.push("Gate Rush","Path Quest");TC.push("#ff9f43","#34d399");
+COS.push(
+{n:"Rookie Blaster Pip",h:["pilot","#3b82f6"],o:["blaster","#4fc3ff"],s:"Pip’s very first mission: blast the slimes! He learned that a gate with + makes his blaster stronger."},
+{n:"Slime Squasher Pip",b:GRN,h:["helm","#9aa4b2"],o:["blaster","#a3e635"],m:"big",s:"Pip squashed a whole wave of slimes. Rule one: always compare the gates before you fly through!"},
+{n:"Gate Guardian Pip",h:["helm","#b8c4d4"],k:["cape","#3b82f6"],o:["shield","#3b82f6"],s:"A gate is only as good as its numbers. Pip guards the gates and always spots the best one."},
+{n:"Power-Up Pip",b:YEL,h:["mohawk","#ff5c7a"],f:["shades"],o:["blaster","#ffd23f"],m:"big",s:"Plus 50! Times 3! Pip’s power-ups make him glow brighter with every gate."},
+{n:"Bomb Squad Pip",b:RED,h:["hardhat","#ffd23f"],o:["bomb"],s:"Pip handles the biggest bangs. Careful with − gates: they take power away, just like a fizzled fuse."},
+{n:"Multiplier Mage Pip",b:BLU,h:["wizard","#2257c4"],o:["wand","#4fc3ff"],s:"The Multiplier Mage knows that × 10 beats + 5 every time (unless you already have a lot of power)."},
+{n:"Turbo Pilot Pip",b:ORG,h:["pilot","#e5484d"],f:["goggles","#ffb300"],k:["cape","#ff9a3c"],o:["blaster","#ff5c7a"],m:"big",s:"Faster, stronger, smarter! Turbo Pip checks every gate in a blink and picks the biggest result."},
+{n:"Cyber Pip",b:GRY,h:["robot","#9aa4b2"],f:["robot"],o:["blaster","#4fffa0"],s:"Cyber Pip computes gate results in milliseconds, but still says mental maths is more fun."},
+{n:"Boss Buster Pip",b:RED,h:["viking","#9aa4b2"],k:["cape","#7a1f24"],o:["axe"],m:"big",s:"No boss is too big when your power is bigger! Pip smashed the final monster with one mighty volley."},
+{n:"Gate Rush Legend Pip",b:YEL,h:["crown","#ffd23f"],k:["cape","#ff5c7a"],o:["blaster","#ffd23f"],e:"stars",m:"big",s:"Ten victories! Pip is now the Gate Rush Legend. Every gate in the galaxy knows his name."},
+{n:"Map Reader Pip",b:ORG,h:["safari","#c9a46b"],o:["flag","#e5484d"],s:"Pip unrolled the Path Quest map. Each square hides a maths puzzle, and every puzzle solved is a step forward."},
+{n:"Puzzle Solver Pip",b:WHT,h:["hair","#ffffff"],f:["goggles","#a78bfa"],o:["flask","#ff8fb1"],s:"Pip loves a good puzzle: adding, rounding, even Roman numerals. Mix them all and he smiles."},
+{n:"Compass Captain Pip",h:["pirate","#4fc3ff"],f:["patch"],o:["flag","#ffd23f"],s:"Captain Pip steers by the stars and by good arithmetic. Wrong turn? Just solve the next square!"},
+{n:"Bridge Builder Pip",b:ORG,h:["hardhat","#ff9a3c"],o:["hammer"],s:"A broken bridge on the path! Pip fixed it plank by plank, with one right answer for each plank."},
+{n:"Treasure Hunter Pip",b:YEL,h:["cowboy","#8a5a2b"],o:["trophy"],m:"big",s:"At the end of the path lies treasure! Pip counted the steps in fives and found the golden cup."},
+{n:"Mountain Climber Pip",b:TEAL,h:["beanie","#3b82f6"],f:["scarf","#ff9a3c"],o:["axe"],s:"Up the mountain trail Pip climbed, solving a clock puzzle at every ledge. Seven o’clock never felt so high!"},
+{n:"Maze Master Pip",h:["hood","#7a1fa2"],f:["mustache"],k:["cape","#5b21b6"],o:["wand","#4fffa0"],s:"The Maze Master knows every twist of the path, because he checked every answer twice."},
+{n:"Time Traveller Pip",b:DRK,h:["bubble","#a78bfa"],o:["glow","#a78bfa"],s:"Pip hopped through time to read ancient clocks and Roman numerals. MMXXVI is a fine year to come home to!"},
+{n:"Quest Wizard Pip",b:TEAL,h:["wizard","#ffb300"],k:["cape","#0e857b"],o:["glow","#ffd23f"],s:"Rounding, chimneys, rulers, clocks: Quest Wizard Pip has a spell for every kind of problem."},
+{n:"Path Champion Pip",b:BLU,h:["crown","#ffd23f"],k:["cape","#7a1fa2"],o:["trophy"],e:"happy",m:"big",s:"Ten paths conquered! Pip is crowned Path Champion, and you helped every step of the way."});
+const thIdx=i=>i<30?Math.floor(i/5):6+Math.floor((i-30)/10);
+function Collection({data}){
+ const rw=data.rewards||[],gr=data.grw||[],right=data.right||0,[sel,setSel]=useState(null),all=rw.length+gr.length;
+ const rng=ti=>ti<6?[ti*5,ti*5+5]:[30+(ti-6)*10,40+(ti-6)*10];
+ return h("div",null,
+  h("div",{className:"card"},h("h2",null,"My sprites: "+all+" of 50"),
+   h("p",{style:{margin:"0 0 6px"}},rw.length<30?"Every 5 right answers unlock a new Pip! "+(5-right%5)+" more to go.":"🏆 All 30 answer sprites collected!"),
+   rw.length<30&&h("div",{className:"bar",role:"img","aria-label":right%5+" of 5 answers"},[0,1,2,3,4].map(i=>h("i",{key:i,className:i<right%5?"on":""}))),
+   h("p",{style:{margin:"8px 0 0"}},"Win games for 20 more: Gate Rush "+gr.filter(i=>i<40).length+"/10 · Path Quest "+gr.filter(i=>i>=40).length+"/10")),
+  TH.map((t,ti)=>{const [a,b]=rng(ti);return h("div",{key:t,className:"card"},h("h3",{style:{marginTop:0}},t),h("div",{className:"cgrid"},COS.slice(a,b).map((cs,j)=>{const i=a+j,got=i<30?rw.includes(i):gr.includes(i);return h("button",{key:i,className:"sp"+(got?"":" lock"),onClick:()=>got&&setSel(i),"aria-label":got?cs.n:"Locked sprite "+(i+1)},h("div",{dangerouslySetInnerHTML:{__html:costSvg(cs,i)}}),h("span",null,got?cs.n:"???"),h("small",null,got?"Tap to read its story":i<30?"Unlocks at "+(i+1)*5+" right answers":"Win "+(i<40?"Gate Rush":"Path Quest")+" ×"+((i-30)%10+1)))})))}),
+  sel!=null&&h(Modal,{close:()=>setSel(null)},h(Story,{i:sel}),h("button",{className:"btn",onClick:()=>setSel(null)},"Close")))}
+/* ---------- shared game helpers ---------- */
+const gameEnd=(setData,key,won)=>setData(d=>{const base=key==="rush"?30:40,gr=d.grw||[],cnt=gr.filter(i=>i>=base&&i<base+10).length,o=d.stats[key]||{c:0,t:0};return {...d,touched:true,stars:d.stars+(won?3:0),grw:won&&cnt<10?[...gr,base+cnt]:gr,gw:{...(d.gw||{}),[key]:((d.gw||{})[key]||0)+(won?1:0)},stats:{...d.stats,[key]:{c:o.c+(won?1:0),t:o.t+1}}}});
+const GL=[["e","Easy"],["m","Medium"],["h","Hard"]];
+const LvlSeg=({k,data,setData,after})=>h("div",{className:"row",style:{marginBottom:10}},h("span",null,"Level:"),h("div",{className:"seg"},GL.map(([v,n])=>h("button",{key:v,className:((data.lvl[k]||"e")===v)?"on":"",onClick:()=>{setData(d=>({...d,touched:true,lvl:{...d.lvl,[k]:v}}));after&&after()}},n))));
+/* ---------- Game 1: Gate Rush ---------- */
+const MOBS=["👾","👹","🦇","🐙","👻","🧟","🕷️","🦖"];
+const fN=n=>n>=1e9?(n/1e9).toFixed(1)+"B":n>=1e6?(n/1e6).toFixed(1)+"M":n>=1e4?(n/1e3).toFixed(1)+"K":String(Math.round(n));
+const gApply=(o,P)=>typeof o[1]==="string"?Math.max(1,Math.round(P*(100+(o[0]==="−"?-1:1)*parseInt(o[1]))/100)):o[0]==="÷"?Math.max(1,Math.round(P/o[1])):o[0]==="+"?P+o[1]:o[0]==="×"?P*o[1]:Math.max(1,P-o[1]);
+function genGates(P){
+ const ms=P<200?[2,3,4,5,10,20]:P<3000?[2,3,4,5,10]:[2,3];
+ const good=()=>PYR==="p6"&&Math.random()<.3?["+",[25,50,100][rnd(0,2)]+"%"]:Math.random()<.45?["+",rnd(Math.max(2,Math.round(P*.2)),Math.max(6,Math.round(P*1.2)))]:["×",ms[rnd(0,ms.length-1)]];
+ const bad=()=>{const r=Math.random();if(PYR==="p6"&&r<.2)return["−",[20,25,50][rnd(0,2)]+"%"];if(PYR!=="p4"&&r<.3)return["÷",rnd(2,PYR==="p6"?5:3)];return r<.4?["−",rnd(Math.round(P*.3)+1,Math.round(P*.9)+2)]:r<.75?["+",rnd(1,Math.max(2,Math.round(P*.12)))]:["×",2]};
+ const p=[good(),Math.random()<.5?bad():good()];return Math.random()<.5?p:p.reverse()}
+function buildRush(l){
+ const f={e:[60,160],m:[100,240],h:[160,320]}[l],bm={e:.7,m:1,h:1.3}[l];let P=10,t=1.2;const q=[];
+ for(let s=0;s<5;s++){const ops=genGates(P);q.push({t,k:"gate",ops});P=Math.max(gApply(ops[0],P),gApply(ops[1],P));t+=4.6;
+  const n=rnd(2,4);for(let i=0;i<n;i++)q.push({t:t+i*1.4,k:"mob",hp:Math.max(1,Math.round(P*rnd(f[0],f[1])/100)),x:rnd(40,320),e:MOBS[rnd(0,MOBS.length-1)],v:rnd(50,70)});
+  t+=n*1.4+3.8}
+ q.push({t,k:"boss",hp:Math.max(5,Math.round(P*rnd(600,1000)/100*bm))});return q}
+function GateRush({data,setData}){
+ const lvl=(PYR=data.year||"p4",data.lvl.rush||"e"),cv=useRef(),[ph,setPh]=useState("ready"),[res,setRes]=useState(null),[hintOn,setHintOn]=useState(false),hintRef=useRef(false),ctl=useRef({dir:0,tx:180}),gref=useRef(null);
+ hintRef.current=hintOn;
+ const start=()=>{gref.current={t:0,px:180,power:10,lives:3,inv:0,mobs:[],gates:[],bullets:[],pops:[],queue:buildRush(lvl),boss:null,fire:0,over:null,wave:0};ctl.current.tx=180;ctl.current.dir=0;setRes(null);setPh("play")};
+ useEffect(()=>{
+  if(ph!=="play")return;
+  const c=cv.current,x=c.getContext("2d"),dpr=Math.min(2,window.devicePixelRatio||1),G=gref.current,PY=470;
+  c.width=360*dpr;c.height=560*dpr;x.setTransform(dpr,0,0,dpr,0,0);
+  const img=new Image();img.src="data:image/svg+xml;charset=utf-8,"+encodeURIComponent(pipSvg("idle").replace("<svg ",'<svg width="200" height="215" '));
+  const kd=e=>{if(e.key==="ArrowLeft"||e.key==="a")ctl.current.dir=-1;if(e.key==="ArrowRight"||e.key==="d")ctl.current.dir=1},ku=e=>{if(["ArrowLeft","ArrowRight","a","d"].includes(e.key))ctl.current.dir=0};
+  window.addEventListener("keydown",kd);window.addEventListener("keyup",ku);
+  const hurt=n=>{if(G.inv>0)return;G.lives-=n;G.inv=1.3;if(G.lives<=0){G.lives=0;G.over="lost"}};
+  const step=dt=>{
+   G.t+=dt;
+   while(G.queue.length&&G.queue[0].t<=G.t){const e=G.queue.shift();if(e.k==="gate")G.gates.push({y:-30,ops:e.ops,hit:false});else if(e.k==="mob")G.mobs.push({x:e.x,y:-30,hp:e.hp,v:e.v,e:e.e});else G.boss={x:180,y:-80,hp:e.hp,mx:e.hp,v:30}}
+   const k=ctl.current;if(k.dir)k.tx=Math.max(24,Math.min(336,k.tx+k.dir*380*dt));
+   G.px+=Math.max(-460*dt,Math.min(460*dt,k.tx-G.px));
+   G.inv=Math.max(0,G.inv-dt);
+   G.fire-=dt;if(G.fire<=0){G.fire=.3;G.bullets.push({x:G.px,y:PY-34,d:G.power})}
+   G.bullets.forEach(b=>b.y-=560*dt);
+   G.gates.forEach(g=>{g.y+=110*dt;if(!g.hit&&g.y>=PY-30){g.hit=true;const o=G.px<180?g.ops[0]:g.ops[1];G.power=gApply(o,G.power);G.pops.push({x:G.px,y:PY-70,t:1.2,s:o[0]+o[1],c:o[0]==="−"?"#ff6b81":"#4ade80"})}});
+   G.gates=G.gates.filter(g=>g.y<620);
+   G.mobs.forEach(m=>{m.y+=m.v*dt;G.bullets.forEach(b=>{if(!b.dead&&Math.abs(b.x-m.x)<26&&b.y<m.y+22&&b.y>m.y-34){m.hp-=b.d;b.dead=true}});
+    if(m.hp<=0){m.dead=true;G.pops.push({x:m.x,y:m.y,t:.6,s:"💥",c:"#fff"})}
+    else if(m.y>PY-12){m.dead=true;hurt(1)}});
+   G.mobs=G.mobs.filter(m=>!m.dead);
+   const B=G.boss;if(B){B.y+=B.v*dt;G.bullets.forEach(b=>{if(!b.dead&&Math.abs(b.x-B.x)<60&&b.y<B.y+50&&b.y>B.y-60){B.hp-=b.d;b.dead=true}});if(B.hp<=0){G.over="won";G.pops.push({x:B.x,y:B.y,t:1,s:"💥",c:"#fff"})}else if(B.y>PY-30){G.inv=0;hurt(3)}}
+   G.bullets=G.bullets.filter(b=>!b.dead&&b.y>-10);
+   G.pops.forEach(p=>{p.t-=dt;p.y-=40*dt});G.pops=G.pops.filter(p=>p.t>0)};
+  const pill=(s,px,py,w,f)=>{x.font="900 "+f+"px Nunito,Trebuchet MS,sans-serif";x.textAlign="center";x.textBaseline="middle";const tw=Math.max(w,x.measureText(s).width+14);x.fillStyle="rgba(20,12,50,.85)";x.beginPath();x.roundRect?x.roundRect(px-tw/2,py-f*.65,tw,f*1.3,f*.6):x.rect(px-tw/2,py-f*.65,tw,f*1.3);x.fill();x.fillStyle="#fff";x.fillText(s,px,py+1)};
+  const draw=()=>{
+   const g=x.createLinearGradient(0,0,0,560);g.addColorStop(0,"#1b1640");g.addColorStop(1,"#3a2a7a");x.fillStyle=g;x.fillRect(0,0,360,560);
+   x.fillStyle="rgba(255,255,255,.5)";for(let i=0;i<30;i++){x.fillRect((i*97)%360,((i*61+G.t*30)%560),2,2)}
+   G.gates.forEach(gt=>{[0,1].forEach(s=>{const o=gt.ops[s],bad=o[0]==="−"||o[0]==="÷";x.globalAlpha=gt.hit?.35:.95;x.fillStyle=bad?"#e5484d":o[0]==="×"?"#7c5cff":"#22b573";x.fillRect(8+s*176,gt.y-24,168,48);x.globalAlpha=1;x.fillStyle="#fff";x.font="900 30px Nunito,Trebuchet MS,sans-serif";x.textAlign="center";x.textBaseline="middle";x.fillText(o[0]+o[1],92+s*176,gt.y);
+    if(hintRef.current&&!gt.hit){x.font="800 13px Nunito,sans-serif";x.fillText("→ "+fN(gApply(o,G.power)),92+s*176,gt.y+36)}})});
+   G.mobs.forEach(m=>{x.font="40px serif";x.textAlign="center";x.textBaseline="middle";x.fillText(m.e,m.x,m.y);pill(fN(m.hp),m.x,m.y-34,26,15)});
+   if(G.boss){x.font="100px serif";x.textAlign="center";x.textBaseline="middle";x.fillText("🐲",G.boss.x,G.boss.y);pill("BOSS "+fN(G.boss.hp),G.boss.x,G.boss.y-66,60,18)}
+   x.fillStyle="#7dd3fc";G.bullets.forEach(b=>{x.beginPath();x.arc(b.x,b.y,3+Math.min(5,Math.log10(b.d+1)*1.5),0,7);x.fill()});
+   x.globalAlpha=G.inv>0&&Math.floor(G.inv*10)%2?.35:1;if(img.complete)x.drawImage(img,G.px-32,PY-50,64,69);x.globalAlpha=1;
+   pill(fN(G.power),G.px,PY+34,40,18);
+   G.pops.forEach(p=>{x.globalAlpha=Math.min(1,p.t*2);x.fillStyle=p.c;x.font="900 28px Nunito,sans-serif";x.textAlign="center";x.fillText(p.s,p.x,p.y);x.globalAlpha=1});
+   x.font="22px serif";x.textAlign="left";x.textBaseline="top";x.fillText("❤️".repeat(G.lives)+"🖤".repeat(3-G.lives),10,8);
+   x.font="800 14px Nunito,sans-serif";x.textAlign="right";x.fillStyle="#fff";x.fillText(G.boss?"BOSS FIGHT!":"Gates left: "+(G.queue.filter(e=>e.k==="gate").length+G.gates.filter(e=>!e.hit).length),350,12)};
+  let last=performance.now(),raf;
+  const loop=now=>{const dt=Math.min(.05,(now-last)/1000);last=now;if(!G.over)step(dt);draw();
+   if(G.over){setRes(G.over);setPh("end");gameEnd(setData,"rush",G.over==="won")}else raf=requestAnimationFrame(loop)};
+  raf=requestAnimationFrame(loop);
+  return()=>{cancelAnimationFrame(raf);window.removeEventListener("keydown",kd);window.removeEventListener("keyup",ku)}},[ph]);
+ const mv=e=>{const r=cv.current.getBoundingClientRect();ctl.current.tx=Math.max(24,Math.min(336,(e.clientX-r.left)/r.width*360))};
+ const hold=d=>({onPointerDown:e=>{e.preventDefault();ctl.current.dir=d},onPointerUp:()=>{ctl.current.dir=0},onPointerLeave:()=>{ctl.current.dir=0},onPointerCancel:()=>{ctl.current.dir=0}});
+ return h("div",null,
+  ph==="ready"&&h("div",null,h(LvlSeg,{k:"rush",data,setData}),h("div",{className:"card hero"},h(Pip,{pose:"hello"}),h("div",{className:"bubble"},h("h2",{style:{margin:"0 0 6px"}},"Gate Rush! 🏹"),h("p",{style:{margin:"0 0 8px"}},"Pip shoots monsters automatically. Drag to move him left and right."),L("Fly through a gate to change Pip’s power: + adds, × multiplies, − takes away.","Each gate has two choices. Work out which gives the biggest power!","Stronger Pip = monsters pop faster. Don’t let them reach you: 3 lives.","Beat the boss to win a new sprite!"),h("button",{className:"btn ok",onClick:start},"Start ▶")))),
+  ph!=="ready"&&h("div",null,
+   h("canvas",{ref:cv,className:"gcv",width:360,height:560,"aria-label":"Gate Rush game",onPointerDown:e=>{e.currentTarget.setPointerCapture(e.pointerId);mv(e)},onPointerMove:e=>{if(e.buttons||e.pointerType==="touch")mv(e)}}),
+   ph==="play"&&h("div",{className:"row",style:{justifyContent:"center",margin:"10px 0"}},h("button",{className:"btn sec key","aria-label":"Move left",...hold(-1)},"◀"),h("button",{className:"btn sec",onClick:()=>setHintOn(!hintOn)},hintOn?"💡 Hide results":"💡 Show results"),h("button",{className:"btn sec key","aria-label":"Move right",...hold(1)},"▶")),
+   ph==="end"&&h("div",{className:"card hero",style:{marginTop:12}},h(Pip,{pose:res==="won"?"level":"oops"}),h("div",{className:"bubble"},h("h2",{style:{margin:"0 0 6px"}},res==="won"?"You beat the boss! 🎉":"The monsters got through!"),h("p",{style:{margin:"0 0 8px"}},res==="won"?"+3 ⭐ and a new sprite! (until you own all 10).":"Tip: compare the gate results. 10 × 5 beats 10 + 20, but 10 + 50 beats 10 × 3!"),h("div",{className:"row"},h("button",{className:"btn ok",onClick:start},"Play again"),h("button",{className:"btn sec",onClick:()=>setPh("ready")},"Change level")))),
+   ph==="play"&&h("p",{style:{color:"var(--muted)",textAlign:"center",margin:0}},"Drag on the game or hold ◀ ▶ to move.")))}
+/* ---------- Game 2: Path Quest ---------- */
+const AR=m=>p=>h(Ex,{...p,mode:m,labels:GL,gen:l=>({...makeQ(m,l),id:Math.random()}),init:()=>"",view:(q,c)=>h("div",{className:"q"},h("span",null,q.a+" "+SY[q.op]+" "+q.b+" ="),h(NumIn,{ctx:c,w:150})),check:(q,a)=>a===""?null:parseInt(a,10)===q.ans,sol:q=>q.ans,hintView:q=>h(Hint,{q})});
+const CH=op=>p=>h(Chimney,{op,data:p.data,setData:p.setData,onDone:p.onResult,onWrong:p.onWrong,fixedLvl:p.lvlOverride});
+const PT={add:{i:"➕",n:"Addition",C:AR("add")},sub:{i:"➖",n:"Subtraction",C:AR("sub")},mul:{i:"✖️",n:"Multiplication",C:AR("mul")},div:{i:"➗",n:"Division",C:AR("div")},cadd:{i:"🏠+",n:"Chimney addition",C:CH("add")},csub:{i:"🏠−",n:"Chimney subtraction",C:CH("sub")},rnd:{i:"≈",n:"Rounding",C:RoundNum},rul:{i:"📏",n:"Rounding on a ruler",C:RoundRuler},rom:{i:"XII",n:"Roman numerals",C:RomanEx},clk:{i:"🕒",n:"Read the clock",C:ClockRead},cset:{i:"⏰",n:"Set the clock",C:ClockSet}};
+function PathQuest({data,setData}){
+ const lvl=data.lvl.path||"e",mk=()=>{const ks=Object.keys(PT);let a=[];while(a.length<14)a=a.concat(ks.slice().sort(()=>Math.random()-.5));return a.slice(0,14)};
+ const [sq,setSq]=useState(mk),[pos,setPos]=useState(1),[hearts,setHearts]=useState(5),[st,setSt]=useState("play"),[run,setRun]=useState(0),fin=useRef(false);
+ const again=()=>{setSq(mk());setPos(1);setHearts(5);setSt("play");setRun(r=>r+1);fin.current=false};
+ useEffect(()=>{if(st!=="play"||fin.current)return;if(pos>14){fin.current=true;setSt("won");gameEnd(setData,"path",true)}else if(hearts<=0){fin.current=true;setSt("lost");gameEnd(setData,"path",false)}},[pos,hearts,st]);
+ const cells=[];for(let dr=0;dr<4;dr++){const row=3-dr;for(let dc=0;dc<4;dc++)cells.push(row*4+(row%2===0?dc:3-dc))}
+ const T=PT[sq[pos-1]];
+ return h("div",null,
+  h(LvlSeg,{k:"path",data,setData,after:()=>setTimeout(again,0)}),
+  h("div",{className:"card"},h("div",{className:"row",style:{justifyContent:"space-between"}},h("b",null,st==="play"?"Square "+pos+" of 14":"Quest over"),h("span",{"aria-label":hearts+" hearts left",style:{fontSize:"1.3rem"}},"❤️".repeat(Math.max(0,hearts))+"🖤".repeat(5-Math.max(0,hearts)))),
+   h("div",{className:"board",role:"img","aria-label":"Path board: you are on square "+Math.max(0,pos-1)+" of 15"},cells.map(i=>h("div",{key:i,className:"sqr"+(i===pos&&st==="play"?" cur":"")+(i<pos?" done":"")},i===0?"🚩":i===15?"🏆":i<pos?"✓":PT[sq[i-1]].i,i===(st==="won"?15:pos-1)&&h("span",{className:"tok",dangerouslySetInnerHTML:{__html:pipSvg("idle")}})))),
+   h("p",{style:{margin:"6px 0 0",color:"var(--muted)"}},"Solve each square to move on. A wrong answer or skip costs a ❤️. Reach 🏆 to win a sprite!")),
+  st==="play"&&pos<=14&&h("div",null,h("h3",null,"Square "+pos+": "+T.n),h(T.C,{key:run+"-"+pos,data,setData,onResult:()=>setPos(p=>p+1),onWrong:()=>setHearts(x=>x-1),compact:true,lvlOverride:lvl})),
+  st!=="play"&&h("div",{className:"card hero"},h(Pip,{pose:st==="won"?"level":"oops"}),h("div",{className:"bubble"},h("h2",{style:{margin:"0 0 6px"}},st==="won"?"You crossed the whole path! 🎉":"Out of hearts!"),h("p",{style:{margin:"0 0 8px"}},st==="won"?"+3 ⭐ and a new sprite! (until you own all 10).":"Pip tripped on the path. Every mistake teaches something. Try a new path!"),h("button",{className:"btn ok",onClick:again},"New path"))))}
+Object.assign(EXS,{rush:GateRush,path:PathQuest});
+/* ---------- documentation ---------- */
+const L=(...x)=>h("ul",null,x.map((t,i)=>h("li",{key:i},t)));
+const Say=({pose="hello",children})=>h("div",{className:"say"},h(Pip,{pose,w:82}),h("div",{className:"bubble"},children));
+const Eq=({children})=>h("div",{className:"eq"},children);
+const Mini=({title,children})=>h("div",{className:"minicard"},h("b",null,title),children);
+const Minis=(...x)=>h("div",{className:"minis"},x);
+const Bars=({n,c="a"})=>h("div",{className:"blocks"},Array.from({length:n},(_,i)=>h("span",{key:i,className:"bt "+c})));
+const Raw=({t,o,c="a"})=>h("div",{className:"blocks"},Array.from({length:t},(_,i)=>h("span",{key:"t"+i,className:"bt "+c})),Array.from({length:o},(_,i)=>h("span",{key:"o"+i,className:"bo "+c})));
+const Sym=({children})=>h("span",{className:"op"},children);
+function Demo({op,a,b}){
+ const pl=op==="add"?planAdd(a,b):planSub(a,b),[s,setS]=useState(0);
+ const m=Array.from({length:pl.n},(_,i)=>op==="add"?(i<=s?pl.cin[i]:0):(i<s&&pl.take[i]?1:0));
+ const ans=Array.from({length:pl.n},(_,i)=>i<s?(op==="add"?pl.s[i]:(pl.lead[i]?"":String(pl.res[i]))):"");
+ let cap="Line the numbers up: ones under ones, tens under tens… and always start on the right!",pose="hello";
+ const nm=i=>COL[i][0].toUpperCase()+COL[i].slice(1);
+ if(s>0){const i=s-1;pose="think";
+  if(op==="add"){const da=num(pl.da[i]),db=num(pl.db[i]),c=pl.cin[i],t=da+db+c;cap=nm(i)+": "+da+" + "+db+(c?" + "+c+" (the carry in the chimney)":"")+" = "+t+". "+(t>=10?"That is 10 or more! Write "+t%10+" below and put a 1 in the next chimney.":"Write "+t+". Nothing to carry.")}
+  else{const lost=i>0&&pl.take[i-1],top=num(pl.da[i])-(lost?1:0),bb=num(pl.db[i]);cap=nm(i)+": "+(lost&&top<0?"this digit is 0, but the column on its right borrowed 1 from it. A 0 has nothing to give, so it borrows 10 from the left first and shows 0 + 10 − 1 = "+pl.eff[i]+". ":lost?"the top digit lost 1, so it is "+top+" now. ":"")+(pl.take[i]&&!(lost&&top<0)?top+" is smaller than "+bb+", so borrow 10: it becomes "+pl.eff[i]+". ":"")+pl.eff[i]+" − "+bb+" = "+pl.res[i]+"."}}
+ if(s>=pl.n){pose="correct";cap="All done! "+a+(op==="add"?" + ":" − ")+b+" = "+(op==="add"?a+b:a-b)+". Now check with the opposite operation."}
+ return h("div",{className:"hint"},h(Say,{pose},h("span",{role:"status"},cap)),h(View,{op,pl,mark:m,ans,active:s<pl.n?s:-1,node:"",tapIdx:-1}),h("div",{className:"row"},h("button",{className:"btn sec",disabled:s===0,onClick:()=>setS(s-1)},"◀ Back"),h("button",{className:"btn",disabled:s>=pl.n,onClick:()=>setS(s+1)},s>=pl.n?"Done!":"Next step ▶"),s>0&&h("button",{className:"btn sec",onClick:()=>setS(0)},"Restart")))}
+function PlaceDoc(){
+ const [v,setV]=useState("4372"),n=Math.min(99999,parseInt(v||"0",10)||0),d=dig(n,5),NM=["ones","tens","hundreds","thousands","ten-thousands"],VL=[1,10,100,1000,10000],len=String(n).length,nz=[4,3,2,1,0].filter(i=>i<len&&num(d[i])>0);
+ return h("div",null,
+  h(Say,{pose:"hello"},"Hi, I’m Pip! Every number is built from ",h("b",null,"digits"),": 0 1 2 3 4 5 6 7 8 9. Where a digit sits, its ",h("b",null,"place"),", tells you how much it is worth. This idea is called ",h("b",null,"place value"),"."),
+  h("h3",null,"Try it: type any number up to 99,999"),
+  h("input",{className:"num",style:{width:170},inputMode:"numeric","aria-label":"A number to explore",value:v,onChange:e=>setV(e.target.value.replace(/\D/g,"").slice(0,5))}),
+  h("div",{className:"pv"},[4,3,2,1,0].map(i=>h("div",{key:i,className:"pvc"+(i>=len?" off":"")},h("small",null,NM[i]),h("b",null,i<len?d[i]:"0"),h("span",null,i<len?d[i]+" × "+VL[i]:"")))),
+  h("p",null,"Expanded form: ",h("b",null,nz.map(i=>num(d[i])*VL[i]).join(" + ")||"0")),
+  n>0&&n<1000&&h("div",{className:"vis"},h(Blocks,{n,c:"a"}),h("small",null,"big square = 100, bar = 10, dot = 1")),
+  h(Say,{pose:"think"},"Look at 4,372. The 3 sits in the ",h("b",null,"hundreds")," place, so it is worth 3 × 100 = 300, not just 3! The same digit is worth more further to the left."),
+  h("h3",null,"The places, from right to left"),
+  L("Ones: single things (1, 2, 3 … 9).","Tens: groups of ten. The 7 in 372 is 7 tens = 70.","Hundreds: groups of a hundred. The 3 in 372 is 300.","Thousands: groups of a thousand (1,000).","Ten-thousands (10,000), hundred-thousands (100,000), millions (1,000,000)… keep going the same way."),
+  h("h3",null,"The big secret: ten of one makes one of the next"),
+  h("div",{className:"vis"},h(Dots,{g:[{n:10,c:"a"}]}),h(Sym,null,"="),h("span",{className:"bt a"}),h("b",null,"10 ones = 1 ten")),
+  h("div",{className:"vis"},h(Bars,{n:10}),h(Sym,null,"="),h("span",{className:"bh a"}),h("b",null,"10 tens = 1 hundred")),
+  h("div",{className:"vis"},Array.from({length:10},(_,i)=>h("span",{key:i,className:"bh a",style:{width:18,height:18}})),h(Sym,null,"="),h("span",{className:"bh a",style:{width:50,height:50}}),h("b",null,"10 hundreds = 1 thousand")),
+  h(Say,{pose:"hint"},"That is why we write 10 after 9: we ran out of single digits, so we start a new place! This is also why carrying works in addition."),
+  h("h3",null,"Zero is a placeholder"),
+  h("p",null,"In 305 there are 3 hundreds, 0 tens and 5 ones. The 0 keeps the 3 in the hundreds place. Without it you would have 35, a very different number!"),
+  h("div",{className:"vis"},h(Blocks,{n:305,c:"a"}),h(Sym,null,"≠"),h(Blocks,{n:35,c:"b"})),
+  h("h3",null,"Reading big numbers"),
+  h("p",null,"Say the number in groups of three digits: 12,408 is “twelve thousand, four hundred and eight”. 3,056,000 is “three million, fifty-six thousand”."),
+  h("h3",null,"Comparing numbers"),
+  h("p",null,"Compare from the left, the biggest place first. 4,372 and 4,298: both have 4 thousands. Hundreds: 3 is more than 2, so 4,372 > 4,298. More digits means a bigger number (when there is no leading zero)."),
+  h("h3",null,"× 10 and ÷ 10 slide the digits"),
+  Minis(h(Mini,{title:"× 10: every digit moves one place left"},h(Eq,null,"36 × 10 = 360"),h(Eq,null,"450 × 10 = 4,500")),h(Mini,{title:"÷ 10: every digit moves one place right"},h(Eq,null,"360 ÷ 10 = 36"),h(Eq,null,"4,500 ÷ 10 = 450"))))}
+const AddDoc=()=>h("div",null,
+ h(Say,{pose:"hello"},"Adding means putting groups together to find the total. The numbers you add are called ",h("b",null,"addends"),", and the answer is the ",h("b",null,"sum"),"."),
+ h("div",{className:"vis"},h(Dots,{g:[{n:3,c:"a"}]}),h(Sym,null,"+"),h(Dots,{g:[{n:4,c:"b"}]}),h(Sym,null,"="),h(Dots,{g:[{n:3,c:"a"},{n:4,c:"b"}]}),h("b",null,"3 + 4 = 7")),
+ h("h3",null,"Bigger numbers: one place at a time"),
+ h("p",null,"Use place value! Add hundreds to hundreds, tens to tens and ones to ones. Example: 345 + 123."),
+ h("div",{className:"vis"},h(Blocks,{n:345,c:"a"}),h(Sym,null,"+"),h(Blocks,{n:123,c:"b"})),
+ L("Hundreds: 300 + 100 = 400","Tens: 40 + 20 = 60","Ones: 5 + 3 = 8","Put it together: 400 + 60 + 8 = 468"),
+ h("h3",null,"When ones make a new ten (regrouping)"),
+ h(Say,{pose:"think"},"8 + 5 = 13. Count the dots: more than 10! Ten ones can be swapped for ",h("b",null,"1 ten"),". That swap is called ",h("b",null,"regrouping")," (or carrying)."),
+ h("div",{className:"vis"},h(Dots,{g:[{n:8,c:"a"},{n:5,c:"b"}]}),h(Sym,null,"="),h(Raw,{t:1,o:3}),h("b",null,"1 ten and 3 ones")),
+ h("h3",null,"Clever mental tricks"),
+ Minis(
+  h(Mini,{title:"Make ten"},h(Eq,null,"8 + 5 = 8 + 2 + 3"),h(Eq,null,"= 10 + 3 = 13")),
+  h(Mini,{title:"Doubles & near doubles"},h(Eq,null,"7 + 7 = 14"),h(Eq,null,"7 + 8 = 7 + 7 + 1 = 15")),
+  h(Mini,{title:"Round and adjust"},h(Eq,null,"49 + 26 = 50 + 26 − 1"),h(Eq,null,"= 76 − 1 = 75")),
+  h(Mini,{title:"Break apart"},h(Eq,null,"36 + 27: 36 + 20 = 56"),h(Eq,null,"56 + 7 = 63")),
+  h(Mini,{title:"Swap the order"},h(Eq,null,"2 + 9 + 8 = 2 + 8 + 9"),h(Eq,null,"= 10 + 9 = 19"))),
+ h(Say,{pose:"hint"},"Order never matters in addition: 3 + 8 = 8 + 3. Use it to start with the number that makes your life easier!"),
+ h("h3",null,"Estimate first, then check"),
+ L("Round the numbers: 48 + 31 is about 50 + 30 = 80. If your answer is far from 80, look again.","Check with subtraction: if 48 + 31 = 79, then 79 − 31 must be 48."),
+ h("h3",null,"Common mistakes"),
+ L("Forgetting to add the carry.","Not lining up the columns (ones must sit under ones).","Adding a tens digit to a ones digit."),
+ h(Say,{pose:"correct"},"For big sums, use the chimney method. See the Chimney addition tab!"))
+const SubDoc=()=>h("div",null,
+ h(Say,{pose:"hello"},"Subtracting means taking away, or finding the ",h("b",null,"difference")," between two numbers. The starting number is the ",h("b",null,"minuend"),", the one you take away is the ",h("b",null,"subtrahend"),"."),
+ h("div",{className:"vis"},h(Dots,{g:[{n:7,c:"a"},{n:5,c:"a",x:true}]}),h("b",null,"12 − 5 = 7 (the crossed dots are taken away)")),
+ h("h3",null,"Two ways to think about it"),
+ Minis(h(Mini,{title:"Take away"},h(Eq,null,"57 − 23: start at 57,"),h(Eq,null,"remove 20 then 3 → 34")),h(Mini,{title:"Count up (difference)"},h(Eq,null,"How far from 23 to 57?"),h(Eq,null,"23 → 30 is 7, 30 → 57 is 27, total 34"))),
+ h("h3",null,"One place at a time: 568 − 234"),
+ h("div",{className:"vis"},h(Blocks,{n:568,c:"a"}),h(Sym,null,"−"),h(Blocks,{n:234,c:"r"})),
+ L("Hundreds: 500 − 200 = 300","Tens: 60 − 30 = 30","Ones: 8 − 4 = 4","Answer: 300 + 30 + 4 = 334"),
+ h("h3",null,"When the top digit is too small (borrowing)"),
+ h(Say,{pose:"think"},"52 − 27: I can’t take 7 ones from 2 ones! So I ",h("b",null,"borrow"),": break 1 ten into 10 ones."),
+ h("div",{className:"vis"},h(Raw,{t:5,o:2}),h(Sym,null,"→"),h(Raw,{t:4,o:12}),h("b",null,"5 tens and 2 ones = 4 tens and 12 ones")),
+ L("12 ones − 7 ones = 5 ones","4 tens − 2 tens = 2 tens","So 52 − 27 = 25"),
+ h("h3",null,"Clever mental tricks"),
+ Minis(h(Mini,{title:"Round and adjust"},h(Eq,null,"63 − 29 = 63 − 30 + 1 = 34")),h(Mini,{title:"Subtract in pieces"},h(Eq,null,"145 − 62 = 145 − 60 − 2"),h(Eq,null,"= 85 − 2 = 83")),h(Mini,{title:"Count up from the small number"},h(Eq,null,"200 − 187: 187 → 190 is 3,"),h(Eq,null,"190 → 200 is 10: answer 13"))),
+ h("h3",null,"Check your work"),
+ L("Add the answer to the number you took away: 34 + 23 = 57 ✓","The answer can’t be bigger than the start number."),
+ h("h3",null,"Common mistakes"),
+ L("Taking the smaller digit from the bigger one in each column (7 − 2 instead of 2 − 7 with a borrow).","Forgetting that the left digit became 1 smaller after borrowing.","Order matters: 9 − 4 is not the same as 4 − 9."),
+ h(Say,{pose:"correct"},"Borrowing is much easier with the chimney. See the Chimney subtraction tab!"))
+function MulChart(){const [s,setS]=useState([3,4]);return h("div",null,h("div",{className:"q",style:{fontSize:"1.5rem"}},s[0]+" × "+s[1]+" = "+s[0]*s[1]),h("div",{className:"mc"},Array.from({length:10},(_,r)=>Array.from({length:10},(_,c)=>h("button",{key:r+"-"+c,className:"mcb"+(r+1<=s[0]&&c+1<=s[1]?" on":"")+(r+1===s[0]&&c+1===s[1]?" hit":""),onClick:()=>setS([r+1,c+1]),"aria-label":(r+1)+" times "+(c+1)},(r+1)*(c+1))))))}
+const MulDoc=()=>h("div",null,
+ h(Say,{pose:"hello"},"Multiplication is a fast way to add equal groups. 3 × 4 means 3 groups of 4, or 3 rows with 4 in each row. The numbers you multiply are ",h("b",null,"factors"),", the answer is the ",h("b",null,"product"),"."),
+ h("div",{className:"vis"},h(Grid,{r:3,c:4}),h("b",null,"3 × 4 = 4 + 4 + 4 = 12")),
+ h("h3",null,"Order doesn’t matter"),
+ h("div",{className:"vis"},h(Grid,{r:3,c:4}),h(Sym,null,"="),h(Grid,{r:4,c:3}),h("b",null,"3 × 4 = 4 × 3")),
+ h(Say,{pose:"hint"},"Turn the grid on its side: same dots! So you only need to learn half of each table."),
+ h("h3",null,"Multiplication chart: tap any square"),
+ h("p",null,"The highlighted rectangle is the array. Its rows and columns are the two factors, and the number of squares is the product."),
+ h(MulChart),
+ h("h3",null,"Tricks for the tables"),
+ Minis(
+  h(Mini,{title:"× 1 and × 0"},h(Eq,null,"7 × 1 = 7"),h(Eq,null,"7 × 0 = 0")),
+  h(Mini,{title:"× 2: double it"},h(Eq,null,"8 × 2 = 8 + 8 = 16")),
+  h(Mini,{title:"× 4: double, double"},h(Eq,null,"6 × 4: 6 → 12 → 24")),
+  h(Mini,{title:"× 8: double three times"},h(Eq,null,"7 × 8: 7 → 14 → 28 → 56")),
+  h(Mini,{title:"× 5: half of × 10"},h(Eq,null,"7 × 10 = 70, half is 35")),
+  h(Mini,{title:"× 6: × 5 plus one more"},h(Eq,null,"6 × 7 = 5 × 7 + 7 = 42")),
+  h(Mini,{title:"× 9: × 10 minus one"},h(Eq,null,"9 × 7 = 70 − 7 = 63"),h(Eq,null,"6 + 3 = 9 ✓")),
+  h(Mini,{title:"× 10: slide left"},h(Eq,null,"36 × 10 = 360")),
+  h(Mini,{title:"× 11 (1 to 9): repeat"},h(Eq,null,"11 × 4 = 44")),
+  h(Mini,{title:"× 12: × 10 plus × 2"},h(Eq,null,"12 × 7 = 70 + 14 = 84"))),
+ h("h3",null,"Bigger numbers: the area model"),
+ h("p",null,"Split the bigger number into tens and ones. 23 × 4 = (20 × 4) + (3 × 4):"),
+ h("div",{className:"area"},h("div",null,"20 × 4",h("br"),"= 80"),h(Sym,null,"+"),h("div",null,"3 × 4",h("br"),"= 12"),h(Sym,null,"="),h("div",null,"92")),
+ h(Say,{pose:"think"},"Same trick for 14 × 6: 10 × 6 = 60 and 4 × 6 = 24, so 60 + 24 = 84. Break it apart, multiply the pieces, add them up!"),
+ h("h3",null,"Check your work"),
+ L("Divide the product by one factor. 92 ÷ 4 should give 23.","The answer to 5 × anything ends in 0 or 5. Even × anything is even."),
+ h("h3",null,"Common mistakes"),
+ L("Forgetting the zero when multiplying by 10.","Adding the factors instead of multiplying (3 + 4 ≠ 3 × 4).","Skipping a part of the area model."),
+ h(Say,{pose:"correct"},"Practise in the Times tables page. A little every day beats a lot once!"))
+const DivDoc=()=>h("div",null,
+ h(Say,{pose:"hello"},"Division means sharing equally or making equal groups. In 12 ÷ 3 = 4, 12 is the ",h("b",null,"dividend"),", 3 is the ",h("b",null,"divisor")," and 4 is the ",h("b",null,"quotient"),"."),
+ h("h3",null,"Two ways to see 12 ÷ 3"),
+ Minis(
+  h(Mini,{title:"Sharing: 12 shared into 3 boxes"},h("div",{className:"groups"},[0,1,2].map(i=>h("div",{key:i},[0,1,2,3].map(j=>h("span",{key:j,className:"dot b"}))))),h(Eq,null,"4 in each box")),
+  h(Mini,{title:"Grouping: groups of 3 in 12"},h("div",{className:"groups"},[0,1,2,3].map(i=>h("div",{key:i},[0,1,2].map(j=>h("span",{key:j,className:"dot"}))))),h(Eq,null,"4 groups"))),
+ h("h3",null,"Division is multiplication backwards"),
+ h(Say,{pose:"think"},"To find 12 ÷ 3, ask: “3 times what makes 12?” You already know 3 × 4 = 12, so 12 ÷ 3 = 4!"),
+ h("p",null,"These four facts belong to one family:"),
+ h("div",null,["3 × 4 = 12","4 × 3 = 12","12 ÷ 3 = 4","12 ÷ 4 = 3"].map(t=>h("span",{key:t,className:"chip"},t))),
+ h("h3",null,"Bigger numbers: chunking"),
+ h("p",null,"96 ÷ 6: take out easy chunks of 6s."),
+ L("10 × 6 = 60. Left: 96 − 60 = 36.","6 × 6 = 36. Left: 0.","Chunks used: 10 + 6 = 16, so 96 ÷ 6 = 16."),
+ h("h3",null,"Short division by place value: 156 ÷ 3"),
+ L("Split 156 = 150 + 6.","150 ÷ 3 = 50 and 6 ÷ 3 = 2.","50 + 2 = 52."),
+ h("h3",null,"When it doesn’t divide exactly (remainders)"),
+ h("p",null,"13 ÷ 4: make groups of 4 from 13 dots. You get 3 full groups and 1 dot left over. We write 3 remainder 1."),
+ h("div",{className:"groups"},[0,1,2].map(i=>h("div",{key:i},[0,1,2,3].map(j=>h("span",{key:j,className:"dot b"})))),h("div",{style:{borderStyle:"dashed"}},h("span",{className:"dot r"}))),
+ h("p",null,"(The exercises in this app always divide exactly, but remainders are good to know!)"),
+ h("h3",null,"Can I divide it? Quick tests"),
+ Minis(
+  h(Mini,{title:"By 2"},h(Eq,null,"Last digit is even")),
+  h(Mini,{title:"By 5"},h(Eq,null,"Ends in 0 or 5")),
+  h(Mini,{title:"By 10"},h(Eq,null,"Ends in 0")),
+  h(Mini,{title:"By 3"},h(Eq,null,"Digits add to a multiple of 3"),h(Eq,null,"156: 1+5+6 = 12 ✓")),
+  h(Mini,{title:"By 9"},h(Eq,null,"Digits add to a multiple of 9"),h(Eq,null,"729: 7+2+9 = 18 ✓"))),
+ h("h3",null,"Special cases"),
+ L("÷ 1 gives the same number. A number ÷ itself is 1.","0 ÷ 5 = 0 (nothing to share).","You can never divide by 0: you can’t make groups of nothing!","÷ 10 slides the digits right: 360 ÷ 10 = 36."),
+ h("h3",null,"Check your work"),
+ h(Eq,null,"Multiply back: 52 × 3 = 156 ✓"),
+ h(Say,{pose:"correct"},"If you know your times tables, you already know division. Practise them together!"))
+const ChimAddDoc=()=>h("div",null,
+ h(Say,{pose:"hello"},"Chimney sums are column addition with a helper: the ",h("b",null,"chimney"),", a little box above each column where the ",h("b",null,"carry")," goes. It keeps big sums tidy."),
+ h("h3",null,"Why do we carry?"),
+ h(Say,{pose:"think"},"In the ones column 8 + 6 = 14. But a column can only hold one digit (0–9)! 14 ones = 1 ten + 4 ones. So we write 4 below and send the 1 ten up the chimney to the tens column."),
+ h("div",{className:"vis"},h(Dots,{g:[{n:8,c:"a"},{n:6,c:"b"}]}),h(Sym,null,"="),h(Raw,{t:1,o:4}),h("b",null,"14 ones = 1 ten + 4 ones")),
+ h("h3",null,"The rules"),
+ L("1. Write the numbers with ones under ones, tens under tens, hundreds under hundreds…","2. Start at the right (ones) and work left, one column at a time.","3. Add the two digits and anything that is in the chimney above.","4. 9 or less: write it below the line. Chimney stays empty.","5. 10 or more: write the ones digit below and put 1 in the chimney of the next column. Like smoke going up!","6. At the very end, bring down any carry from the last chimney."),
+ h("h3",null,"Watch it: 478 + 356"),
+ h(Demo,{op:"add",a:478,b:356}),
+ h("h3",null,"Bigger: 1,785 + 2,649 (carry in every column!)"),
+ h(Demo,{op:"add",a:1785,b:2649}),
+ h("h3",null,"Common mistakes"),
+ L("Carrying the whole total (put 1, not 14).","Forgetting to add the chimney number in the next column.","Adding the carry twice."),
+ h(Say,{pose:"hint"},"In the app: type the digit for the glowing column. If the total is 10 or more, tap the chimney of the next column. Press 💡 and I will show you!"))
+const ChimSubDoc=()=>h("div",null,
+ h(Say,{pose:"hello"},"In chimney subtraction the chimney shows what a top digit becomes after ",h("b",null,"borrowing"),", which we need when the top digit is too small."),
+ h("h3",null,"Why do we borrow?"),
+ h(Say,{pose:"think"},"523 − 278: in the ones column 3 − 8 doesn’t work. But 523 has 2 tens. Break 1 ten into 10 ones: 3 + 10 = 13 ones. The tens column now has 1 ten left."),
+ h("div",{className:"vis"},h(Raw,{t:2,o:3}),h(Sym,null,"→"),h(Raw,{t:1,o:13}),h("b",null,"2 tens 3 ones = 1 ten 13 ones")),
+ h("h3",null,"The rules"),
+ L("1. Put the bigger number on top, with ones under ones, tens under tens…","2. Start at the right and work left.","3. Top digit big enough (same or bigger)? Just subtract.","4. Top digit too small? Borrow: the neighbour on the left gives 1 (cross it out, it is 1 smaller now). This digit gets 10 more. Write the new number in the chimney.","5. Subtract with the new numbers, then move left.","6. Check: answer + bottom number = top number."),
+ h("h3",null,"Watch it: 523 − 278"),
+ h(Demo,{op:"sub",a:523,b:278}),
+ h("h3",null,"Tricky: borrowing across a zero (500 − 178)"),
+ h(Say,{pose:"hint"},"A zero has nothing to lend! It first borrows 10 from the left, then lends 1 to its right, so it ends up as 9."),
+ h(Demo,{op:"sub",a:500,b:178}),
+ h("h3",null,"Common mistakes"),
+ L("Forgetting that the left digit is now 1 smaller.","Subtracting the top digit from the bottom one.","Borrowing when you don’t need to."))
+function RoundDoc(){
+ const [u,setU]=useState(10),[n,setN]=useState(43),lo=Math.floor(n/u)*u,hi=lo+u,r=Math.floor(n/u+.5)*u;
+ return h("div",null,
+  h(Say,{pose:"hello"},h("b",null,"Rounding")," swaps a number for a nearby, easier one. We round to the nearest 10, 100, 1,000… It is great for estimating!"),
+  h("h3",null,"Ruler explorer: slide the pointer"),
+  h("div",{className:"seg"},[10,100].map(x=>h("button",{key:x,className:u===x?"on":"",onClick:()=>{setU(x);setN(Math.min(n,x*10-1))}},"nearest "+x))),
+  h(Ruler,{lo,hi,n,mid:true,win:n===lo?null:r}),
+  h("input",{type:"range",min:0,max:u*10-1,value:n,onChange:e=>setN(+e.target.value),style:{width:"100%"},"aria-label":"Number to round"}),
+  h("p",{role:"status"},n===lo?n+" sits exactly on a mark, so it stays "+n+".":n+" is "+(n-lo)+" away from "+lo+" and "+(hi-n)+" away from "+hi+(n-lo===hi-n?". Exactly halfway! The rule: halfway rounds UP, so "+n+" ≈ "+r+".":". It is nearer to "+r+", so "+n+" ≈ "+r+".")),
+  h(Say,{pose:"think"},"The orange dashed line is ",h("b",null,"halfway"),". Left of it you round down, right of it you round up. Exactly on it? We round up. That is why 5 rounds up!"),
+  h("h3",null,"The number rule (no ruler needed)"),
+  L("1. Find the place you are rounding to (tens, hundreds, thousands).","2. Look at the digit just to the right of it. That is the neighbour.","3. Neighbour 0, 1, 2, 3 or 4: keep the digit (round down).","4. Neighbour 5, 6, 7, 8 or 9: add 1 to the digit (round up).","5. Change every digit to the right of the place into 0."),
+  h("h3",null,"Worked examples"),
+  Minis(
+   h(Mini,{title:"62 to the nearest 10"},h(Eq,null,"Neighbour of the 6 is 2 → stay"),h(Eq,null,"62 ≈ 60")),
+   h(Mini,{title:"3,486 to the nearest 100"},h(Eq,null,"Place: 4 hundreds. Neighbour: 8 → up"),h(Eq,null,"3,486 ≈ 3,500")),
+   h(Mini,{title:"995 to the nearest 10"},h(Eq,null,"Neighbour of the 9 is 5 → up"),h(Eq,null,"99 + 1 = 100, so 995 ≈ 1,000"))),
+  h(Say,{pose:"hint"},"When the digit is 9 and rounds up, it rolls over: 9 + 1 = 10, so you carry to the next place, just like in addition."),
+  h("h3",null,"Why round? Estimating!"),
+  h(Eq,null,"48 + 31 ≈ 50 + 30 = 80"),h(Eq,null,"297 × 4 ≈ 300 × 4 = 1,200"),
+  h(Say,{pose:"correct"},"Try both rounding games: type the answer, or tap the nearer end of the ruler!"))}
+function RomanDoc(){
+ const [v,setV]=useState("1994"),n=Math.min(3999,parseInt(v||"0",10)||0),p=romParts(n);
+ return h("div",null,
+  h(Say,{pose:"hello"},"The Romans wrote numbers with letters instead of digits. You still see them on clocks, book chapters, movie sequels and monuments!"),
+  h("h3",null,"The seven symbols"),
+  h("div",null,[["I",1],["V",5],["X",10],["L",50],["C",100],["D",500],["M",1000]].map(x=>h(Chip,{key:x[0],a:x[0],b:x[1]}))),
+  h(Say,{pose:"hint"},"Memory trick: I Value Xylophones Like Cold Drinking Milk (I V X L C D M)."),
+  h("h3",null,"Rule 1: add symbols, biggest first"),
+  h(Eq,null,"VIII = 5 + 1 + 1 + 1 = 8"),h(Eq,null,"XXVI = 10 + 10 + 5 + 1 = 26"),
+  h("h3",null,"Rule 2: never more than three in a row"),
+  h("p",null,"III is 3, but 4 is not IIII. We use a shortcut: put a smaller symbol ",h("b",null,"in front")," of a bigger one to subtract it."),
+  h("h3",null,"Rule 3: the six subtraction pairs"),
+  h("div",null,[["IV",4],["IX",9],["XL",40],["XC",90],["CD",400],["CM",900]].map(x=>h(Chip,{key:x[0],a:x[0],b:x[1]}))),
+  h("p",null,"Only I, X and C can go in front, and only before the next two bigger symbols. IX is allowed, IC is not."),
+  h("h3",null,"How to build any number: place by place"),
+  h(Say,{pose:"think"},"Roman numerals use place value too! Split the number into thousands, hundreds, tens and ones, write each part in Roman, and join them."),
+  h("p",null,"Type a number (1 to 3999):"),
+  h("input",{className:"num",style:{width:150},inputMode:"numeric","aria-label":"Number to convert",value:v,onChange:e=>setV(e.target.value.replace(/\D/g,"").slice(0,4))}),
+  n>0?h("div",null,p.map((x,i)=>h(Chip,{key:i,a:x[0],b:x[1]})),h("div",{className:"rbox"},toRom(n))):h("p",null,"Roman numerals have no zero. Try 1 or more!"),
+  h("h3",null,"How to read a Roman numeral"),
+  L("Go left to right.","If a symbol is smaller than the one after it, subtract it. Otherwise add it.","MCMXCIV = 1000 + (1000 − 100) + (100 − 10) + (5 − 1) = 1994"),
+  h("h3",null,"Fun facts"),
+  L("This year, 2026, is MMXXVI.","Roman numerals have no zero and no place value: V is 5 wherever it appears.","A clock face with Roman numbers: IV is sometimes written IIII for a nicer look."),
+  h(Say,{pose:"correct"},"Ready? Try the Roman numerals game: sometimes you read, sometimes you build with the symbol keys!"))}
+function ClockDoc(){
+ const [hh,setH]=useState(3),[mm,setM]=useState(45),[pm,setPm]=useState(true);
+ const h24=(hh%12)+(pm?12:0),Q=(t,m)=>h("button",{key:t,className:"btn sec",onClick:()=>setM(m)},t);
+ return h("div",null,
+  h(Say,{pose:"hello"},"A clock has two hands. The ",h("b",null,"short, fat hand")," shows the ",h("b",null,"hours"),". The ",h("b",null,"long, thin hand")," shows the ",h("b",null,"minutes"),"."),
+  h("h3",null,"Play with the clock"),
+  h("p",null,"Tap or drag on the clock to move the minute hand. Use the buttons to change the hour."),
+  h(Clock,{hh,mm,labels:true,onM:setM}),
+  h("div",{className:"row",style:{justifyContent:"center"}},h("button",{className:"btn sec",onClick:()=>setH((hh+10)%12+1)},"− hour"),h("button",{className:"btn sec",onClick:()=>setH(hh%12+1)},"+ hour"),Q("o’clock",0),Q("quarter past",15),Q("half past",30),Q("quarter to",45)),
+  h("div",{className:"q",style:{justifyContent:"center"}},h("span",null,fmt(hh,mm))),
+  h("p",{style:{textAlign:"center",fontWeight:800},role:"status"},"We say: "+words(hh,mm)),
+  h(Say,{pose:"think"},"The pink numbers outside the clock show the minutes. Each number step is ",h("b",null,"5 minutes"),": the 1 means 5 minutes, the 2 means 10, the 3 means 15 … The 12 at the top is 0 minutes. 60 minutes make 1 hour."),
+  h("h3",null,"How to read the time"),
+  L("1. Look at the short hand: it points at or just past the hour.","2. Look at the long hand and count in 5s: number × 5.","3. If the long hand is between two numbers, count the little ticks (1 minute each).","4. Write hours : minutes, for example 3:45."),
+  h("h3",null,"Past and to"),
+  h(Say,{pose:"hint"},"In the first half of the hour (up to 30 minutes) we say “past”. In the second half we say “to” the next hour."),
+  Minis(h(Mini,{title:"Past"},h(Eq,null,"3:10 → ten past three"),h(Eq,null,"3:15 → quarter past three"),h(Eq,null,"3:30 → half past three")),h(Mini,{title:"To"},h(Eq,null,"3:40 → twenty to four"),h(Eq,null,"3:45 → quarter to four"),h(Eq,null,"3:55 → five to four"))),
+  h("h3",null,"The hour hand creeps"),
+  h("p",null,"At 3:00 the short hand points exactly at the 3. By 3:30 it is half way between the 3 and the 4. By 3:45 it is nearly at the 4. Always read the hour from the number it has just passed."),
+  h("h3",null,"AM, PM and the 24-hour clock"),
+  h("div",{className:"seg"},h("button",{className:pm?"":"on",onClick:()=>setPm(false)},"AM (night to noon)"),h("button",{className:pm?"on":"",onClick:()=>setPm(true)},"PM (noon to night)")),
+  h("p",{role:"status"},fmt(hh,mm)+(pm?" PM":" AM")+" is "+String(h24).padStart(2,"0")+":"+String(mm).padStart(2,"0")+" on a 24-hour clock."),
+  L("A day has 24 hours, so the clock goes round twice.","PM hours: add 12 (3 PM = 15:00). 12 noon is 12:00. Midnight is 00:00.","Time facts: 60 seconds = 1 minute, 60 minutes = 1 hour, 24 hours = 1 day."),
+  h("h3",null,"How long did it take?"),
+  h("p",null,"From 2:15 to 3:00 is 45 minutes: count up to the next hour (15 + 30 = 45 minutes) just like counting up in subtraction."),
+  h(Say,{pose:"correct"},"Now try the games: read the clock, or set the clock by moving the hands yourself!"))}
+const DOCS={place:["🔢 Place value",PlaceDoc],add:["➕ Addition",AddDoc],sub:["➖ Subtraction",SubDoc],mul:["✖️ Multiplication",MulDoc],div:["➗ Division",DivDoc],cadd:["🏠 Chimney addition",ChimAddDoc],csub:["🏠 Chimney subtraction",ChimSubDoc],rnd:["🎯 Rounding",RoundDoc],rom:["🏛️ Roman numerals",RomanDoc],clk:["🕒 Clocks",ClockDoc]};
+function Docs(){const [t,setT]=useState("place"),[title,Body]=DOCS[t];return h("div",null,h("div",{className:"tabs",role:"tablist"},Object.keys(DOCS).map(k=>h("button",{key:k,role:"tab","aria-selected":t===k,className:t===k?"on":"",onClick:()=>setT(k)},DOCS[k][0]))),h("div",{className:"card"},h("h2",null,title),h(Body,{key:t})))}
+/* ---------- home + app ---------- */
+const TILES=[["tbl","×","Times tables"],["mul","×","Multiplication"],["add","+","Addition"],["sub","−","Subtraction"],["div","÷","Division"],["cadd","🏠+","Chimney addition"],["csub","🏠−","Chimney subtraction"],["rnd","≈","Rounding"],["rul","📏","Rounding on a ruler"],["rom","XII","Roman numerals"],["clk","🕒","Read the clock"],["cset","⏰","Set the clock"],["rush","🏹","Gate Rush"],["path","🗺️","Path Quest"],["col","🎁","My sprites"],["docs","📖","Learn & guides"]];
+function Home({data,setData,go}){
+ const [sure,setSure]=useState(false);
+ return h("div",null,h("div",{className:"card hero"},h(Pip,{pose:"hello",w:140}),h("div",{className:"bubble"},h("h2",null,"Hi, I’m Pip!"),h("p",{style:{margin:0}},"Pick a game and let’s train our brains. Stuck? Press 💡 Hint and I’ll show you a picture."))),
+  h("div",{className:"card"},(data.rewards||[]).length<30?h("div",null,h("b",null,"🎁 Next sprite: "+(5-(data.right||0)%5)+" right answers to go"),h("div",{className:"bar",style:{marginTop:8},role:"img","aria-label":(data.right||0)%5+" of 5"},[0,1,2,3,4].map(i=>h("i",{key:i,className:i<(data.right||0)%5?"on":""})))):h("b",null,"🏆 All 30 sprites collected!")),h(YearBar,{data,setData}),h("div",{className:"tiles"},TILES.map(([id,sy,n])=>{const s=data.stats[id];return h("button",{key:id,className:"tile",onClick:()=>go(id)},h("big",null,sy),n,h("small",null,id==="rush"||id==="path"?((data.gw||{})[id]||0)+" wins · "+((s&&s.t)||0)+" played":s&&s.t?Math.round(100*s.c/s.t)+"% first try · "+s.t+" done":id==="docs"?"Rules with pictures":id==="col"?((data.rewards||[]).length+(data.grw||[]).length)+" of 50 collected":"Not played yet"))})),
+  h("div",{className:"card",style:{marginTop:14}},h("p",{style:{margin:"0 0 8px"}},"💾 Your stars and scores are saved only on this device (in localStorage). No cookies."),
+   sure?h("div",{className:"row"},h("b",null,"Erase all progress?"),h("button",{className:"btn warn",onClick:()=>{wipe();setData(fresh());setSure(false)}},"Yes, reset"),h("button",{className:"btn sec",onClick:()=>setSure(false)},"Keep it")):h("button",{className:"btn sec",onClick:()=>setSure(true)},"Reset my progress")))}
+function App(){
+ const [data,setData]=useState(load),[scr,setScr]=useState({n:"home"}),[popup,setPopup]=useState(null),prev=useRef((load().rewards||[]).length),prevG=useRef((load().grw||[]).length);
+ useEffect(()=>{const n=(data.rewards||[]).length;if(n>prev.current)setPopup(n-1);prev.current=n},[data.rewards]);useEffect(()=>{const g=data.grw||[];if(g.length>prevG.current)setPopup(g[g.length-1]);prevG.current=g.length},[data.grw]);
+ useEffect(()=>{if(data.touched)save(data)},[data]);
+ const go=(n,x)=>setScr({n,...x}),T=(TILES.find(t=>t[0]===scr.n)||[0,0,"Pip’s Math Playground"])[2];
+ let body;const n=scr.n;
+ if(location.hash==="#selftest")body=h(PIP.SelfTest);else if(n==="home")body=h(Home,{data,setData,go});else if(n==="tbl"&&!scr.table)body=h(Tables,{go});else if(n==="docs")body=h(Docs);else if(n==="col")body=h(Collection,{data});else if(EXS[n])body=h(EXS[n],{key:n,data,setData});
+ else if(n==="cadd"||n==="csub")body=h(Chimney,{key:n,op:n==="cadd"?"add":"sub",data,setData});
+ else body=h(Practice,{key:n+(scr.table||""),mode:n,table:scr.table,data,setData});
+ return h("div",null,h("header",null,n!=="home"&&h("button",{className:"btn sec","aria-label":"Back",onClick:()=>n==="tbl"&&scr.table?go("tbl"):go("home")},"◀"),h("h1",null,n==="tbl"&&scr.table?"Test: "+scr.table+" table":T),h("span",{className:"pill",title:"Stars earned"},"⭐ "+data.stars),h("span",{className:"pill",title:"Best streak"},"🔥 "+data.best),h("span",{className:"pill",title:"Sprites collected"},"🎁 "+((data.rewards||[]).length+(data.grw||[]).length))),body,popup!=null&&h(Reward,{i:popup,close:()=>setPopup(null),see:()=>{setPopup(null);go("col")}}))}
+/* ===== P4-P6 curriculum engine (seeded, templated, self-tested) ===== */
+let PYR="p4";
+const EXC={add:["C2"],sub:["C2"],mul:["C4","C7"],div:["C5","C8"],tbl:["C4","C5"],cadd:["C2"],csub:["C2"],rnd:["E1"],rul:["E1"],rom:["W1","N1"],clk:["T1"],cset:["T1"]};
+const cmx=(d,key,first,ok,cs)=>{const ids=cs?cs.map(x=>x[0]):EXC[key]||[],cm={...(d.cm||{})},dy=new Date().toISOString().slice(0,10);ids.forEach(i=>{const o=cm[i]||{a:0,f:0,l:[],ds:[]},l=[...o.l,first?1:0].slice(-10),sec=l.length>=10&&l.reduce((a,b)=>a+b,0)>=8,ds=o.ds||[];cm[i]={a:o.a+1,f:o.f+(first?1:0),l,ds:sec&&!ds.includes(dy)?[...ds,dy]:ds}});return cm};
+const mast=(d,i)=>{const o=(d.cm||{})[i];if(!o)return"Not started";const sec=o.l.length>=10&&o.l.reduce((a,b)=>a+b,0)>=8;return(o.ds||[]).length>=2?"Mastered":sec?"Secure":"Learning"};
+const YearBar=({data,setData})=>h("div",{className:"row",style:{margin:"0 0 12px"}},h("span",null,"Class:"),h("div",{className:"seg"},[["p4","P4"],["p5","P5"],["p6","P6"]].map(([k,n])=>h("button",{key:k,className:(data.year||"p4")===k?"on":"",onClick:()=>setData(d=>({...d,touched:true,year:k}))},n))));
+(function(){
+let _s=(Date.now()^0x9e3779b9)>>>0;
+const rng=()=>{_s=(_s+0x6D2B79F5)>>>0;let t=_s;t=Math.imul(t^t>>>15,t|1);t^=t+Math.imul(t^t>>>7,t|61);return((t^t>>>14)>>>0)/4294967296};
+Math.random=rng;
+const r=(a,b)=>Math.floor(Math.random()*(b-a+1))+a,pk=a=>a[r(0,a.length-1)],
+X=(L,Y,a,b)=>r(a,Math.max(a+1,Math.round(a+(b-a)*(Y*3+L+1)/9))),
+f=n=>n.toLocaleString("en-GB"),g=(a,b)=>b?g(b,a%b):a,fx=n=>+n.toPrecision(12),
+sh=a=>a.map(v=>[Math.random(),v]).sort((x,y)=>x[0]-y[0]).map(v=>v[1]),
+dc=(n,p)=>(n/10**p).toFixed(p),
+ca=(a,b)=>{let x=String(a),y=String(b),c=0,o="";for(let i=0;i<Math.max(x.length,y.length);i++){const t=+(x[x.length-1-i]||0)+ +(y[y.length-1-i]||0)+c;o=t%10+o;c=t>9?1:0}return +((c?"1":"")+o)},
+cs=(a,b)=>{const x=String(a),y=String(b).padStart(x.length,"0");let br=0,o="";for(let i=x.length-1;i>=0;i--){const t=+x[i]-br-+y[i];br=t<0?1:0;o=(t<0?t+10:t)+o}return +o},
+nz=s=>{s=String(s).trim().toLowerCase().replace(/[£,\s()°]/g,"").replace(/·/g,".");if(/^[-\d.]/.test(s))s=s.replace(/(cm|mm|km|kg|ml|[mglp%])(²|2|³)?$/,"").replace(/^(\d):/,"0$1:");return s},
+same=(x,y,ex)=>{x=nz(x);y=nz(y);if(x===y)return true;if(ex||x===""||/[a-z:]/.test(x+y))return false;const F=/^-?\d+\/\d+$/;if(F.test(x)&&F.test(y)){const[a,b]=x.split("/"),[c,e]=y.split("/");return b*c==a*e}return Math.abs(+x-+y)<1e-9},
+YI=y=>({p4:0,p5:1,p6:2})[y]||0,LI=l=>({e:0,m:1,h:2})[l]||0,
+D=[],d=(id,nm,me,ys,fn)=>D.push({id,nm,me,ys,fn}),recent={};
+const gen=(t,L,Y)=>{let q,k=0;Y=Math.min(Math.max(Y,+t.ys[0]-4),+t.ys[t.ys.length-1]-4);const rc=recent[t.id]=recent[t.id]||[];do{const sd=_s,a=t.fn(L,Y);q={t:a[0],a:String(a[1]),v:a[2],o:a[3],ex:a[4],vis:a[5],seed:sd,id:Math.random(),cs:[t.id],k:a[6],it:a[7],nl:a[7]}}while(rc.includes(q.t)&&++k<30);rc.push(q.t);if(rc.length>30)rc.shift();return q};
+const COL=["#7c5cff","#ff5c7a","#22b573","#ffb300","#38bdf8","#a78bfa"];
+const Pie=(sl,al,cs=COL)=>{const n=sl.length;if(n<2)return h("svg",{viewBox:"0 0 120 120",style:{width:150},role:"img","aria-label":al},h("circle",{cx:60,cy:60,r:54,fill:cs[sl[0]%cs.length]}));const P=a=>(60+54*Math.cos(a)).toFixed(2)+" "+(60+54*Math.sin(a)).toFixed(2);return h("svg",{viewBox:"0 0 120 120",style:{width:150},role:"img","aria-label":al},sl.map((g,i)=>h("path",{key:i,d:"M60 60 L"+P(i/n*6.2832-1.5708)+" A54 54 0 0 1 "+P((i+1)/n*6.2832-1.5708)+"Z",fill:cs[g%cs.length],stroke:"var(--card)",strokeWidth:2})))};
+const Ang=a=>{const c=Math.cos(a*Math.PI/180),s=Math.sin(a*Math.PI/180);return h("svg",{viewBox:"0 0 120 120",style:{width:170},role:"img","aria-label":"An angle drawn for you to classify"},h("path",{d:"M60 60 H110",stroke:"currentColor",strokeWidth:3,fill:"none"}),h("path",{d:"M60 60 L"+(60+50*c).toFixed(1)+" "+(60-50*s).toFixed(1),stroke:"currentColor",strokeWidth:3,fill:"none"}),h("path",{d:"M80 60 A20 20 0 "+(a>180?1:0)+" 0 "+(60+20*c).toFixed(1)+" "+(60-20*s).toFixed(1),stroke:"var(--pri)",strokeWidth:3,fill:"none"}))};
+const Sq=(a,b)=>h("svg",{viewBox:"0 0 "+(a*14+2)+" "+(b*14+2),style:{width:Math.min(260,a*20)},role:"img","aria-label":"A grid of "+a+" by "+b+" squares"},Array.from({length:a*b},(_,i)=>h("rect",{key:i,x:1+(i%a)*14,y:1+Math.floor(i/a)*14,width:13,height:13,fill:"var(--pri)",opacity:.8})));
+const ordq=(it,txt,asc)=>{const sp=asc?"<":">",so=it.slice().sort((x,y)=>(asc?1:-1)*(x.v-y.v)).map(x=>x.s),sf=sh(it.map(x=>x.s));return[txt+"  Cards: "+sf.join(", "),so.join(sp),()=>it.slice().sort((x,y)=>asc?x.v-y.v:y.v-x.v).map(x=>x.s).join(sp),null,null,null,"order",sf]};
+const OrderW=({q,c})=>{const sp=q.a.includes(">")?">":"<",ar=c.ans.split(sp),mv=(i,j)=>{if(j<0||j>=ar.length||c.fin)return;const b=ar.slice(),[x]=b.splice(i,1);b.splice(j,0,x);c.setAns(b.join(sp))};return h("div",null,h("p",null,"Drag the cards (or use ◀ ▶) into order, then press Check."),h("div",{className:"row"},ar.map((x,i)=>h("div",{key:x,draggable:!c.fin,onDragStart:e=>e.dataTransfer.setData("t",i),onDragOver:e=>e.preventDefault(),onDrop:e=>{e.preventDefault();mv(+e.dataTransfer.getData("t"),i)},className:"card",style:{padding:8,margin:0,textAlign:"center",cursor:"grab"}},h("b",null,x),h("div",null,h("button",{className:"btn sec","aria-label":"Move "+x+" left",onClick:()=>mv(i,i-1)},"◀"),h("button",{className:"btn sec","aria-label":"Move "+x+" right",onClick:()=>mv(i,i+1)},"▶"))))))};
+const AngleW=({c})=>{const ref=useRef(),dr=useRef(0),a=+c.ans||0,mv=e=>{if(c.fin)return;const b=ref.current.getBoundingClientRect();let d=Math.atan2(-(e.clientY-b.top-b.height/2),e.clientX-b.left-b.width/2)*180/Math.PI;if(d<0)d+=360;c.setAns(String(Math.round(d)))};return h("div",null,h("div",{ref,style:{width:170,touchAction:"none",cursor:"pointer"},onPointerDown:e=>{dr.current=1;e.currentTarget.setPointerCapture(e.pointerId);mv(e)},onPointerMove:e=>{if(dr.current)mv(e)},onPointerUp:()=>{dr.current=0}},Ang(a)),h("p",null,"Your angle: "+a+"°"),h("div",{className:"row"},[-10,-1,1,10].map(k=>h("button",{key:k,className:"btn sec",disabled:c.fin,onClick:()=>c.setAns(String(Math.max(0,Math.min(360,a+k))))},(k>0?"+":"")+k))))};
+const GridW=({q,c})=>{const p=c.ans?c.ans.split(",").map(Number):[],cl=(x,y)=>{if(!c.fin)c.setAns(p.length===2?c.ans+","+x+","+y:x+","+y)},R=p.length===4?[Math.min(p[0],p[2]),Math.min(p[1],p[3]),Math.abs(p[2]-p[0]),Math.abs(p[3]-p[1])]:null;return h("div",null,h("svg",{viewBox:"0 0 270 190",style:{width:"100%",maxWidth:420},role:"img","aria-label":"Dot grid, 13 by 9 dots. Tap two opposite corners of a rectangle."},R&&h("rect",{x:15+R[0]*20,y:15+R[1]*20,width:R[2]*20,height:R[3]*20,fill:"var(--pri)",opacity:.3,stroke:"var(--pri)",strokeWidth:2}),Array.from({length:117},(_,i)=>{const x=i%13,y=Math.floor(i/13);return h("g",{key:i,onClick:()=>cl(x,y),style:{cursor:"pointer"}},h("circle",{cx:15+x*20,cy:15+y*20,r:10,fill:"transparent"}),h("circle",{cx:15+x*20,cy:15+y*20,r:3,fill:"currentColor"}))})),h("p",null,R?"Your rectangle: "+R[2]+" × "+R[3]+" (area "+R[2]*R[3]+", perimeter "+2*(R[2]+R[3])+")":p.length===2?"Now tap the opposite corner.":"Tap a corner to start."),h("button",{className:"btn sec",disabled:c.fin,onClick:()=>c.setAns("")},"Clear"))};
+const NLW=({q,c})=>{const {n,lab}=q.nl,ref=useRef(),i=c.ans===""?null:+c.ans,Xp=k=>20+k*(280/n),mv=e=>{if(c.fin)return;const b=ref.current.getBoundingClientRect(),x=(e.clientX-b.left)/b.width*320;c.setAns(String(Math.max(0,Math.min(n,Math.round((x-20)/(280/n))))))};return h("div",null,h("svg",{ref,viewBox:"0 0 320 80",style:{width:"100%",maxWidth:460,touchAction:"none",cursor:"pointer"},role:"img","aria-label":"Number line with "+n+" equal steps. Tap to place your answer.",onPointerDown:mv,onPointerMove:e=>{if(e.buttons)mv(e)}},h("line",{x1:20,x2:300,y1:40,y2:40,stroke:"currentColor",strokeWidth:3}),Array.from({length:n+1},(_,k)=>h("g",{key:k},h("line",{x1:Xp(k),x2:Xp(k),y1:32,y2:48,stroke:"currentColor",strokeWidth:2}),lab(k)!==""&&h("text",{x:Xp(k),y:68,fontSize:n>14?8:10,textAnchor:"middle",fill:"currentColor"},lab(k)))),i!=null&&h("path",{d:"M"+Xp(i)+" 38 l-8 -18 h16Z",fill:"#ff5c7a",stroke:"currentColor"})),h("div",{className:"row"},[-1,1].map(k=>h("button",{key:k,className:"btn sec","aria-label":k<0?"Move marker left":"Move marker right",disabled:c.fin,onClick:()=>c.setAns(String(Math.max(0,Math.min(n,(i==null?Math.floor(n/2):i)+k))))},k<0?"◀":"▶"))))};
+const WID=(q,c)=>q.k==="order"?h(OrderW,{q,c}):q.k==="angle"?h(AngleW,{c}):q.k==="rect"||q.k==="rectp"?h(GridW,{q,c}):q.k==="nl"?h(NLW,{q,c}):null;
+const Pic=(C,v,u)=>h("div",{role:"img","aria-label":"Pictogram. Each star is "+u+". "+C.map((c,i)=>c+" "+v[i]/u+" stars").join(", ")},C.map((c,i)=>h("div",{key:c},c+": "+"★".repeat(v[i]/u))),h("small",null,"★ = "+u));
+const LineG=(dy,v)=>{const top=Math.ceil(Math.max(...v)/4)*4,sc=110/top,gl=[];for(let y=0;y<=top;y+=4)gl.push(h("g",{key:"g"+y},h("line",{x1:34,x2:290,y1:130-y*sc,y2:130-y*sc,stroke:"currentColor",opacity:.25}),h("text",{x:30,y:134-y*sc,fontSize:10,textAnchor:"end",fill:"currentColor"},y)));return h("svg",{viewBox:"0 0 300 160",style:{maxWidth:360,width:"100%"},role:"img","aria-label":"Line graph. "+dy.map((d2,i)=>d2+" "+v[i]).join(", ")},gl,h("polyline",{points:v.map((y,i)=>(50+i*55)+","+(130-y*sc)).join(" "),fill:"none",stroke:"var(--pri)",strokeWidth:3}),v.map((y,i)=>h("g",{key:i},h("circle",{cx:50+i*55,cy:130-y*sc,r:4,fill:"var(--pri)"}),h("text",{x:50+i*55,y:148,fontSize:11,textAnchor:"middle",fill:"currentColor"},dy[i]))))};
+const MN=["January","February","March","April","May","June","July","August","September","October","November","December"];
+/* ---- N: number ---- */
+d("N1","Order whole numbers","Compare the biggest places first.","456",(L,Y)=>{const m=[1e3,1e5,1e6][Y],s=[];while(s.length<4){const v=X(L,Y,10,m-1);if(!s.includes(v))s.push(v)}const b=r(0,1);if(r(0,2)===0)return ordq(s.map(v=>({s:String(v),v})),"Put these numbers in order, "+(b?"largest first":"smallest first")+".",!b);return["Which is the "+(b?"largest":"smallest")+": "+s.map(f).join(", ")+"?",b?Math.max(...s):Math.min(...s),()=>s.slice().sort((x,y)=>b?y-x:x-y)[0]]});
+d("N2","Place value","A digit's value depends on its place.","456",(L,Y)=>{const k=[3,5,6][Y]-(L?0:1),s=String(r(10**(k-1),10**k-1));let i=r(0,k-1);while(s[i]==="0")i=(i+1)%k;return["What is the value of the digit "+s[i]+" in "+f(+s)+"?",s[i]*10**(k-1-i),()=>+(s[i]+"0".repeat(k-1-i))]});
+d("N3","Skip counting","Count on or back in equal steps.","456",(L,Y)=>{const st=pk(Y?[25,50,100,250,1000]:[2,5,10,100]),dr=L?-1:1,a=st*r(6,12),s=[0,1,2,3].map(i=>a+dr*st*i);return["Count "+(dr>0?"on":"back")+" in "+f(st)+"s: "+s.map(f).join(", ")+", ?",a+dr*st*4,()=>s[3]+dr*st]});
+d("N4","Compare with < > =","< means less than, > means greater than.","456",(L,Y)=>{const m=[100,1e4,1e6][Y],a=X(L,Y,1,m),b=r(0,4)?X(L,Y,1,m):a;return["Which symbol goes in the gap?  "+f(a)+" ? "+f(b),a<b?"<":a>b?">":"=",()=>a===b?"=":a>b?">":"<",["<",">","="]]});
+d("N5","Compare decimals","More digits after the point is not always bigger.","56",(L,Y)=>{const p=L>1?3:2;if(r(0,3)===0){const it=[];while(it.length<4){const v=r(1,4*10**p);if(!it.some(x=>x.v===v))it.push({s:dc(v,p),v})}return ordq(it,"Put these decimals in order, smallest first.",true)}if(r(0,3)===1){const lo=r(0,9),k=r(1,9);return["Tap "+(lo+k/10).toFixed(1)+" on the number line.",k,()=>(lo*10+k)-lo*10,null,null,null,"nl",{n:10,lab:i=>i%5===0?(lo+i/10).toFixed(1):"",ans:(lo+k/10).toFixed(1)}]}let a,b;do{a=r(1,4*10**p);b=r(1,4*10**p)}while(a===b);return["Which is greater: "+dc(a,p)+" or "+dc(b,p)+"?",dc(Math.max(a,b),p),()=>a>b?dc(a,p):dc(b,p)]});
+d("N6","Negative numbers","Below zero the numbers are negative.","56",(L,Y)=>{if(r(0,2)===0){const m=[5,8,10][L],v=r(-m,m);return["Tap "+v+" on the number line.",v+m,()=>v-(-m),null,null,null,"nl",{n:2*m,lab:i=>String(i-m),ans:String(v)}]}const t=r(1,X(L,Y,5,20)),k=t+r(1,X(L,Y,5,30));return["It is "+t+"°C. The temperature falls by "+k+" degrees. What is it now?",t-k,()=>-(k-t)]});
+/* ---- E: rounding ---- */
+d("E1","Round whole numbers","Look at the next digit: 5 or more goes up.","456",(L,Y)=>{const u=pk([[10,100],[10,100,1000],[1000,1e4,1e5]][Y]),n=X(L,Y,u+1,u*20);return["Round "+f(n)+" to the nearest "+f(u)+".",Math.floor(n/u+.5)*u,()=>{const lo=n-n%u;return n-lo>=u/2?lo+u:lo}]});
+d("E2","Round decimals and money","Round to the nearest whole, tenth or pound.","56",(L,Y)=>{const q=r(105,X(L,Y,300,9999)),m=r(0,1);return[m?"Round £"+dc(q,2)+" to the nearest pound.":"Round "+dc(q,2)+" to the nearest whole number.",Math.floor(q/100+.5),()=>q%100>=50?Math.floor(q/100)+1:Math.floor(q/100)]});
+d("E3","Estimate answers","Round first, then calculate.","456",(L,Y)=>{const u=[10,100,1000][Y],a=X(L,Y,20,[900,9e3,9e4][Y]),b=X(L,Y,20,[900,9e3,9e4][Y]),p=r(0,1)&&a>b,R=n=>Math.round(n/u)*u;return["Estimate by rounding each number to the nearest "+f(u)+": "+f(a)+(p?" − ":" + ")+f(b),p?R(a)-R(b):R(a)+R(b),()=>{const x=Math.floor(a/u+.5)*u,y=Math.floor(b/u+.5)*u;return p?x-y:x+y}]});
+/* ---- C: calculation ---- */
+d("C1","Add or subtract tens and hundreds","Change only the digit in that place.","456",(L,Y)=>{const m=pk(Y?[10,100,1000]:[10,100]),k=r(1,9)*m,a=X(L,Y,k+1,[900,9e3,9e4][Y]),p=r(0,1);return["What is "+f(a)+(p?" + ":" − ")+f(k)+"?",p?a+k:a-k,()=>p?a-(-k):a+(-k)]});
+d("C2","Written add and subtract","Line up the places; carry or borrow.","456",(L,Y)=>{const k=[[2,3,3],[3,4,4],[4,5,6]][Y][L],a=r(10**(k-1),10**k-1),b=r(10**(k-2),a-1),p=r(0,1);return["Work out "+f(a)+(p?" + ":" − ")+f(b),p?a+b:a-b,()=>p?ca(a,b):cs(a,b)]});
+d("C3","Add and subtract decimals","Line up the decimal points.","56",(L,Y)=>{const p=[[1,2,2],[2,2,3]][Y-1][L],a=r(10**p,99*10**p),b=r(10**p,a-1),s=r(0,1);return["Work out "+dc(a,p)+(s?" + ":" − ")+dc(b,p),dc(s?a+b:a-b,p),()=>(s?+dc(a,p)+ +dc(b,p):+dc(a,p)- +dc(b,p)).toFixed(p)]});
+d("C4","Multiplication facts","Use arrays and known tables.","456",(L,Y)=>{const a=pk(Y===0&&L<2?[2,3,4,5,8,10]:[2,3,4,5,6,7,8,9,10]),b=r(2,10),m=Y&&r(0,1);return[m?a+" × ? = "+a*b:a+" × "+b+" =",m?b:a*b,()=>m?a*b/a:Array(b).fill(a).reduce((s,x)=>s+x,0)]});
+d("C5","Division facts","Think: what times the divisor makes this?","456",(L,Y)=>{const a=pk(Y===0&&L<2?[2,3,4,5,8,10]:[2,3,4,5,6,7,8,9,10]),b=r(2,10),m=Y&&r(0,1);return[m?"? ÷ "+a+" = "+b:a*b+" ÷ "+a+" =",m?a*b:b,()=>{if(m)return b*a;let c=0,x=a*b;while(x>0){x-=a;c++}return c}]});
+d("C6","× and ÷ by 10, 100, 1000","Digits move places; the point stays.","456",(L,Y)=>{const k=pk(Y===2?[10,100,1e3]:[10,100]),dp=Y?r(0,1):0,i=r(11,X(L,Y,99,9999)),m=r(0,1),x=dc(i,dp);return["What is "+x+(m?" × ":" ÷ ")+f(k)+"?",fx(m?i*k/10**dp:i/10**dp/k),()=>fx(m?+x*k:+x/k)]});
+d("C7","Multiply bigger numbers","Split into tens and ones (area model).","456",(L,Y)=>{const a=Y===2&&L>1?r(100,999):r(11,99),b=Y===2?r(11,99):Y?pk([r(2,9),r(2,9)*10]):r(2,9);return[f(a)+" × "+b+" =",a*b,()=>a*(b-b%10)+a*(b%10)]});
+d("C8","Divide bigger numbers","Share tens first, then ones.","456",(L,Y)=>{const q=pk(Y===2&&L?[2,4,5,8]:[2,3,4,5,6,7,8,9]),n=r(3,X(L,Y,12,60));let a=q*n;if(Y===1){a+=r(0,q-1);return["What is the remainder when "+a+" is divided by "+q+"?",a%q,()=>a-q*Math.floor(a/q)]}if(Y===2&&L){a+=r(1,q-1);return[a+" ÷ "+q+" = (give a decimal)",fx(a/q),()=>fx(a*(1000/q)/1000)]}return[a+" ÷ "+q+" =",n,()=>{let c=0,x=a;while(x>0){x-=q;c++}return c}]});
+d("C9","Decimals × and ÷ by one digit","Do it like whole numbers, then place the point.","56",(L,Y)=>{const k=r(2,9);if(r(0,1)){const q=r(11,X(L,Y,99,999));return[dc(q*k,2)+" ÷ "+k+" =",fx(q/100),()=>fx(+dc(q*k,2)/k)]}const i=r(105,X(L,Y,500,999));return[dc(i,2)+" × "+k+" =",fx(i*k/100),()=>fx(+dc(i,2)*k)]});
+d("C10","Order of operations","Brackets first, then × ÷, then + −.","56",(L,Y)=>{const a=r(2,12),b=r(2,9),c=r(2,9),E=[["a + b × c",(a,b,c)=>a+b*c],["(a + b) × c",(a,b,c)=>(a+b)*c],["a × b − c",(a,b,c)=>a*b-c],["a × (b + c)",(a,b,c)=>a*(b+c)]],e=E[r(0,Math.min(3,L+1))],s=e[0].replace(/[abc]/g,m=>({a,b,c})[m]);return[s+" =",e[1](a,b,c),()=>new Function("return "+s.replace(/×/g,"*").replace(/−/g,"-"))()]});
+d("C11","Inverse operations","Undo + with −, and × with ÷.","456",(L,Y)=>{const m=[90,900,9e3][Y],a=X(L,Y,12,m),b=X(L,Y,12,m),k=r(0,2);return k===0?[f(a)+" + ? = "+f(a+b),b,()=>(a+b)-a]:k===1?[f(a+b)+" − ? = "+f(a),b,()=>(a+b)-a]:[a+" × "+b+" = "+a*b+". So "+a*b+" ÷ "+b+" = ?",a,()=>(a*b)/b]});
+d("C12","Word problems","Decide the steps, then solve.","456",(L,Y)=>{const n=pk(["Asha","Ben","Caro","Dev","Ella"]),it=pk(["stickers","pencils","shells","cards"]),a=r(2,X(L,Y,6,12)),b=r(3,X(L,Y,9,25)),c=r(1,a*b-1);return[n+" has "+a+" packs of "+b+" "+it+" and gives away "+c+". How many "+it+" are left?",a*b-c,()=>{let s=0;for(let i=0;i<a;i++)s+=b;return s-c}]});
+/* ---- M,P: factors, patterns, algebra ---- */
+d("M1","Factors and multiples","Factors multiply to make the number.","456",(L,Y)=>{if(!Y){const a=pk([2,3,4,5,8,10]),k=r(3,9);return["What is the "+k+"th multiple of "+a+"?",a*k,()=>[...Array(k)].reduce(s=>s+a,0)]}const n=pk([12,16,18,20,24,30,36,40,48].slice(0,4+L*2+Y));return["How many factors does "+n+" have?",[...Array(n)].map((_,i)=>i+1).filter(i=>n%i===0).length,()=>{const s=new Set;for(let i=1;i*i<=n;i++)if(n%i===0){s.add(i);s.add(n/i)}return s.size}]});
+d("M2","Squares, cubes, primes","A square is n × n; a prime has only two factors.","56",(L,Y)=>{const k=r(0,Y>1?3:2);let n=r(2,10);if(k===0)return["What is "+n+" × "+n+" (the square of "+n+")?",n*n,()=>Math.pow(n,2)];if(k===1){n=r(12,60);const p=m=>{for(let i=2;i<m;i++)if(m%i===0)return false;return true};return["Is "+n+" a prime number?",p(n)?"yes":"no",()=>[...Array(n)].map((_,i)=>i).filter(i=>i>1&&n%i===0).length?"no":"yes",["yes","no"]]}if(k===2){n=r(4,12);return["Triangular numbers go 1, 3, 6, 10, … What is number "+n+" in the list?",n*(n+1)/2,()=>{let s=0;for(let i=1;i<=n;i++)s+=i;return s}]}return["What is "+n+" × "+n+" × "+n+" (the cube of "+n+")?",n**3,()=>n*n*n]});
+d("P1","Repeating patterns","Find the unit that repeats.","4",(L,Y)=>{const sy=sh(["▲","●","■","★","♦"]).slice(0,2+(L?1:0)),len=r(2,3+L),u=Array.from({length:len},()=>pk(sy)),n=len*2+r(1,len-1),s=Array.from({length:n},(_,i)=>u[i%len]);return["Which comes next?  "+s.join(" ")+" ?",u[n%len],()=>u[n%u.length],sy]});
+d("P2","Number sequences","Find the rule that links each term.","456",(L,Y)=>{const k=r(0,Y?2:1);let s;if(k===0){const e=pk([3,4,6,7,9,11]),a=r(1,20);s=[0,1,2,3].map(i=>a+e*i);return["Next number: "+s.join(", ")+", ?",s[3]+e,()=>a+4*e]}if(k===1){const a=r(2,6);s=[0,1,2,3].map(i=>a*2**i);return["Next number: "+s.join(", ")+", ?",a*16,()=>s[3]*2]}const o=r(1,4);s=[0,1,2,3].map(i=>(i+o)**2);return["Square numbers: "+s.join(", ")+", ?",(o+4)**2,()=>s[3]+2*(o+3)+1]});
+d("P3","Find the unknown","Do the opposite to both sides.","456",(L,Y)=>{const u=Y?pk(["a","b","n"]):"♦",x=r(2,X(L,Y,12,40)),k=r(0,2),c=r(3,30),m=r(2,9);return k===0?[u+" + "+c+" = "+(x+c),x,()=>x+c-c]:k===1?[u+" − "+c+" = "+x,x+c,()=>x+c]:[m+" × "+u+" = "+m*x,x,()=>m*x/m]});
+/* ---- F: fractions ---- */
+d("F1","Fractions of a whole","The denominator is the number of equal parts.","456",(L,Y)=>{const dn=r(2,L?10:6),n=r(1,dn-1),b="■".repeat(n)+"□".repeat(dn-n);if(r(0,2)===0)return["Tap "+n+"/"+dn+" on the number line from 0 to 1.",n,()=>b.split("■").length-1,null,null,null,"nl",{n:dn,lab:i=>i===0?"0":i===dn?"1":"",ans:n+"/"+dn}];return["A bar is cut into equal parts: "+b+"  What fraction is shaded? (like 3/8)",n+"/"+dn,()=>"■".repeat(n).length+"/"+b.length]});
+d("F2","Compare fractions","Same denominator: compare the numerators.","456",(L,Y)=>{if(Y&&r(0,2)===0){const it=[];while(it.length<3){const dn=pk([2,3,4,5,6,8,10,12]),n=r(1,dn-1),v=n/dn;if(!it.some(x=>Math.abs(x.v-v)<1e-9))it.push({s:n+"/"+dn,v})}return ordq(it,"Put these fractions in order, smallest first.",true)}let n1,d1,n2,d2;do{d1=r(3,12);n1=r(1,d1-1);if(Y&&L){d2=pk([2,3,4,5,6,8,10,12]);n2=r(1,d2-1)}else{d2=d1;n2=r(1,d1-1)}}while(n1*d2===n2*d1);const A=n1+"/"+d1,B=n2+"/"+d2;return["Which fraction is bigger?",n1*d2>n2*d1?A:B,()=>n1/d1>n2/d2?A:B,[A,B]]});
+d("F3","Equivalent fractions","Multiply or divide top and bottom by the same number.","456",(L,Y)=>{let n,dn;do{dn=r(2,10);n=r(1,dn-1)}while(g(n,dn)>1);const k=r(2,Y?9:5);return Y?["Write "+n*k+"/"+dn*k+" in its simplest form.",n+"/"+dn,()=>{const q=g(n*k,dn*k);return n*k/q+"/"+dn*k/q},null,1]:[n+"/"+dn+" = ?/"+dn*k,n*k,()=>Math.round(n/dn*dn*k)]});
+d("F4","Fraction of an amount","Divide by the denominator, times the numerator.","456",(L,Y)=>{const dn=pk(L?[3,4,5,6,8,10]:[2,4,5,10]),n=Y?r(1,dn-1):1,k=r(2,X(L,Y,10,12)),w=dn*k;return[n+"/"+dn+" of "+w+" =",n*k,()=>w/dn*n]});
+d("F5","Fraction, decimal, percent","Same amount, three ways to write it.","56",(L,Y)=>{const dn=pk([2,4,5,10,20,25,50]),n=r(1,dn-1);return Y>1&&r(0,1)?["Write "+n+"/"+dn+" as a percentage.",n*100/dn,()=>Math.round(n/dn*1e4)/100]:["Write "+n+"/"+dn+" as a decimal.",fx(n/dn),()=>fx(n*(100/dn)/100)]});
+d("F6","Percentage of an amount","10% is a tenth; 1% is a hundredth.","56",(L,Y)=>{const p=pk(L?[10,20,25,50,75,5,15]:[10,25,50]),w=20*r(1,X(L,Y,10,30));return L>1&&r(0,1)?["A coat costs £"+w+". It is "+p+"% off. What is the sale price in £?",w-w*p/100,()=>w*(100-p)/100]:[p+"% of "+w+" =",w*p/100,()=>w/100*p]});
+/* ---- Y: money ---- */
+d("Y1","Coins and notes","Use the biggest coin that fits.","456",(L,Y)=>{const p=r(11,X(L,Y,99,1999)),C=[1000,500,200,100,50,20,10,5,2,1];let c=0,x=p;C.forEach(v=>{c+=Math.floor(x/v);x%=v});return["What is the smallest number of coins and notes that make £"+dc(p,2)+"?",c,()=>{const m=[0];for(let i=1;i<=p;i++){m[i]=1e9;C.forEach(v=>{if(v<=i&&m[i-v]+1<m[i])m[i]=m[i-v]+1})}return m[p]}]});
+d("Y2","Shopping and change","Change = money paid − cost.","456",(L,Y)=>{const pay=pk([100,500,1000,2000].slice(0,Y?4:L?2:1)),c=r(5,pay-5);return["You pay £"+dc(pay,2)+" for something that costs £"+dc(c,2)+". How much change (£)?",dc(pay-c,2),()=>(pay/100-c/100).toFixed(2)]});
+d("Y3","Budgets and profit","Profit = money in − money spent.","456",(L,Y)=>{if(!Y){const m=r(100,500),c=r(80,500);return["You have £"+dc(m,2)+". A toy costs £"+dc(c,2)+". Do you have enough?",m>=c?"yes":"no",()=>m-c>=0?"yes":"no",["yes","no"]]}if(Y===1){const al=r(400,1000),s1=r(100,al-100);return["Your weekly allowance is £"+dc(al,2)+". You spend £"+dc(s1,2)+". How much is left (£)?",dc(al-s1,2),()=>((al-s1)/100).toFixed(2)]}const n=r(6,24),cp=r(20,90),sp=cp+r(5,40);return["A stall buys "+n+" cakes at "+cp+"p each and sells them all at "+sp+"p each. What is the profit in pence?",n*(sp-cp),()=>n*sp-n*cp]});
+d("Y4","Cards and digital payments","Keep PINs secret; check what you pay.","456",(L,Y)=>{const S=["Keep my PIN secret","Check my bank statement","Log out after paying online","Use a shop's official app"],U=["Tell a friend my PIN","Write my PIN on the card","Share a photo of my card online","Click a prize pop-up and pay"],c=pk(S);return["Which one keeps your money safe?",c,()=>S.find(x=>x===c),sh([c,...sh(U).slice(0,3)])]});
+/* ---- T: time ---- */
+d("T1","Telling the time","Quarter past, half past, quarter to.","456",(L,Y)=>{const hr=r(1,12),m=pk(L?[0,15,30,45,5,10,20,25,35,40,50,55]:[0,30,15,45]),p2=n=>String(n).padStart(2,"0"),w=m===0?hr+" o'clock":m===15?"quarter past "+hr:m===30?"half past "+hr:m===45?"quarter to "+(hr%12+1):m<30?m+" minutes past "+hr:(60-m)+" minutes to "+(hr%12+1);if(Y&&r(0,1)){const pm=r(0,1),h24=hr%12+(pm?12:0);return["Write "+hr+":"+p2(m)+(pm?" pm":" am")+" in 24-hour time (hh:mm).",p2(h24)+":"+p2(m),()=>new Date(2000,0,1,h24,m).toTimeString().slice(0,5)]}return["Write '"+w+"' as digital time (h:mm).",hr+":"+p2(m),()=>hr+":"+(m<10?"0"+m:m)]});
+d("T2","Units of time and calendar","60 seconds, 60 minutes, 24 hours.","456",(L,Y)=>{if(!Y){const i=r(0,11);return["How many days are in "+MN[i]+" (not a leap year)?",[31,28,31,30,31,30,31,31,30,31,30,31][i],()=>new Date(2023,i+1,0).getDate()]}const hh=r(1,X(L,Y,3,9)),mm=pk([0,15,30,45]);return["How many minutes are in "+hh+" h "+mm+" min?",hh*60+mm,()=>{let t=0;for(let i=0;i<hh;i++)t+=60;return t+mm}]});
+d("T3","Timetables","Find the first time that is not before yours.","456",(L,Y)=>{let t=r(360,700);const ds=[];for(let i=0;i<4;i++){ds.push(t);t+=r(20,70)}const q0=ds[r(0,2)]+r(1,15),F=m=>String(Math.floor(m/60)).padStart(2,"0")+":"+String(m%60).padStart(2,"0");return["Buses leave at "+ds.map(F).join(", ")+". You reach the stop at "+F(q0)+". When is the next bus?",F(ds.find(x=>x>=q0)),()=>F(ds.slice().sort((a,b)=>a-b).filter(x=>x>=q0)[0])]});
+d("T4","Start, end and elapsed time","Count on to the next hour, then the minutes.","56",(L,Y)=>{const s=r(360,1200),dur=r(25,X(L,Y,180,400)),F=m=>String(Math.floor(m/60)%24).padStart(2,"0")+":"+String(m%60).padStart(2,"0");return r(0,1)?["A film starts at "+F(s)+" and lasts "+Math.floor(dur/60)+" h "+dur%60+" min. When does it end (hh:mm)?",F(s+dur),()=>new Date(2000,0,1,0,s+dur).toTimeString().slice(0,5)]:["A train leaves at "+F(s)+" and arrives at "+F(s+dur)+". How many minutes is the journey?",dur,()=>Math.round((new Date(2000,0,1,0,s+dur)-new Date(2000,0,1,0,s))/6e4)]});
+d("T5","Timers, speed and distance","Distance = speed × time.","456",(L,Y)=>{if(!Y){const P=[["boiling an egg","egg timer"],["a 100 m sprint","stopwatch"],["the days to a birthday","calendar"],["a lesson","clock"]],p=pk(P);return["Which is best for timing "+p[0]+"?",p[1],()=>P.find(x=>x[0]===p[0])[1],sh(P.map(x=>x[1]))]}const sp=pk([30,40,50,60,80]),t=pk([1,2,3,4]);return["A car travels at "+sp+" km/h for "+t+" hours. How far does it go (km)?",sp*t,()=>[...Array(t)].reduce(s=>s+sp,0)]});
+/* ---- U: measurement ---- */
+d("U1","Choose a unit","Small: mm, cm. Long: km. Liquid: ml, l. Heavy: g, kg.","456",(L,Y)=>{const P=[["the length of a pencil","cm"],["the height of a door","m"],["the distance to the next town","km"],["a mug of tea","ml"],["a bath of water","l"],["an apple","g"],["a child","kg"],["a coin's thickness","mm"]],p=pk(P),U=["mm","cm","m","km","ml","l","g","kg"];return["Which unit is best to measure "+p[0]+"?",p[1],()=>P.find(x=>x[0]===p[0])[1],sh([p[1],...sh(U.filter(x=>x!==p[1])).slice(0,3)])]});
+d("U2","Read a scale","Work out what each small mark is worth.","456",(L,Y)=>{const u=pk([10,100,1000]),lo=u*r(0,9),k=r(1,9);return["The scale goes from "+f(lo)+" to "+f(lo+u)+" in 10 equal steps. What does the pointer show?",lo+u/10*k,()=>lo+k*(u/10),null,null,()=>h(Ruler,{lo,hi:lo+u,n:lo+u/10*k})]});
+d("U3","Convert metric units","× 100 or 1000 going down; ÷ going up.","456",(L,Y)=>{const P=[["m","cm",100],["km","m",1e3],["kg","g",1e3],["l","ml",1e3]],p=pk(P.slice(0,Y?4:2)),i=r(11,X(L,Y,99,999));if(r(0,1)||!Y){const x=dc(i,p[2]===100?2:3);return["Convert "+x+" "+p[0]+" to "+p[1]+".",i,()=>Math.round(+x*p[2])]}return["Convert "+i+" "+p[1]+" to "+p[0]+".",fx(i/p[2]),()=>fx(i*(1/p[2]))]});
+d("U4","Imperial units","12 inches = 1 foot; 14 pounds = 1 stone.","56",(L,Y)=>{const P=[["feet","inches",12],["stones","pounds",14],["pounds","ounces",16],["yards","feet",3]],p=pk(P),n=r(2,X(L,Y,5,12));return Y===1&&!L?["Which unit suits the distance between two cities?","miles",()=>"miles",["miles","inches","pounds","gallons"]]:["How many "+p[1]+" are in "+n+" "+p[0]+"?",n*p[2],()=>[...Array(n)].reduce(s=>s+p[2],0)]});
+d("U5","Perimeter","Add all the sides.","56",(L,Y)=>{if(r(0,3)===0){const P=2*r(4,Y?11:8);return["Draw a rectangle with a perimeter of "+P+" units on the dot grid (tap two opposite corners, then Check).",P,()=>P,null,null,null,"rectp"]}if(Y===2){const l=r(21,X(L,Y,60,120)),w=r(11,l-1);return["A rectangle is "+dc(l,1)+" cm by "+dc(w,1)+" cm. What is its perimeter (cm)?",dc(2*(l+w),1),()=>(+dc(l,1)+ +dc(w,1)+ +dc(l,1)+ +dc(w,1)).toFixed(1)]}const l=r(3,X(L,Y,12,30)),w=r(2,l-1);return L?["A rectangle has perimeter "+2*(l+w)+" cm and length "+l+" cm. What is its width (cm)?",w,()=>2*(l+w)/2-l]:["A rectangle is "+l+" cm by "+w+" cm. What is its perimeter (cm)?",2*(l+w),()=>l+w+l+w]});
+d("U6","Area","Count squares or multiply length by width.","456",(L,Y)=>{const a=r(2,X(L,Y,6,15)),b=r(2,X(L,Y,6,15)),c=r(2,5),e=r(2,5);return Y===2&&L?["An L-shape is a "+a+" cm by "+b+" cm rectangle joined to a "+c+" cm by "+e+" cm rectangle. What is the total area (cm²)?",a*b+c*e,()=>{let s=0;for(let i=0;i<a;i++)s+=b;for(let i=0;i<c;i++)s+=e;return s}]:["A rectangle covers "+a+" squares by "+b+" squares. How many squares is its area?",a*b,()=>{let s=0;for(let i=0;i<a;i++)s+=b;return s},null,null,()=>Sq(a,b)]});
+d("U7","Volume","Layers of unit cubes: length × width × height.","56",(L,Y)=>{const a=r(2,X(L,Y,5,10)),b=r(2,X(L,Y,5,10)),c=r(2,X(L,Y,4,9));return["A cuboid is "+a+" cm long, "+b+" cm wide and "+c+" cm high. What is its volume (cm³)?",a*b*c,()=>{let s=0;for(let i=0;i<c;i++)for(let j=0;j<a;j++)s+=b;return s}]});
+d("U8","Same area, different shape","Different rectangles can share one area.","456",(L,Y)=>{const n=pk([12,16,18,20,24,30,36].slice(0,3+L*2));if(r(0,2)===0)return["Draw a rectangle with an area of "+n+" squares on the dot grid (tap two opposite corners, then Check).",n,()=>n,null,null,null,"rect"];return["How many different rectangles with whole-number sides have an area of "+n+" cm²? (2 × 6 and 6 × 2 count once)",Math.ceil([...Array(n)].map((_,i)=>i+1).filter(i=>n%i===0).length/2),()=>{let c=0;for(let i=1;i*i<=n;i++)if(n%i===0)c++;return c}]});
+/* ---- S: shape and position ---- */
+d("S1","2D shapes","Name shapes by their number of sides.","456",(L,Y)=>{const P=["triangle","quadrilateral","pentagon","hexagon","heptagon","octagon","nonagon","decagon"],i=r(0,L>1?7:L?5:3);return r(0,1)?["How many sides does a "+P[i]+" have?",i+3,()=>P.indexOf(P[i])+3]:["Which shape has "+(i+3)+" sides?",P[i],()=>P[i],sh([P[i],...sh(P.filter((_,j)=>j!==i)).slice(0,3)])]});
+d("S2","3D shapes","Count faces, edges and vertices.","456",(L,Y)=>{const P=[["cube",6,12,8],["cuboid",6,12,8],["triangular prism",5,9,6],["square-based pyramid",5,8,5],["tetrahedron",4,6,4]],p=pk(P),k=r(1,3);return Y===2&&r(0,1)?["A solid has "+p[1]+" faces and "+p[2]+" edges. How many vertices? (V − E + F = 2)",p[3],()=>2+p[2]-p[1]]:["How many "+["","faces","edges","vertices"][k]+" does a "+p[0]+" have?",p[k],()=>P.find(x=>x[0]===p[0])[k]]});
+d("S3","Tiling and drawing shapes","Tiles must fit with no gaps.","456",(L,Y)=>{if(!Y||r(0,1)){const P=["square","equilateral triangle","regular hexagon"],N=["regular pentagon","regular octagon"],n=pk(N);return["Which shape can NOT tile a flat surface on its own with no gaps?",n,()=>N.find(x=>x===n),sh([...P,n])]}const x=r(1,6),y=r(1,6),w=r(2,5),hh=r(2,5);return["A rectangle has corners ("+x+","+y+"), ("+(x+w)+","+y+") and ("+x+","+(y+hh)+"). What is the fourth corner? (x,y)",(x+w)+","+(y+hh),()=>[x+w,y+hh].join(",")]});
+d("S4","Angles and turns","A right angle is 90°; a straight line is 180°.","456",(L,Y)=>{if(!Y){const t=pk([[90,"quarter"],[180,"half"],[360,"full"]]);return["How many degrees are in a "+t[1]+" turn?",t[0],()=>360/({quarter:4,half:2,full:1})[t[1]]]}if(Y>1&&L){const a=r(2,34)*5;return["Angles on a straight line add up to 180°. One angle is "+a+"°. What is the other angle?",180-a,()=>360/2-a]}const a=r(1,Y>1?70:36)*5;if(r(0,2)===0)return["Set the angle to "+a+"° (drag the arm, then Check).",a,()=>a,null,null,null,"angle"];return["Is an angle of "+a+"° acute, right, obtuse, straight or reflex?",a<90?"acute":a===90?"right":a<180?"obtuse":a===180?"straight":"reflex",()=>[[0,"acute"],[90,"right"],[91,"obtuse"],[180,"straight"],[181,"reflex"]].filter(x=>x[0]<=a).pop()[1],["acute","right","obtuse","straight","reflex"],null,()=>Ang(a)]});
+d("S5","Direction and coordinates","Across first (x), then up (y).","456",(L,Y)=>{if(Y===2){const x=r(1,6),y=r(1,6),dx=r(1,4),dy=r(1,4);return["Start at ("+x+","+y+"). Move "+dx+" right and "+dy+" up. Where are you? (x,y)",(x+dx)+","+(y+dy),()=>[x+dx,y+dy].join(",")]}if(Y){const C=["N","NE","E","SE","S","SW","W","NW"],i=r(0,7);return["Which compass direction is opposite to "+C[i]+"?",C[(i+4)%8],()=>C[(i+4)%C.length],sh([C[(i+4)%8],...sh(C.filter(x=>x!==C[(i+4)%8])).slice(0,3)])]}const C=["N","E","S","W"],i=r(0,3);return["Face "+C[i]+". Turn a quarter turn clockwise. Which way do you face?",C[(i+1)%4],()=>C[(i+1)%4],C]});
+d("S6","Symmetry","A line of symmetry splits a shape into mirror halves.","456",(L,Y)=>{const P=[["square",4],["rectangle",2],["equilateral triangle",3],["regular pentagon",5],["regular hexagon",6],["isosceles triangle",1],["scalene triangle",0]],p=pk(P.slice(0,Math.min(7,4+L+Y)));return["How many lines of symmetry does a "+p[0]+" have?",p[1],()=>P.find(x=>x[0]===p[0])[1]]});
+/* ---- D,H,W: data, chance, history ---- */
+d("D1","Tally and frequency","Count each group of five, then add.","456",(L,Y)=>{const C=sh(["Cats","Dogs","Fish","Birds"]),v=C.map(()=>r(3,X(L,Y,12,30))),tl=n=>Array.from({length:Math.ceil(n/5)},(_,i)=>"|".repeat(Math.min(5,n-i*5))).join(" "),k=r(0,1);return["Pets in a class: "+C.map((c,i)=>c+" "+tl(v[i])).join(";  ")+". "+(k?"How many pets in total?":"What is the difference between "+C[0]+" and "+C[1]+"?"),k?v.reduce((a,b)=>a+b,0):Math.abs(v[0]-v[1]),()=>{let s=0;v.forEach(x=>s+=x);return k?s:Math.abs(v[0]-v[1])}]});
+const Bars=(v,u)=>{const mx=Math.max(...v.map(x=>x[1])),top=Math.ceil(mx/u)*u,sc=110/top,gl=[];for(let y=0;y<=top;y+=u)gl.push(h("g",{key:"g"+y},h("line",{x1:34,x2:290,y1:130-y*sc,y2:130-y*sc,stroke:"currentColor",opacity:.25}),h("text",{x:30,y:134-y*sc,fontSize:10,textAnchor:"end",fill:"currentColor"},y)));return h("svg",{viewBox:"0 0 300 160",style:{maxWidth:360,width:"100%"},role:"img","aria-label":"Bar graph. "+v.map(x=>x[0]+" "+x[1]).join(", ")},gl,v.map((x,i)=>h("g",{key:i},h("rect",{x:44+i*62,y:130-x[1]*sc,width:42,height:x[1]*sc,fill:"var(--pri)"}),h("text",{x:65+i*62,y:148,fontSize:11,textAnchor:"middle",fill:"currentColor"},x[0]))))};
+d("D2","Read a bar graph","Read the title and the scale first.","456",(L,Y)=>{const C=sh(["Cats","Dogs","Fish","Birds","Rabbits"]).slice(0,4),u=pk(Y?[2,5,10]:[1,2]),v=C.map(()=>u*r(1,8)),k=Y>1?2:r(0,1)*Y,vs=()=>Bars(C.map((c,i)=>[c,v[i]]),u);if(Y>1&&r(0,1)){const T=pk([4,5,10]),n=r(1,T-1),ch=T*pk([6,10,12]);return["The pie chart has "+T+" equal sectors and "+C[0]+" cover "+n+" of them. "+ch+" children voted. How many chose "+C[0].toLowerCase()+"?",ch/T*n,()=>ch*n/T,null,null,()=>Pie(Array.from({length:T},(_,i)=>i<n?0:1),"Pie chart with "+T+" equal sectors, "+n+" belong to "+C[0])]}if(r(0,2)===0)return["Each ★ stands for "+u+". How many "+C[0]+"?",v[0],()=>v[0]/u*u,null,null,()=>Pic(C,v,u)];if(Y&&r(0,2)===0){const dy=["Mon","Tue","Wed","Thu","Fri"],tp=dy.map(()=>r(2,12)*2),i=r(0,4);return["The line graph shows the temperature (°C) each day. What was it on "+dy[i]+"?",tp[i],()=>tp.slice(i,i+1)[0],null,null,()=>LineG(dy,tp)]}return k===2?["Add "+C[0]+" and "+C[1]+", then take away "+C[2]+".",v[0]+v[1]-v[2],()=>v.slice(0,2).reduce((a,b)=>a+b,0)-v[2],null,null,vs]:k?["What is the difference between "+C[0]+" and "+C[1]+"?",Math.abs(v[0]-v[1]),()=>Math.max(v[0],v[1])-Math.min(v[0],v[1]),null,null,vs]:["How many "+C[0]+"?",v[0],()=>v[C.indexOf(C[0])],null,null,vs]});
+d("D3","Choose a graph scale","Pick a scale that fits the biggest value.","56",(L,Y)=>{const b=pk([2,5,10,20]),v=[b*r(4,12),b*r(1,12),b*r(1,12),b*r(1,12)],mx=Math.max(...v),c=[1,2,5,10,20,50].filter(s=>v.every(x=>x%s===0)&&mx/s>=4&&mx/s<=20),a=Math.max(...c);return["A bar graph shows "+v.join(", ")+". Which scale (1 square = ?) fits best?",a,()=>c.reduce((m,x)=>x>m?x:m,0),sh([a,...sh([1,2,5,10,20,50].filter(x=>x!==a)).slice(0,3)])]});
+d("D4","Venn and Carroll diagrams","Numbers in both circles meet both rules.","456",(L,Y)=>{const N=X(L,Y,12,30),[a,b]=pk([[2,3],[2,5],[3,4],[3,5]]);return["Numbers 1 to "+N+": circle A is multiples of "+a+", circle B is multiples of "+b+". How many numbers are in BOTH circles?",Math.floor(N/(a*b)),()=>[...Array(N)].map((_,i)=>i+1).filter(n=>n%a===0&&n%b===0).length]});
+d("D5","Choose a graph; trust data","Match the display to the data; bigger samples are more reliable.","456",(L,Y)=>{const P=[["how the temperature changes over a week","line graph"],["how many children chose each pet","bar graph"],["how a class's time is shared between activities","pie chart"],["a plant's height each week","line graph"],["votes for favourite fruit","bar graph"]],p=pk(P);if(Y>1&&r(0,1)){const a=r(5,15),b=a*r(10,30);return["One survey asked "+a+" people. Another asked "+b+". Which sample is more reliable?",String(b),()=>String(Math.max(a,b)),[String(a),String(b)]]}return["Which is the best display for "+p[0]+"?",p[1],()=>P.find(x=>x[0]===p[0])[1],["line graph","bar graph","pie chart","tally chart"]]});
+d("H1","Language of chance","Impossible, unlikely, equally likely, likely, certain.","456",(L,Y)=>{let c,t;do{c=r(0,8);t=r(0,8)}while(c+t===0);const p=c/(c+t);return["A bag has "+c+" red and "+t+" blue counters. Picking a red one is …",p===0?"impossible":p===1?"certain":p===.5?"equally likely":p<.5?"unlikely":"likely",()=>c===0?"impossible":t===0?"certain":c===t?"equally likely":c*2<c+t?"unlikely":"likely",["impossible","unlikely","equally likely","likely","certain"],null,()=>Pie(Array(c).fill(0).concat(Array(t).fill(1)),"Spinner with "+c+" red and "+t+" blue equal sectors",["#e5484d","#38bdf8"])]});
+d("H2","Probability as a fraction","Favourable outcomes ÷ all outcomes.","56",(L,Y)=>{const c=r(1,6),t=r(1,6),e=c%5+1;return r(0,1)?["A bag has "+c+" red and "+t+" blue counters. What is the probability of picking red? (fraction)",c+"/"+(c+t),()=>c+"/"+(c+t),null,null,()=>Pie(Array(c).fill(0).concat(Array(t).fill(1)),"Spinner with "+c+" red and "+t+" blue equal sectors",["#e5484d","#38bdf8"])]:["A fair die is rolled. What is the probability of getting more than "+e+"? (fraction)",(6-e)+"/6",()=>[1,2,3,4,5,6].filter(x=>x>e).length+"/6"]});
+d("H3","Predictions and experiments","Expected count = chance × number of tries.","56",(L,Y)=>{const dn=pk([2,4,5,6,10]),n=r(1,Math.min(3,dn-1)),N=dn*r(5,X(L,Y,10,30));return["The chance of an event is "+n+"/"+dn+". If you try "+N+" times, about how many times should it happen?",N/dn*n,()=>Math.round(N*n/dn)]});
+d("W1","Number systems through history","Roman numerals use I V X L C D M.","456",(L,Y)=>{const R=[[1000,"M"],[900,"CM"],[500,"D"],[400,"CD"],[100,"C"],[90,"XC"],[50,"L"],[40,"XL"],[10,"X"],[9,"IX"],[5,"V"],[4,"IV"],[1,"I"]],n=r(1,Y?399:39),val={I:1,V:5,X:10,L:50,C:100,D:500,M:1000};let s="",x=n;R.forEach(([v,z])=>{while(x>=v){s+=z;x-=v}});return["The Romans wrote a number as "+s+". What number is it?",n,()=>{let t=0;for(let i=0;i<s.length;i++){const a=val[s[i]],b=val[s[i+1]]||0;t+=a<b?-a:a}return t}]});
+/* ---- guides, hub, exercises ---- */
+/* ---- illustrated guides: pictures, formulas, word definitions ---- */
+const SV=(w,hh,al,...ch)=>h("svg",{viewBox:"0 0 "+w+" "+hh,style:{maxWidth:360,width:"100%"},role:"img","aria-label":al},...ch);
+const Tx=(x,y,s,c,sz)=>h("text",{x,y,fontSize:sz||12,textAnchor:"middle",fill:c||"currentColor",fontWeight:700},s);
+const Ln=(x1,y1,x2,y2,c,w,d)=>h("line",{x1,y1,x2,y2,stroke:c||"currentColor",strokeWidth:w||2,strokeDasharray:d});
+const PLG=(n,cx,cy,rr)=>Array.from({length:n},(_,i)=>{const a=(i/n-.25)*2*Math.PI;return[cx+rr*Math.cos(a),cy+rr*Math.sin(a)]});
+const poly=(n,mir)=>{const P=PLG(n,100,75,55);return SV(200,150,n+"-sided regular polygon"+(mir?" with lines of symmetry":""),h("polygon",{points:P.map(p=>p.join(",")).join(" "),fill:"var(--pri)",fillOpacity:.2,stroke:"currentColor",strokeWidth:3}),P.map((p,i)=>h("circle",{key:i,cx:p[0],cy:p[1],r:4,fill:"#e5484d"})),mir&&Array.from({length:n},(_,k)=>{const a=(-.5+k/n)*Math.PI;return h("line",{key:"m"+k,x1:100-72*Math.cos(a),y1:75-72*Math.sin(a),x2:100+72*Math.cos(a),y2:75+72*Math.sin(a),stroke:"#22b573",strokeWidth:2,strokeDasharray:"5 4"})}))};
+const NMP=["","","","triangle","square (a regular quadrilateral)","pentagon","hexagon","heptagon","octagon","nonagon","decagon"];
+const FB=(n,d,y)=>Array.from({length:d},(_,i)=>h("rect",{key:i,x:10+i*(260/d),y,width:260/d-2,height:28,fill:i<n?"var(--pri)":"transparent",fillOpacity:.6,stroke:"currentColor",strokeWidth:2}));
+const PG=p=>SV(120,120,p+" out of 100 squares shaded",Array.from({length:100},(_,i)=>h("rect",{key:i,x:4+(i%10)*11,y:4+Math.floor(i/10)*11,width:10,height:10,fill:i<p?"var(--pri)":"transparent",stroke:"currentColor",strokeWidth:.7})));
+const Dots=(a,b)=>SV(b*22+10,a*22+10,a+" rows of "+b+" dots",Array.from({length:a*b},(_,i)=>h("circle",{key:i,cx:16+(i%b)*22,cy:16+Math.floor(i/b)*22,r:7,fill:"var(--pri)"})));
+const rectv=(l,w)=>SV(220,140,"Rectangle "+l+" cm by "+w+" cm",h("rect",{x:40,y:30,width:140,height:80,fill:"var(--pri)",fillOpacity:.25,stroke:"currentColor",strokeWidth:3}),Tx(110,22,l+" cm","#e5484d"),Tx(110,128,l+" cm","#e5484d"),Tx(22,74,w+" cm","#22b573",11),Tx(200,74,w+" cm","#22b573",11));
+const cub=(l,w,hh)=>SV(200,150,"Cuboid: length "+l+", width "+w+", height "+hh,h("polygon",{points:"40,60 120,60 120,120 40,120",fill:"var(--pri)",fillOpacity:.35,stroke:"currentColor",strokeWidth:2}),h("polygon",{points:"40,60 70,35 150,35 120,60",fill:"var(--pri)",fillOpacity:.15,stroke:"currentColor",strokeWidth:2}),h("polygon",{points:"120,60 150,35 150,95 120,120",fill:"var(--pri)",fillOpacity:.5,stroke:"currentColor",strokeWidth:2}),Tx(80,137,"length "+l+" cm","#e5484d"),Tx(168,80,"width "+w,"#22b573",10),Tx(22,95,"height "+hh,"#ffb300",10));
+const S3D=[["cube",6,12,8,"M40 60h60v60h-60zM70 35h60v60h-60zM40 60l30-25M100 60l30-25M100 120l30-25M40 120l30-25",[[40,60],[100,60],[100,120],[40,120],[70,35],[130,35],[130,95],[70,95]]],["square-based pyramid",5,8,5,"M40 110H110L140 85H70ZM90 25L40 110M90 25L110 110M90 25L140 85M90 25L70 85",[[40,110],[110,110],[140,85],[70,85],[90,25]]],["triangular prism",5,9,6,"M40 110H100L70 70ZM80 90H140L110 50ZM40 110L80 90M100 110L140 90M70 70L110 50",[[40,110],[100,110],[70,70],[80,90],[140,90],[110,50]]]];
+const VIS={
+S1:()=>{if(r(0,1)){const n=r(3,10);return[poly(n),"A "+NMP[n]+" has "+n+" straight sides and "+n+" vertices (corners, red dots). Regular means all sides and angles are equal."]}const rd=r(2,9);return[SV(200,150,"Circle with radius, diameter and circumference",h("circle",{cx:100,cy:75,r:60,fill:"var(--pri)",fillOpacity:.15,stroke:"currentColor",strokeWidth:3}),Ln(40,75,160,75,"#e5484d",3),Ln(100,75,142.4,32.6,"#22b573",3),Tx(70,92,"diameter","#e5484d"),Tx(135,45,"radius","#22b573",11),Tx(100,146,"circumference = all the way round",null,9)),"Radius "+rd+" cm → diameter = 2 × "+rd+" = "+2*rd+" cm. Radius = half of the diameter. The circumference is the distance round the edge."]},
+S2:()=>{const s=pk(S3D);return[SV(170,130,"A "+s[0],h("path",{d:s[4],fill:"var(--pri)",fillOpacity:.15,stroke:"currentColor",strokeWidth:2.5,strokeLinejoin:"round"}),s[5].map((p,i)=>h("circle",{key:i,cx:p[0],cy:p[1],r:4,fill:"#e5484d"}))),"A "+s[0]+" has "+s[1]+" faces (flat surfaces), "+s[2]+" edges (lines) and "+s[3]+" vertices (red dots). Check: "+s[3]+" − "+s[2]+" + "+s[1]+" = 2"]},
+S4:()=>{const a=r(1,35)*5,nm=a<90?"acute":a===90?"a right angle":a<180?"obtuse":a===180?"a straight line":"reflex";return[Ang(a),a+"° is "+nm+". Acute: under 90°. Right: exactly 90°. Obtuse: 90° to 180°. Straight: 180°. Reflex: over 180°. A full turn is 360°."]},
+S5:()=>{const x=r(1,6),y=r(1,6);return[SV(200,190,"Coordinate grid with the point ("+x+","+y+")",Array.from({length:7},(_,i)=>h("g",{key:i},Ln(30+i*24,10,30+i*24,154,null,.5),Ln(30,154-i*24,174,154-i*24,null,.5),Tx(30+i*24,170,i),Tx(18,158-i*24,i))),Ln(30,154,174,154),Ln(30,10,30,154),Ln(30+x*24,154,30+x*24,154-y*24,"#e5484d",2,"4 3"),Ln(30,154-y*24,30+x*24,154-y*24,"#22b573",2,"4 3"),h("circle",{cx:30+x*24,cy:154-y*24,r:5,fill:"#7c5cff"}),Tx(102,186,"x (across)",null,10)),"The point is ("+x+", "+y+"): go across "+x+", then up "+y+". Across first, then up!"]},
+S6:()=>{const n=r(3,8);return[poly(n,true),"A regular "+NMP[n].split(" ")[0]+" has "+n+" lines of symmetry (green dashes): fold along one and both halves match."]},
+U3:()=>{const x=r(2,9);return[h("div",{style:{fontWeight:800,lineHeight:1.8}},h("div",null,"km ─ × 1000 → m ─ × 100 → cm ─ × 10 → mm"),h("div",null,"mm ─ ÷ 10 → cm ─ ÷ 100 → m ─ ÷ 1000 → km")),x+" m = "+x+" × 100 = "+x*100+" cm.  Going to a smaller unit: multiply. Going to a bigger unit: divide."]},
+U5:()=>{const l=r(3,9),w=r(2,l-1);return[rectv(l,w),"Perimeter = 2 × (length + width) = 2 × ("+l+" + "+w+") = 2 × "+(l+w)+" = "+2*(l+w)+" cm. (It is the same as adding all four sides: "+l+" + "+w+" + "+l+" + "+w+".)"]},
+U6:()=>{const a=r(2,8),b=r(2,6);return[Sq(a,b),"Area = length × width = "+a+" × "+b+" = "+a*b+" squares. Count the squares to check: "+b+" rows of "+a+"."]},
+U7:()=>{const l=r(2,6),w=r(2,6),hh=r(2,6);return[cub(l,w,hh),"Volume = length × width × height = "+l+" × "+w+" × "+hh+" = "+l*w*hh+" cm³. (Bottom layer: "+l+" × "+w+" = "+l*w+" cubes, and "+hh+" layers.)"]},
+F1:()=>{const d=r(2,10),n=r(1,d-1);return[SV(280,48,n+" of "+d+" parts shaded",FB(n,d,10)),"The bar is cut into "+d+" equal parts (bottom number = denominator). "+n+" are shaded (top number = numerator). Fraction = "+n+"/"+d+"."]},
+F2:()=>{const d=r(4,12),a=r(1,d-1);let b;do{b=r(1,d-1)}while(b===a);return[SV(280,84,"Two fractions with the same denominator",FB(a,d,4),FB(b,d,44)),a+"/"+d+" and "+b+"/"+d+" have equal parts, so compare the tops: "+Math.max(a,b)+" is bigger than "+Math.min(a,b)+", so "+Math.max(a,b)+"/"+d+" is bigger."]},
+F3:()=>{const d=r(2,5),n=r(1,d-1),k=r(2,3);return[SV(280,84,"Equivalent fractions",FB(n,d,4),FB(n*k,d*k,44)),n+"/"+d+" = "+n*k+"/"+d*k+" (multiply top and bottom by "+k+"). Same shaded amount, different name!"]},
+F4:()=>{const d=pk([2,4,5]),k=r(2,6),n=r(1,d-1);return[SV(280,48,"Bar split into "+d+" equal parts",FB(n,d,10)),n+"/"+d+" of "+d*k+": "+d*k+" ÷ "+d+" = "+k+" in each part, then "+k+" × "+n+" = "+n*k+"."]},
+F5:()=>{const p=pk([10,20,25,50,75]);return[PG(p),p+"% means "+p+" out of 100 = "+p+"/100 = "+p/100+" as a decimal. Here "+p+" of the 100 squares are shaded."]},
+F6:()=>{const p=pk([10,20,25,50]),w=pk([40,60,80,200]);return[PG(p),p+"% of "+w+" = "+w+" ÷ 100 × "+p+" = "+w/100+" × "+p+" = "+w/100*p+"."]},
+N2:()=>{const n=r(100,999),s=String(n);return[SV(210,80,"Place value chart for "+n,["Hundreds","Tens","Ones"].map((nm,i)=>h("g",{key:i},h("rect",{x:10+i*66,y:18,width:62,height:50,fill:"var(--pri)",fillOpacity:.2,stroke:"currentColor",strokeWidth:2}),Tx(41+i*66,13,nm,null,10),Tx(41+i*66,55,s[i],null,30)))),s[0]+" hundreds + "+s[1]+" tens + "+s[2]+" ones = "+s[0]*100+" + "+s[1]*10+" + "+s[2]+" = "+n]},
+N5:()=>{const n=r(101,999),s=(n/100).toFixed(2);return[SV(250,80,"Decimal place value chart for "+s,["Ones","Tenths","Hundredths"].map((nm,i)=>h("g",{key:i},h("rect",{x:10+i*78,y:18,width:70,height:50,fill:"var(--pri)",fillOpacity:.2,stroke:"currentColor",strokeWidth:2}),Tx(45+i*78,13,nm,null,10),Tx(45+i*78,55,[s[0],s[2],s[3]][i],null,30)))),s+" = "+s[0]+" ones + "+s[2]+" tenths + "+s[3]+" hundredths. The point separates whole numbers from parts."]},
+N6:()=>{const v=r(-5,5);return[SV(300,66,"Number line from -6 to 6 with "+v+" marked",Ln(15,32,285,32,null,3),Array.from({length:13},(_,i)=>h("g",{key:i},Ln(20+i*22.5,25,20+i*22.5,39),Tx(20+i*22.5,56,i-6,null,10))),h("circle",{cx:20+(v+6)*22.5,cy:32,r:7,fill:"#ff5c7a"})),v<0?v+" is "+(-v)+" steps to the LEFT of 0, so it is smaller than 0.":v>0?v+" is "+v+" steps to the RIGHT of 0.":"0 is in the middle."]},
+E1:()=>{const u=pk([10,100]),lo=u*r(1,9),n=lo+r(1,u-1);return[h(Ruler,{lo,hi:lo+u,n,mid:true}),n+" is "+(n-lo<u/2?"before halfway ("+(lo+u/2)+"), so round down to "+lo:"at or past halfway ("+(lo+u/2)+"), so round up to "+(lo+u))+"."]},
+C2:()=>{const a=r(100,899),b=r(100,999),A=String(a),B=String(b),R=String(a+b),cin=[0,0,0,0];let c=0;for(let k=0;k<3;k++){const t=+A[2-k]+ +B[2-k]+c;c=t>9?1:0;cin[k+1]=c}const cl=s=>s.padStart(4," ").split("").join(" "),t0=+A[2]+ +B[2];return[h("pre",{style:{fontSize:"1.3rem",fontWeight:800,lineHeight:1.25,margin:"6px 0"}},[[cin[3],cin[2],cin[1],0].map(x=>x?"1":" ").join(" ").replace(/ $/,"")," "+cl(A)," +"+cl(B).slice(1),"-----------"," "+cl(R)].join("\n")),"Ones first: "+A[2]+" + "+B[2]+" = "+t0+(t0>9?" → write "+t0%10+" and carry 1 (the small 1 above the next column).":" → write "+t0+".")+" Then the tens, then the hundreds. Answer: "+(a+b)]},
+C4:()=>{const a=r(2,6),b=r(2,6);return[Dots(a,b),a+" rows of "+b+" dots: "+a+" × "+b+" = "+a*b+". Turn it round: "+b+" × "+a+" = "+a*b+" too. Division undoes it: "+a*b+" ÷ "+b+" = "+a+"."]},
+C5:()=>{const a=r(2,6),b=r(2,6);return[Dots(a,b),a*b+" dots shared into "+a+" equal rows: "+a*b+" ÷ "+a+" = "+b+" in each row. Check: "+a+" × "+b+" = "+a*b+"."]},
+C7:()=>{const a=r(1,9)*10+r(1,9),b=r(2,9),t=a-a%10,o=a%10,w1=Math.max(50,Math.round(t/a*220)),w2=220-w1;return[SV(260,110,"Area model of "+a+" times "+b,h("rect",{x:20,y:28,width:w1,height:60,fill:"var(--pri)",fillOpacity:.3,stroke:"currentColor",strokeWidth:2}),h("rect",{x:20+w1,y:28,width:w2,height:60,fill:"#ffb300",fillOpacity:.35,stroke:"currentColor",strokeWidth:2}),Tx(20+w1/2,22,t),Tx(20+w1+w2/2,22,o),Tx(9,62,b),Tx(20+w1/2,62,t+" × "+b+" = "+t*b,null,11),Tx(20+w1+w2/2,62,o+"×"+b+"="+o*b,null,9)),a+" × "+b+" = ("+t+" × "+b+") + ("+o+" × "+b+") = "+t*b+" + "+o*b+" = "+a*b]},
+D2:()=>{const C=["Cats","Dogs","Fish","Birds"],u=pk([2,5]),v=C.map(()=>u*r(1,8));return[Bars(C.map((c,i)=>[c,v[i]]),u),"The scale goes up in "+u+"s. "+C[0]+" is "+v[0]+": find the top of its bar, then read across to the scale. Always check the scale first!"]},
+H1:()=>{const c=r(1,6),t=r(1,6);return[Pie(Array(c).fill(0).concat(Array(t).fill(1)),"Spinner with "+c+" red and "+t+" blue sectors",["#e5484d","#38bdf8"]),"Red covers "+c+" of "+(c+t)+" equal sectors. "+(c*2<c+t?"Less than half, so red is unlikely.":c*2===c+t?"Exactly half, so red is equally likely.":"More than half, so red is likely.")]},
+H2:()=>{const c=r(1,6),t=r(1,6);return[Pie(Array(c).fill(0).concat(Array(t).fill(1)),"Spinner with "+c+" red and "+t+" blue sectors",["#e5484d","#38bdf8"]),"P(red) = red sectors ÷ all sectors = "+c+" ÷ "+(c+t)+" = "+c+"/"+(c+t)+"."]},
+T1:()=>{const hr=r(1,12),m=pk([0,15,30,45]);return[h(Clock,{hh:hr,mm:m,labels:true}),(m===0?hr+" o'clock":m===15?"quarter past "+hr:m===30?"half past "+hr:"quarter to "+(hr%12+1))+" = "+hr+":"+String(m).padStart(2,"0")+". The short hand shows the hour. The long hand shows the minutes: each number is 5 minutes."]},
+Y1:()=>{const p=pk([87,143,64,119,175]),C=[[200,"£2"],[100,"£1"],[50,"50p"],[20,"20p"],[10,"10p"],[5,"5p"],[2,"2p"],[1,"1p"]],o=[];let x=p;C.forEach(([v,l])=>{while(x>=v){o.push(l);x-=v}});return[SV(o.length*44+8,52,"Coins that make "+p+" pence",o.map((l,i)=>h("g",{key:i},h("circle",{cx:26+i*44,cy:26,r:20,fill:"#ffd23f",stroke:"currentColor",strokeWidth:2}),Tx(26+i*44,31,l,"#2a2250",12)))),"To make "+(p>=100?"£"+(p/100).toFixed(2):p+"p")+": "+o.join(" + ")+" = "+o.length+" coins. Always start with the biggest coin that fits."]},
+M1:()=>{const n=pk([12,18,24,30,36]),ps=[];for(let i=1;i*i<=n;i++)if(n%i===0)ps.push(i+" × "+n/i);return[h("div",{style:{fontWeight:800,fontSize:"1.15rem"}},ps.map(x=>h("div",{key:x},x+" = "+n))),"These are the factor pairs of "+n+". The factors are every number in the pairs: "+ps.map(x=>x.split(" × ").join(", ")).join(", ")+"."]},
+W1:()=>{const R=[["I",1],["V",5],["X",10],["L",50],["C",100],["D",500],["M",1000]];return[h("div",{style:{fontWeight:800,lineHeight:1.7}},R.map(x=>h("span",{key:x[0],className:"pill",style:{margin:3,display:"inline-block"}},x[0]+" = "+x[1]))),"Add symbols that go big → small: XVI = 10 + 5 + 1 = 16. A small symbol in front of a big one is taken away: IV = 5 − 1 = 4, XL = 50 − 10 = 40."]}
+};
+const F={N1:"Compare the digits from the left. The first digit that is different decides which number is bigger.",N2:"Value of a digit = digit × its place (ones 1, tens 10, hundreds 100, thousands 1000 …).",N3:"Next number = this number + the step (or − the step when counting back).",N4:"< means smaller, > means bigger. The open mouth faces the bigger number.",N5:"Compare the ones, then tenths, then hundredths, then thousandths.",N6:"Counting down past 0 gives negative numbers: 3 − 5 = −2. The further left, the smaller.",E1:"Look at the digit to the right of the place you round to. 0–4 stays, 5–9 goes up.",E2:"Round money and decimals the same way: 5 or more goes up.",E3:"Round each number first, then add, subtract, multiply or divide.",C1:"Only the digit in that place changes: 436 + 300 = 736.",C2:"Line up the places. Start at the ones. Carry 1 when a column makes 10 or more; borrow 10 when the top digit is too small.",C3:"Line up the decimal points, then add or subtract like whole numbers.",C4:"a × b = a groups of b. Rows × columns = total.",C5:"a ÷ b = how many bs fit into a. Division undoes multiplication.",C6:"× 10: every digit moves 1 place left. ÷ 10: every digit moves 1 place right (× 100 and ÷ 100 move 2).",C7:"Split into tens and ones: 23 × 4 = (20 × 4) + (3 × 4) = 80 + 12 = 92.",C8:"Share the tens first, then the ones. Remainder = what is left over.",C9:"Ignore the point, multiply or divide, then put the point back.",C10:"Brackets first, then × and ÷, then + and −.",C11:"Inverse pairs: + and −, × and ÷. If 8 × 7 = 56 then 56 ÷ 7 = 8.",C12:"Read it, pick the operations, solve step by step, check that it makes sense.",M1:"A factor divides exactly. Factor pairs multiply to the number: 1 × 12, 2 × 6, 3 × 4.",M2:"Square = n × n. Cube = n × n × n. A prime has exactly two factors (1 and itself).",P1:"Find the shortest group that repeats, then carry it on.",P2:"Find the jump between neighbouring terms (add, double, square …), then use it.",P3:"Do the opposite to both sides: ♦ + 5 = 12, so ♦ = 12 − 5 = 7.",F1:"Fraction = parts chosen / equal parts altogether (top / bottom).",F2:"Same bottom number? Compare the tops. Different bottoms? Make the bottoms the same first.",F3:"Multiply or divide top and bottom by the same number: 1/2 = 2/4 = 3/6.",F4:"n/d of an amount = amount ÷ d × n.",F5:"Fraction → decimal: top ÷ bottom. Percent = decimal × 100.",F6:"p% of an amount = amount ÷ 100 × p.",Y1:"Use the biggest coin or note that fits, then the next, until you reach the total.",Y2:"Change = money paid − cost.",Y3:"Profit = money in − money spent. Money left = allowance − spending.",Y4:"Keep your PIN secret. Check your payments. Only pay on trusted sites.",T1:"Quarter past = :15, half past = :30, quarter to = :45. For pm, add 12 to get 24-hour time.",T2:"60 seconds = 1 minute, 60 minutes = 1 hour, 24 hours = 1 day.",T3:"Find the first time that is the same as, or after, your time.",T4:"End time = start time + how long. Time taken = end time − start time.",T5:"Distance = speed × time. Choose a timer that suits the length of time.",U1:"Small: mm, cm. Medium: m. Long: km. Light: g. Heavy: kg. Liquids: ml, l.",U2:"Each small mark = (size of the big step) ÷ (number of small steps).",U3:"m → cm × 100, km → m × 1000, kg → g × 1000, l → ml × 1000. Going back: ÷.",U4:"12 inches = 1 foot, 3 feet = 1 yard, 14 pounds = 1 stone, 16 ounces = 1 pound.",U5:"Perimeter of a rectangle = 2 × (length + width).",U6:"Area of a rectangle = length × width.",U7:"Volume of a cuboid = length × width × height.",U8:"Different rectangles can have the same area: 24 = 1 × 24 = 2 × 12 = 3 × 8 = 4 × 6.",S1:"Diameter = 2 × radius. Radius = diameter ÷ 2. The circumference is the distance round.",S2:"Vertices − edges + faces = 2.",S3:"Tiles must meet with no gaps. Corners that meet make 360°.",S4:"Right angle = 90°. Straight line = 180°. Full turn = 360°. Angles on a straight line add to 180°.",S5:"Coordinates (x, y): go across x, then up y.",S6:"A line of symmetry splits a shape into two mirror halves.",D1:"Tally marks go in fives. Count the groups of 5, then add the extras.",D2:"Read the title, the labels and the scale. Every line on the scale is worth the same.",D3:"Pick a scale so the biggest bar still fits: biggest value ÷ scale should be about 4 to 20 squares.",D4:"Numbers in the overlap follow both rules.",D5:"Change over time → line graph. Compare groups → bar graph. Parts of a whole → pie chart.",H1:"Impossible (none) → unlikely → equally likely → likely → certain (all).",H2:"Probability = favourable outcomes ÷ all outcomes.",H3:"Expected number = probability × number of tries.",W1:"I=1 V=5 X=10 L=50 C=100 D=500 M=1000. A small symbol before a big one is taken away (IV = 4)."};
+const WD={radius:"distance from the centre of a circle to its edge (half the diameter)",diameter:"distance across a circle through the centre (2 × radius)",circumference:"distance all the way round a circle",perimeter:"distance all the way round the outside of a shape",area:"the flat space inside a shape, in square units",volume:"the space inside a solid, in cubic units",vertex:"a corner where edges meet (plural: vertices)",edge:"a line where two faces of a solid meet",face:"a flat surface of a solid",angle:"the amount of turn between two lines, in degrees",symmetry:"when one half of a shape is a mirror image of the other",numerator:"the top number of a fraction (parts chosen)",denominator:"the bottom number of a fraction (equal parts altogether)",equivalent:"different names for the same amount, like 1/2 and 2/4",factor:"a number that divides exactly into another",multiple:"a number in a times table",prime:"a number with exactly two factors: 1 and itself",digit:"one of the symbols 0 to 9",sum:"the answer to an addition",difference:"the answer to a subtraction",product:"the answer to a multiplication",quotient:"the answer to a division",probability:"how likely something is, from 0 (impossible) to 1 (certain)",estimate:"a sensible guess found by rounding",acute:"an angle smaller than 90°",obtuse:"an angle between 90° and 180°",reflex:"an angle bigger than 180°",tally:"marks that count in fives"};
+const EW={S1:"radius, diameter, circumference, vertex",S2:"face, edge, vertex",S4:"angle, acute, obtuse, reflex",S6:"symmetry",U5:"perimeter",U6:"area",U7:"volume",F1:"numerator, denominator",F3:"equivalent, numerator, denominator",H2:"probability",M1:"factor, multiple, prime",M2:"prime, factor",C2:"sum, difference, digit",C4:"product, multiple",C5:"quotient, factor",E3:"estimate",D1:"tally",N2:"digit",C7:"product"};
+const STR={N:["Number","scores, prices and distances","Say the number, check each place, compare from the left.","mixing up places or dropping a zero","digit, place, value, order"],E:["Rounding","quick checks and shopping","Find the two neighbours, see which is nearer; 5 goes up.","rounding the wrong way at 5","round, estimate, nearest"],C:["Calculation","money, sharing and building","Pick a method, work in steps, check with the opposite operation.","forgetting a carry or borrow","sum, difference, product, quotient"],M:["Factors and patterns","sharing fairly and spotting rules","List the pairs that multiply to the number.","missing a factor pair","factor, multiple, prime, square"],P:["Patterns and algebra","codes, rules and puzzles","Find what changes each step, then use it.","checking only the first step","pattern, rule, term, unknown"],F:["Fractions and percent","recipes, sales and sharing","Equal parts first: the denominator counts parts, the numerator counts chosen parts.","adding tops and bottoms","numerator, denominator, equivalent, percent"],Y:["Money","shops and saving","Work in pence, then convert back to £.","losing the decimal point","coin, change, profit, budget"],T:["Time","timetables and plans","Count on to the next hour, then the minutes.","using 100 minutes per hour","minute, hour, duration, 24-hour"],U:["Measurement","building, cooking and travel","Check the unit first, then calculate.","mixing units","perimeter, area, volume, convert"],S:["Shape and position","maps, design and building","Look at sides, angles and faces; count carefully.","miscounting faces or sides","vertex, edge, face, angle, symmetry"],D:["Data","surveys and reports","Read the title and the scale first.","ignoring the scale","tally, bar graph, scale, survey"],H:["Chance","games and weather","Count the good outcomes out of all outcomes.","forgetting all the outcomes","likely, certain, probability"],W:["Maths and history","reading old numbers","Learn the symbols and how they combine.","reading IV as 6","Roman, symbol, system"]};
+const TQ=q=>q.t+(q.o?"   ("+q.o.join(" / ")+")":"");
+const Pad=({c})=>h("div",{className:"row",style:{marginTop:6}},["7","8","9","4","5","6","1","2","3","0",".","-","/",":","£","⌫"].map(k=>h("button",{key:k,className:"btn sec",style:{minWidth:44,minHeight:44},disabled:c.fin,"aria-label":k==="⌫"?"Delete":k,onClick:()=>c.setAns(k==="⌫"?c.ans.slice(0,-1):(c.ans+k).slice(0,14))},k)));
+const rp=q=>h("details",{style:{marginTop:6}},h("summary",null,"Report this question"),h("small",null,"Concept "+q.cs[0]+" · seed "+q.seed+" (send this to replay it)"));
+const vw=(q,c)=>WID(q,c)?h("div",null,h("small",null,q.cs[0]),h("div",{style:{fontSize:"1.3rem",fontWeight:800,margin:"4px 0"}},q.t),WID(q,c),rp(q)):q.o?h("div",null,h("small",null,q.cs[0]),h("div",{style:{fontSize:"1.3rem",fontWeight:800,margin:"4px 0"}},q.t),q.vis&&q.vis(),h("div",{className:"row"},q.o.map(v=>h("button",{key:v,className:"btn",disabled:c.fin,onClick:()=>c.submit(String(v))},String(v)))),rp(q)):h("div",null,h("small",null,q.cs[0]),h("div",{style:{fontSize:"1.3rem",fontWeight:800,margin:"4px 0"}},q.t),q.vis&&q.vis(),h("input",{className:"num",style:{width:210},"aria-label":"Your answer",autoFocus:true,value:c.ans,disabled:c.fin,onChange:e=>c.setAns(e.target.value.slice(0,14)),onKeyDown:e=>{if(e.key==="Enter")c.go()}}),h(Pad,{c}),rp(q));
+const chk=(q,a)=>{if(a==="")return null;if(q.k==="angle")return Math.abs(+a-q.a)<=5;if(q.k==="rect"||q.k==="rectp"){const p=a.split(",").map(Number);if(p.length!==4)return null;const w=Math.abs(p[2]-p[0]),hh=Math.abs(p[3]-p[1]);return q.k==="rect"?w*hh===+q.a:w>0&&hh>0&&2*(w+hh)===+q.a}return same(a,q.a,q.ex)},SOL=q=>q.k==="angle"?q.a+"°":q.k==="rect"?"any rectangle with area "+q.a:q.k==="rectp"?"any rectangle with perimeter "+q.a:q.k==="nl"?q.nl.ans:q.a,hv=q=>h("p",null,STR[q.cs[0][0]][2]);
+const CEx=p=>{const t=D.find(x=>x.id===p.cid),[g,setG]=useState(false);return h("div",null,h(Ex,{...p,mode:"c_"+p.cid,labels:GL,concepts:[[p.cid,1]],gen:(l,y)=>gen(t,LI(l),YI(y)),init:q=>q.k==="order"?q.it.join(q.a.includes(">")?">":"<"):"",view:vw,check:chk,sol:SOL,hintView:hv}),h("button",{className:"btn sec",onClick:()=>setG(!g)},g?"Hide guide":"📖 Learn about "+p.cid),g&&h(Guide,{c:p.cid,data:p.data,onPractise:()=>setG(false)}))};
+const Mix=p=>{const yi=YI(p.data.year),av=D.filter(t=>t.ys.includes(String(yi+4)));return h(Ex,{...p,mode:"mix",labels:GL,concepts:q=>[[q.cs[0],1]],gen:(l,y)=>{const po=av.filter(t=>mast(p.data,t.id)!=="Mastered");return gen(pk(r(0,9)<7&&po.length?po:av),LI(l),YI(y))},init:q=>q.k==="order"?q.it.join(q.a.includes(">")?">":"<"):"",view:vw,check:chk,sol:SOL,hintView:hv})};
+const Guide=({c,data,onPractise})=>{const t=D.find(x=>x.id===c),s=STR[c[0]],yi=YI(data.year),Y=t.ys.includes(String(yi+4))?yi:+t.ys[0]-4,mk=()=>gen(t,1,Y),[ex,setEx]=useState(mk),[ck]=useState(()=>[0,1,2].map(mk)),[tq]=useState(mk),[v,setV]=useState(""),[ok,setOk]=useState(null),[vz,setVz]=useState(()=>VIS[c]?VIS[c]():null),[lad]=useState(()=>t.ys.split("").map(y=>[y,gen(t,0,y-4).t,gen(t,2,y-4).t])),H=(n,x)=>h("h3",{key:n},n+". "+x);
+ return h("div",{className:"card"},h("h2",null,c+" · "+t.nm),H(1,"What it means"),h("p",null,t.me),vz&&h("div",{style:{margin:"8px 0"}},vz[0]),vz&&h("p",{style:{fontWeight:700}},"✏️ "+vz[1]),vz&&h("button",{className:"btn sec",onClick:()=>setVz(VIS[c]())},"🔄 New picture"),H(2,"Where you use it"),h("p",null,"You use this in "+s[1]+"."),H(3,"Words to know"),(EW[c]||s[4]).split(", ").map(w=>h("p",{key:w,style:{margin:"2px 0"}},h("b",null,w),WD[w]?" – "+WD[w]:"")),
+ H(4,"Formula and worked example"),h("div",{className:"hint",style:{margin:"8px 0"}},h("b",null,"📐 Formula / rule: "),F[c]),h("p",null,TQ(ex)),h("p",null,h("b",null,"Answer: "+ex.a+".  "),s[2]),h("button",{className:"btn sec",onClick:()=>setEx(mk())},"New example"),
+ H(5,"Try it"),h("p",null,TQ(tq)),h("div",{className:"row"},h("input",{className:"num",style:{width:180},"aria-label":"Try it answer",value:v,onChange:e=>{setV(e.target.value.slice(0,14));setOk(null)}}),h("button",{className:"btn",onClick:()=>setOk(chk(tq,v))},"Check ✓")),h("p",{className:"msg "+(ok?"ok":ok===false?"bad":""),role:"status"},ok===null?"":ok?"Correct!":"Not quite. The answer is "+tq.a+"."),
+ H(6,"Common mistakes"),h("p",null,"Watch out for "+s[3]+"."),H(7,"Check yourself"),ck.map((q,i)=>h("details",{key:i},h("summary",null,TQ(q)),h("b",null,"Answer: "+q.a))),
+ H(8,"Practise this"),h("button",{className:"btn",onClick:onPractise},"▶ Practise "+c),
+ H(9,"Curriculum note"),h("p",null,"Curriculum for Excellence: "+s[0]+". Concept ID "+c+". What you meet in each class:"),lad.map(([y,e,hd])=>h("p",{key:y,style:{margin:"4px 0"}},h("b",null,"P"+y+": "),"Easy: "+e+"   Hard: "+hd)))};
+const Hub=p=>{const {data,setData}=p,[m,setM]=useState(p.m0),[c,setC]=useState(null),yi=YI(data.year);
+ if(c)return h("div",null,h("button",{className:"btn sec",onClick:()=>setC(null)},"◀ Topics"),h("div",{className:"row",style:{margin:"8px 0"}},[["p","Practise"],["g","📖 Learn"]].map(([k,n])=>h("button",{key:k,className:"btn"+(m===k?"":" sec"),onClick:()=>setM(k)},n))),m==="g"?h(Guide,{key:c,c,data,onPractise:()=>setM("p")}):h(CEx,{key:c,cid:c,data,setData}));
+ return h("div",null,h(YearBar,{data,setData}),Object.keys(STR).map(k=>h("div",{key:k,className:"card"},h("h3",null,STR[k][0]+" · "+D.filter(t=>t.id[0]===k&&/Secure|Mastered/.test(mast(data,t.id))).length+"/"+D.filter(t=>t.id[0]===k).length+" secure"),h("div",{className:"tiles"},D.filter(t=>t.id[0]===k).map(t=>h("button",{key:t.id,className:"tile",style:{opacity:t.ys.includes(String(yi+4))?1:.45},onClick:()=>setC(t.id)},h("big",null,t.id),t.nm,h("small",null,mast(data,t.id))))))))};
+const ALL=[["N",6],["E",3],["C",12],["M",2],["P",3],["F",6],["Y",4],["T",5],["U",8],["S",6],["D",5],["H",3],["W",1]].flatMap(([k,n])=>Array.from({length:n},(_,i)=>k+(i+1)));
+const selfRun=()=>{const sv=_s,res=D.map(t=>{let n=0,bad=0,ex="";const set=new Set;for(let i=0;i<1000;i++){const L=i%3,Y=(i/3|0)%3;if(!t.ys.includes(String(Y+4)))continue;_s=i*7919+1;recent[t.id]=[];try{const q=gen(t,L,Y);n++;const ok=q.t&&!/NaN|undefined|Infinity/.test(q.t+q.a)&&q.a!==""&&same(String(q.v()),q.a,q.ex)&&(!q.vis||(q.vis(),true))&&(!q.o||q.o.map(String).includes(q.a)&&new Set(q.o).size===q.o.length);set.add(q.t);if(!ok){bad++;ex=ex||q.t+" → "+q.a+" vs "+q.v()}}catch(e){bad++;ex=ex||String(e)}}recent[t.id]=[];return{id:t.id,nm:t.nm,n,bad,ex,uniq:set.size}});_s=sv;const bv=[];D.forEach(t=>{try{if(VIS[t.id])VIS[t.id]()}catch(e){bv.push(t.id+": "+e)}});return{res,noF:D.filter(t=>!F[t.id]).map(t=>t.id),bv,nv:Object.keys(VIS).length,miss:ALL.filter(i=>!D.some(t=>t.id===i)),noGuide:D.filter(t=>!STR[t.id[0]]).map(t=>t.id)}};
+const SelfTest=()=>{const [R]=useState(selfRun),bad=R.res.filter(x=>x.bad||!x.n);return h("div",{className:"card"},h("h2",null,"🧪 Self-test"),h("p",{role:"status"},"Concepts covered: "+(ALL.length-R.miss.length)+" of "+ALL.length+(R.miss.length?" · MISSING: "+R.miss.join(", "):" · uncovered: none")+" · guides missing: "+(R.noGuide.length||"none")+" · formulas missing: "+(R.noF.length||"none")+" · pictures: "+R.nv+" (errors: "+(R.bv.length||"none")+")"+" · templates failing: "+(bad.length||"none")),h("div",{style:{overflowX:"auto"}},h("table",{style:{width:"100%",fontSize:".85rem"}},h("tbody",null,R.res.map(x=>h("tr",{key:x.id},h("td",null,x.id),h("td",null,x.nm),h("td",null,x.n+" runs"),h("td",null,x.uniq+" unique"),h("td",null,x.bad?"❌ "+x.bad+" · "+x.ex:"✅")))))))};
+const Lrn=({id,data})=>{const [g,s]=useState(false);return h("div",null,h("button",{className:"btn sec",style:{marginTop:8},onClick:()=>s(!g)},g?"Hide guide":"📖 Learn about "+EXC[id].join(" and ")),g&&EXC[id].map(c=>h(Guide,{key:c,c,data,onPractise:()=>s(false)})))};
+const WL=(k,mk)=>{EXS[k]=p=>h("div",null,mk(p),h(Lrn,{id:k,data:p.data}))};
+["rnd","rul","rom","clk","cset"].forEach(k=>{const o=EXS[k];WL(k,p=>h(o,p))});
+["add","sub","mul","div"].forEach(k=>WL(k,p=>h(Practice,{mode:k,data:p.data,setData:p.setData})));
+WL("cadd",p=>h(Chimney,{op:"add",data:p.data,setData:p.setData}));WL("csub",p=>h(Chimney,{op:"sub",data:p.data,setData:p.setData}));
+Object.assign(EXS,{cur:p=>h(Hub,{...p,m0:"p"}),gui:p=>h(Hub,{...p,m0:"g"}),mix:Mix});
+PT.mix={i:"🎲",n:"Daily Mix question",C:Mix};
+TILES.push(["cur","🎓","Curriculum practice"],["mix","🎲","Daily Mix"],["gui","📘","Concept guides"]);
+globalThis.PIP={setY:y=>{PYR=y},D,gen,same,selfRun,SelfTest,Hub,CEx,Guide,Mix};
+})();
+
+ReactDOM.createRoot(document.getElementById("root")).render(h(App));
+</script>
+</body>
+</html>

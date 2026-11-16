@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Hoot’s Spelling Fun</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg1:#BDE7FF;--bg2:#FFE9F3;--ink:#2b1b4d;--card:#fff;--soft:#fff8;--sh:#0002;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg1:#1d2a5c;--bg2:#3a1f4d;--ink:#fff4ff;--card:#3b3470;--soft:#fff2;--sh:#0006}}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{height:100%}
+body{margin:0;min-height:100%;font-family:'Fredoka','Trebuchet MS','Comic Sans MS',sans-serif;color:var(--ink);background:linear-gradient(160deg,var(--bg1),var(--bg2)) fixed;user-select:none}
+.wrap{max-width:900px;margin:0 auto;padding:14px 14px 30px}
+h1{font-size:clamp(28px,6vw,46px);margin:6px 0;text-align:center}
+.screen{display:none}.screen.on{display:block}
+.hero{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap}
+.hero .owl{width:clamp(130px,28vw,200px)}
+.bubble{background:var(--card);border-radius:24px;padding:14px 18px;font-size:clamp(18px,3.5vw,24px);font-weight:600;box-shadow:0 4px 0 var(--sh);max-width:320px;position:relative}
+.moods{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:10px 0}
+.mood{background:var(--soft);border-radius:18px;padding:6px 10px;text-align:center;font-size:13px;font-weight:600}
+.mood .owl{width:64px;display:block;margin:auto}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px;margin-top:12px}
+.fam{border:0;border-radius:26px;padding:16px 8px;color:#fff;font:inherit;cursor:pointer;box-shadow:0 6px 0 #0003;transition:transform .1s}
+.fam:active{transform:translateY(5px);box-shadow:0 1px 0 #0003}
+.fam b{display:block;font-size:clamp(30px,6vw,42px);text-shadow:0 2px 0 #0003}
+.fam small{display:block;font-size:15px;opacity:.95}
+.fam .st{font-size:18px;margin-top:4px;letter-spacing:2px}
+.top{display:flex;align-items:center;gap:10px}
+.btn{border:0;border-radius:20px;font:inherit;font-weight:700;font-size:clamp(16px,3.5vw,20px);padding:10px 16px;background:var(--card);color:var(--ink);box-shadow:0 4px 0 var(--sh);cursor:pointer}
+.btn:active{transform:translateY(3px);box-shadow:none}
+.btn.go{background:#FFB703;color:#4a2b00}
+.prog{flex:1;display:flex;gap:6px;justify-content:center}
+.dot{width:18px;height:18px;border-radius:50%;background:var(--soft);border:3px solid var(--card)}
+.dot.now{background:#FFB703}.dot.done{background:#3DDC84}
+.stage{display:flex;flex-direction:column;align-items:center;gap:8px;margin-top:6px}
+.stage .owl{width:clamp(110px,24vw,170px)}
+.pic{font-size:clamp(60px,14vw,100px);line-height:1;filter:drop-shadow(0 4px 0 var(--sh))}
+.clue{font-size:clamp(18px,3.8vw,26px);font-weight:600;text-align:center}
+.slots{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:8px 0}
+.slot{width:clamp(40px,11vw,64px);height:clamp(52px,14vw,76px);border-radius:16px;background:var(--card);border:4px dashed #aaa8;display:grid;place-items:center;font-size:clamp(28px,8vw,44px);font-weight:700;text-transform:lowercase;box-shadow:0 4px 0 var(--sh)}
+.slot.end{border-color:var(--fc);border-style:solid}
+.slot.pop{animation:pop .25s}
+.slots.shake{animation:shake .4s}
+.tiles{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:10px 0}
+.tile{width:clamp(48px,13vw,72px);height:clamp(48px,13vw,72px);border-radius:18px;border:0;font:inherit;font-weight:700;font-size:clamp(26px,7vw,40px);color:#fff;background:var(--fc);box-shadow:0 5px 0 #0003;cursor:pointer;text-transform:lowercase}
+.tile:active{transform:translateY(4px);box-shadow:none}
+.tile.used{visibility:hidden}
+.row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.owl{display:block;overflow:visible}
+.owl.idle .all,.owl.think .all{animation:bob 2.4s ease-in-out infinite}
+.owl.happy .all,.owl.cheer .all{animation:hop .6s ease-in-out infinite}
+.owl.sad .all{animation:sway 1s ease-in-out infinite}
+.owl.sleep .all{animation:bob 4s ease-in-out infinite}
+.blink{transform-box:fill-box;transform-origin:center;animation:blink 4s infinite}
+.big{font-size:clamp(26px,6vw,40px);text-align:center;font-weight:700}
+.conf{position:fixed;top:-40px;font-size:28px;pointer-events:none;animation:fall 3s linear forwards;z-index:9}
+@keyframes bob{50%{transform:translateY(-6px)}}
+@keyframes hop{50%{transform:translateY(-16px) rotate(-3deg)}}
+@keyframes sway{50%{transform:rotate(-3deg)}}
+@keyframes blink{0%,94%,100%{transform:scaleY(1)}97%{transform:scaleY(.1)}}
+@keyframes pop{50%{transform:scale(1.25)}}
+@keyframes shake{25%{transform:translateX(-10px)}75%{transform:translateX(10px)}}
+@keyframes fall{to{transform:translateY(110vh) rotate(540deg)}}
+</style></head><body>
+<div class="wrap">
+<section id="home" class="screen on">
+  <h1>🦉 Hoot’s Spelling Fun!</h1>
+  <div class="hero"><div id="heroOwl"></div><div class="bubble">Hi, I’m Hoot! Pick a word family and let’s spell together!</div></div>
+  <div class="moods" id="moods"></div>
+  <div class="grid" id="grid"></div>
+</section>
+<section id="game" class="screen">
+  <div class="top"><button class="btn" id="back">⬅ Home</button><div class="prog" id="prog"></div></div>
+  <div class="stage">
+    <div id="gOwl"></div>
+    <div class="pic" id="pic"></div>
+    <div class="clue" id="clue"></div>
+    <button class="btn" id="say">🔊 Hear it</button>
+    <div class="slots" id="slots"></div>
+    <div class="tiles" id="tiles"></div>
+    <div class="row"><button class="btn" id="undo">↩ Undo</button><button class="btn" id="hint">💡 Hint</button></div>
+  </div>
+</section>
+<section id="end" class="screen">
+  <div class="stage"><div id="eOwl"></div><div class="big" id="eTxt"></div><div class="big" id="eStars"></div>
+  <div class="row"><button class="btn go" id="again">🔁 Play again</button><button class="btn" id="home2">🏠 Home</button></div></div>
+</section>
+</div>
+<script>
+const $=id=>document.getElementById(id);
+/* ---------- Mascot: Hoot the owl, sprite states ---------- */
+function owl(s){
+  const happy=s==='happy'||s==='cheer',sad=s==='sad',think=s==='think',sleep=s==='sleep',cheer=s==='cheer'||s==='happy';
+  const ink='#2b1b4d';let eyes;
+  if(happy)eyes=`<path d="M56 90Q75 66 94 90M106 90Q125 66 144 90" fill="none" stroke="${ink}" stroke-width="7" stroke-linecap="round"/>`;
+  else if(sleep)eyes=`<path d="M56 86Q75 102 94 86M106 86Q125 102 144 86" fill="none" stroke="${ink}" stroke-width="7" stroke-linecap="round"/><text x="150" y="40" font-size="24" fill="${ink}">z</text><text x="165" y="22" font-size="18" fill="${ink}">z</text>`;
+  else{const px=think?6:0,py=think?-6:sad?5:0;
+    eyes=`<g class="blink"><circle cx="75" cy="88" r="21" fill="#fff"/><circle cx="125" cy="88" r="21" fill="#fff"/><circle cx="${75+px}" cy="${88+py}" r="10" fill="${ink}"/><circle cx="${125+px}" cy="${88+py}" r="10" fill="${ink}"/><circle cx="${79+px}" cy="${84+py}" r="3.5" fill="#fff"/><circle cx="${129+px}" cy="${84+py}" r="3.5" fill="#fff"/></g>`;
+    if(sad)eyes+=`<path d="M54 72L92 60M146 72L108 60" stroke="${ink}" stroke-width="6" stroke-linecap="round"/><path d="M62 110Q57 122 64 125Q71 120 62 110Z" fill="#6EC8FF"/>`;
+    if(think)eyes+=`<text x="148" y="40" font-size="30">❓</text>`;}
+  const beak=happy?`<path d="M86 102Q100 136 114 102Z" fill="#FFA928"/><ellipse cx="100" cy="114" rx="7" ry="5" fill="#E8505B"/>`:sad?`<path d="M90 108L110 108L100 122Z" fill="#FFA928"/>`:`<path d="M90 100L110 100L100 120Z" fill="#FFA928"/>`;
+  const a=cheer?150:sad?4:14;
+  return `<svg class="owl ${s}" viewBox="0 0 200 210" role="img" aria-label="Hoot the owl"><g class="all">
+  <ellipse cx="78" cy="192" rx="18" ry="8" fill="#FFA928"/><ellipse cx="122" cy="192" rx="18" ry="8" fill="#FFA928"/>
+  <ellipse cx="38" cy="120" rx="17" ry="40" fill="#6446E0" transform="rotate(${a} 42 92)"/>
+  <ellipse cx="162" cy="120" rx="17" ry="40" fill="#6446E0" transform="rotate(${-a} 158 92)"/>
+  <path d="M42 62L52 18L88 46Z M158 62L148 18L112 46Z" fill="#6446E0"/>
+  <ellipse cx="100" cy="116" rx="70" ry="74" fill="#7C5CFF"/>
+  <ellipse cx="100" cy="140" rx="44" ry="46" fill="#FFE9A8"/>
+  <path d="M82 138q6 8 12 0M100 150q6 8 12 0M70 156q6 8 12 0M110 132q6 8 12 0" fill="none" stroke="#F5C96A" stroke-width="4" stroke-linecap="round"/>
+  <circle cx="75" cy="88" r="27" fill="#fff" opacity=".35"/><circle cx="125" cy="88" r="27" fill="#fff" opacity=".35"/>
+  ${eyes}
+  <circle cx="52" cy="112" r="8" fill="#FF8FB1" opacity=".7"/><circle cx="148" cy="112" r="8" fill="#FF8FB1" opacity=".7"/>
+  ${beak}
+  ${happy?`<text x="8" y="40" font-size="26">✨</text><text x="160" y="50" font-size="22">⭐</text>`:''}
+  </g></svg>`;
+}
+/* ---------- Word families ---------- */
+const FAM=[
+{id:'ble',c:'#FF6B6B',w:[['table','🍽️','You eat dinner at a ___'],['bubble','🫧','Soap makes a ___'],['double','✌️','Two times is ___'],['marble','🔮','A round glass ball to play with'],['cable','🔌','A long wire for charging'],['stable','🐴','Where a horse sleeps'],['rumble','⛈️','Thunder makes a ___'],['humble','🙏','Not showing off']]},
+{id:'y',c:'#FF9F1C',w:[['happy','😊','Feeling very glad'],['puppy','🐶','A baby dog'],['bunny','🐰','A hoppy rabbit'],['sunny','☀️','A bright day'],['candy','🍬','Sweet treat'],['jelly','🍇','Wobbly and fruity'],['funny','🤣','Makes you laugh'],['windy','💨','Lots of breeze']]},
+{id:'ie',c:'#2EC4B6',w:[['pie','🥧','Apple ___ for dessert'],['tie','👔','Worn around the neck'],['cookie','🍪','Chocolate chip ___'],['movie','🎬','Watch it at the cinema'],['zombie','🧟','Spooky walking monster'],['hoodie','🧥','Sweatshirt with a hood'],['brownie','🍫','Chocolatey square cake'],['doggie','🐕','A cute little dog']]},
+{id:'ight',c:'#3A86FF',w:[['light','💡','Turn it on in the dark'],['night','🌙','When the moon is out'],['knight','🛡️','Brave soldier in armor'],['flight','✈️','A trip in a plane'],['bright','🌟','Shining a lot'],['sight','👀','What you see'],['tight','🤏','Not loose'],['fright','😱','A big scare']]},
+{id:'ake',c:'#8338EC',w:[['cake','🎂','Birthday treat'],['lake','🏞️','Big pond of water'],['snake','🐍','Slithery reptile'],['bake','🧁','Cook in the oven'],['shake','🥤','Milk___ drink'],['flake','❄️','Snow___ falls from the sky'],['brake','🚲','Stops your bike'],['wake','⏰','Open your eyes in the morning']]},
+{id:'ful',c:'#E63B7A',w:[['helpful','🤝','Happy to give a hand'],['joyful','🎉','Full of joy'],['careful','⚠️','Watch out!'],['colorful','🌈','Lots of colors'],['playful','🤸','Loves to play'],['thankful','🙌','Saying thanks'],['wonderful','🤩','Really amazing'],['peaceful','🕊️','Calm and quiet']]},
+{id:'tion',c:'#06A77D',w:[['station','🚉','Where trains stop'],['nation','🏳️','A country'],['action','🎥','Lights, camera, ___!'],['lotion','🧴','Smooth on your skin'],['motion','🏃','Movement'],['vacation','🏖️','Holiday away from home'],['fraction','🍕','Half is one'],['mention','🗣️','To say something briefly']]},
+{id:'ck',c:'#F77F00',w:[['duck','🦆','Says quack'],['clock','🕒','Tells the time'],['truck','🚚','Big delivery vehicle'],['sock','🧦','Goes on your foot'],['black','⚫','Dark as night'],['brick','🧱','Used to build walls'],['chick','🐥','Baby chicken'],['rock','🪨','Hard stone']]},
+{id:'ing',c:'#4361EE',w:[['king','🤴','Rules a kingdom'],['ring','💍','Worn on a finger'],['swing','🛝','Playground fun'],['wing','🪽','Birds fly with it'],['spring','🌷','Season after winter'],['string','🧵','Thin thread'],['sing','🎤','Make music with your voice'],['bring','🎒','Carry it here']]},
+{id:'ee',c:'#2A9D8F',w:[['tree','🌳','Has leaves and branches'],['bee','🐝','Makes honey'],['knee','🦵','Bends your leg'],['three','3️⃣','One, two, ___'],['free','🆓','Costs nothing'],['flee','🏃','Run away'],['see','👁️','Use your eyes to ___'],['agree','👍','Say yes, same as you']]},
+{id:'ay',c:'#E76F51',w:[['day','🌞','Opposite of night'],['play','🎮','Have fun'],['stay','🛋️','Don’t leave'],['tray','🍽️','Carry your lunch on it'],['spray','💦','Squirt of water'],['clay','🏺','Squishy pottery stuff'],['gray','🐘','Color of an elephant'],['hay','🌾','Horses eat it']]},
+{id:'ow',c:'#00B4D8',w:[['snow','⛄','Frozen white flakes'],['cow','🐄','Gives us milk'],['glow','✨','Shine softly'],['grow','🌱','Get bigger'],['blow','🎈','Puff air out'],['crow','🐦‍⬛','Black bird'],['show','🎭','A performance'],['flow','🌊','Water moves along']]},
+{id:'ook',c:'#9B5DE5',w:[['book','📖','Read it'],['cook','👩‍🍳','Make dinner'],['look','👀','Use your eyes'],['hook','🪝','Catches a fish'],['took','🤲','Past of take'],['brook','🏞️','Small stream'],['shook','🫨','Past of shake'],['rook','♜','Chess castle piece']]},
+{id:'ear',c:'#F15BB5',w:[['bear','🐻','Big furry animal'],['pear','🍐','Green fruit'],['hear','👂','Listen with ears'],['near','📍','Not far'],['year','📅','Twelve months'],['tear','😢','Drop from your eye'],['wear','👕','Put on clothes'],['clear','🪟','Easy to see through']]},
+{id:'ain',c:'#1D3557',w:[['rain','🌧️','Drops from clouds'],['train','🚂','Choo choo!'],['brain','🧠','You think with it'],['chain','⛓️','Linked rings'],['drain','🛁','Water goes down it'],['plain','🥛','Not fancy'],['grain','🌾','Wheat or rice seed'],['main','⭐','Most important']]},
+{id:'ly',c:'#C77DFF',w:[['slowly','🐢','Not fast'],['quickly','⚡','Very fast'],['gladly','😄','With joy'],['softly','🪶','Gently'],['kindly','💝','In a nice way'],['badly','👎','Not well'],['lovely','🌸','Very pretty'],['sadly','😞','In a sad way']]},
+{id:'ness',c:'#BC6C25',w:[['kindness','🤗','Being nice'],['sadness','😭','Feeling blue'],['darkness','🌑','No light'],['softness','🧸','Like a teddy bear'],['goodness','😇','Being good'],['fitness','🏋️','Staying strong'],['madness','😡','Being very angry'],['happiness','😁','Feeling joy']]},
+{id:'ous',c:'#588157',w:[['famous','🌟','Known by everyone'],['nervous','😬','Worried feeling'],['jealous','😒','Wanting what others have'],['curious','🧐','Wants to learn'],['serious','😐','Not joking'],['furious','🤬','Super angry'],['enormous','🐘','Gigantic'],['dangerous','☠️','Not safe']]},
+{id:'er',c:'#0077B6',w:[['water','💧','You drink it'],['tiger','🐅','Striped big cat'],['flower','🌼','Blooms in the garden'],['sister','👧','Girl in your family'],['butter','🧈','Spread on toast'],['spider','🕷️','Eight legs and a web'],['winter','🥶','Cold season'],['finger','☝️','You have five on a hand']]},
+{id:'ate',c:'#D62828',w:[['plate','🍽️','Hold your food'],['skate','⛸️','Glide on ice'],['gate','🚪','Opens a fence'],['date','🗓️','Day on the calendar'],['late','⏰','Not on time'],['crate','📦','Wooden box'],['state','🗺️','Like Texas or Ohio'],['grate','🧀','Shred cheese']]},
+{id:'ound',c:'#6A994E',w:[['round','⚪','Shaped like a ball'],['sound','🔊','You hear it'],['found','🔍','Past of find'],['ground','🌍','The earth under you'],['pound','🐾','Heavy weight'],['mound','⛰️','Small hill'],['bound','🦘','Leap forward'],['hound','🐕‍🦺','Hunting dog']]},
+{id:'sh',s:1,c:'#118AB2',w:[['ship','🚢','Sails the sea'],['shell','🐚','Found on the beach'],['shoe','👟','Goes on your foot'],['sheep','🐑','Woolly farm animal'],['shark','🦈','Scary fish with fins'],['shop','🛍️','Place to buy things'],['shirt','👔','Wear it on top'],['shine','🌞','Sparkle and glow']]},
+{id:'ch',s:1,c:'#EF476F',w:[['chair','🪑','Sit on it'],['cheese','🧀','Mice love it'],['chicken','🐔','Farm bird'],['chip','🍟','Crunchy snack'],['chin','🙂','Below your mouth'],['cherry','🍒','Small red fruit'],['chest','🧰','Treasure box'],['chalk','🖍️','Write on a board']]},
+{id:'th',s:1,c:'#FFD166',w:[['thumb','👍','Your short finger'],['think','🤔','Use your brain'],['thunder','🌩️','Loud storm noise'],['thorn','🌹','Sharp on a rose'],['throw','⚾','Toss a ball'],['thick','📚','Not thin'],['thirty','3️⃣','Three tens'],['thread','🧵','Used for sewing']]},
+{id:'wh',s:1,c:'#06D6A0',w:[['whale','🐋','Giant ocean mammal'],['wheel','🛞','Round and rolls'],['white','🤍','Color of snow'],['whistle','🎶','Blow it to make a sound'],['whisper','🤫','Talk very quietly'],['wheat','🌾','Makes bread flour'],['whip','🌀','Cream or a lasso'],['when','🕰️','Asks about time']]},
+{id:'kn',s:1,c:'#7209B7',w:[['knee','🦵','Bends your leg'],['knife','🔪','Cuts food'],['knot','🪢','Tied rope'],['knock','🚪','Tap on the door'],['knit','🧶','Make a scarf with yarn'],['know','🧠','Have learned'],['knob','🔘','Turn it to open a door'],['knight','🛡️','Brave soldier']]},
+{id:'wr',s:1,c:'#B5179E',w:[['write','✏️','Use a pencil to'],['wrap','🎁','Cover a gift'],['wrong','❌','Not right'],['wrist','⌚','Wear a watch here'],['wrench','🔧','Tool for bolts'],['wreck','🚢','Broken ship'],['wrinkle','👵','Fold in skin or cloth'],['wren','🐦','Tiny brown bird']]},
+{id:'bl',s:1,c:'#3F37C9',w:[['block','🧱','Toy building piece'],['blue','🔵','Color of the sky'],['blanket','🛏️','Keeps you warm in bed'],['bloom','🌺','Flowers open up'],['blink','😉','Close your eyes quickly'],['blast','🚀','Rocket launch'],['blend','🥤','Mix together'],['blizzard','🌨️','Big snowstorm']]},
+{id:'str',s:1,c:'#E85D04',w:[['street','🛣️','Road with houses'],['strong','💪','Has big muscles'],['straw','🥤','Sip through it'],['stripe','🦓','Zebras have them'],['stream','🏞️','Small river'],['strike','🎳','Knock all the pins down'],['stretch','🤸','Reach out long'],['strange','👽','Weird']]}
+];
+/* ---------- Helpers ---------- */
+let sound=true,ac;
+function beep(f,d=.15,t='sine',when=0){try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();const o=ac.createOscillator(),g=ac.createGain();o.type=t;o.frequency.value=f;g.gain.value=.12;o.connect(g);g.connect(ac.destination);const s=ac.currentTime+when;o.start(s);g.gain.exponentialRampToValueAtTime(.001,s+d);o.stop(s+d)}catch(e){}}
+const yay=()=>[523,659,784,1047].forEach((f,i)=>beep(f,.18,'triangle',i*.1));
+const oops=()=>{beep(220,.2,'sawtooth');beep(165,.3,'sawtooth',.18)};
+function say(t){try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.rate=.8;u.lang='en-US';speechSynthesis.speak(u)}catch(e){}}
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('on',s.id===id));scrollTo(0,0)}
+function confetti(){const e=['🎉','⭐','🎈','✨','🍭','💜'];for(let i=0;i<26;i++){const s=document.createElement('span');s.className='conf';s.textContent=e[i%e.length];s.style.left=Math.random()*100+'vw';s.style.animationDelay=Math.random()*.8+'s';document.body.appendChild(s);setTimeout(()=>s.remove(),4000)}}
+let best={};try{best=JSON.parse(localStorage.getItem('hootBest')||'{}')}catch(e){}
+const save=()=>{try{localStorage.setItem('hootBest',JSON.stringify(best))}catch(e){}};
+/* ---------- Home ---------- */
+$('heroOwl').innerHTML=owl('idle');
+$('moods').innerHTML=[['idle','Hello'],['happy','Yay!'],['cheer','Hooray'],['think','Hmm…'],['sad','Oops'],['sleep','Zzz']].map(m=>`<div class="mood">${owl(m[0])}${m[1]}</div>`).join('');
+function renderGrid(){$('grid').innerHTML=FAM.map(f=>{const b=best[f.id]||0;return `<button class="fam" data-id="${f.id}" style="background:${f.c}"><b>${f.s?f.id+'-':'-'+f.id}</b><small>${f.w.slice(0,2).map(w=>w[0]).join(', ')}…</small><div class="st">${'⭐'.repeat(b)}${'☆'.repeat(Math.max(0,18-b)>0?0:0)}${b?'':'☆☆☆'}</div></button>`}).join('')}
+renderGrid();
+$('grid').onclick=e=>{const b=e.target.closest('.fam');if(b)start(b.dataset.id)};
+/* ---------- Game ---------- */
+let fam,list,i,word,tiles,slots,mistakes,hintN,stars,busy;
+function start(id){fam=FAM.find(f=>f.id===id);list=shuffle(fam.w).slice(0,6);i=0;stars=0;show('game');document.documentElement.style.setProperty('--fc',fam.c);load()}
+function load(){
+  const w=list[i];word=w[0];tiles=shuffle([...word].map(c=>({c,used:false})));slots=[];mistakes=0;hintN=0;busy=false;
+  $('pic').textContent=w[1];$('clue').textContent=w[2];$('gOwl').innerHTML=owl('think');
+  $('prog').innerHTML=list.map((_,k)=>`<div class="dot ${k<i?'done':k===i?'now':''}"></div>`).join('');
+  draw();setTimeout(()=>say(word),300);
+}
+function draw(popLast){
+  const n=word.length,endN=fam.id.length;
+  $('slots').innerHTML=[...word].map((_,j)=>`<div class="slot ${(f=>f.s?j<endN:j>=n-endN)(fam)?'end':''} ${popLast&&j===slots.length-1?'pop':''}">${slots[j]!==undefined?tiles[slots[j]].c:''}</div>`).join('');
+  $('tiles').innerHTML=tiles.map((t,k)=>`<button class="tile ${t.used?'used':''}" data-k="${k}">${t.c}</button>`).join('');
+}
+function place(k){
+  if(busy||tiles[k].used||slots.length>=word.length)return;
+  tiles[k].used=true;slots.push(k);beep(500+slots.length*60,.08);draw(true);
+  if(slots.length===word.length)check();
+}
+function undo(){if(busy||!slots.length)return;tiles[slots.pop()].used=false;draw()}
+function check(){
+  busy=true;
+  if(slots.map(k=>tiles[k].c).join('')===word){
+    yay();confetti();$('gOwl').innerHTML=owl('cheer');say(word);
+    stars+=mistakes===0?3:mistakes===1?2:1;
+    setTimeout(()=>{i++;i<list.length?load():finish()},1700);
+  }else{
+    mistakes++;oops();$('gOwl').innerHTML=owl('sad');
+    $('slots').classList.add('shake');
+    setTimeout(()=>{$('slots').classList.remove('shake');slots.forEach(k=>tiles[k].used=false);slots=[];busy=false;$('gOwl').innerHTML=owl('think');draw()},900);
+  }
+}
+function hint(){
+  if(busy)return;mistakes++;hintN=Math.min(hintN+1,word.length-1);
+  slots.forEach(k=>tiles[k].used=false);slots=[];
+  for(let j=0;j<hintN;j++){const k=tiles.findIndex(t=>!t.used&&t.c===word[j]);tiles[k].used=true;slots.push(k)}
+  draw();
+}
+function finish(){
+  const max=list.length*3,r=stars/max,out=r>.8?3:r>.5?2:1;
+  best[fam.id]=Math.max(best[fam.id]||0,out);save();
+  $('eOwl').innerHTML=owl(out>1?'cheer':'happy');
+  $('eTxt').textContent=out===3?'Spelling superstar!':out===2?'Great job!':'Nice try! Practice makes perfect!';
+  $('eStars').textContent='⭐'.repeat(out)+' '+stars+' / '+max;
+  show('end');yay();confetti();renderGrid();
+}
+$('tiles').onclick=e=>{const b=e.target.closest('.tile');if(b)place(+b.dataset.k)};
+$('slots').onclick=undo;$('undo').onclick=undo;$('hint').onclick=hint;
+$('say').onclick=()=>say(word);
+$('back').onclick=()=>{speechSynthesis&&speechSynthesis.cancel();show('home')};
+$('home2').onclick=()=>show('home');$('again').onclick=()=>start(fam.id);
+addEventListener('keydown',e=>{
+  if(!$('game').classList.contains('on'))return;
+  if(e.key==='Backspace')return undo();
+  if(/^[a-z]$/i.test(e.key)){const k=tiles.findIndex(t=>!t.used&&t.c===e.key.toLowerCase());if(k>-1)place(k)}
+});
+</script></body></html>

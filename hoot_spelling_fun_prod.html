@@ -46,6 +46,7 @@ h1{font-size:clamp(28px,6vw,46px);margin:6px 0;text-align:center}
 .tile.used{visibility:hidden}
 .row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
 .owl{display:block;overflow:visible}
+textarea{width:100%;max-width:560px;font:inherit;font-size:20px;padding:12px;border-radius:18px;border:4px solid var(--card);background:var(--card);color:var(--ink);user-select:text;-webkit-user-select:text}
 .owl.idle .all,.owl.think .all{animation:bob 2.4s ease-in-out infinite}
 .owl.happy .all,.owl.cheer .all{animation:hop .6s ease-in-out infinite}
 .owl.sad .all{animation:sway 1s ease-in-out infinite}
@@ -66,6 +67,7 @@ h1{font-size:clamp(28px,6vw,46px);margin:6px 0;text-align:center}
   <h1>🦉 Hoot’s Spelling Fun!</h1>
   <div class="hero"><div id="heroOwl"></div><div class="bubble">Hi, I’m Hoot! Pick a word family and let’s spell together!</div></div>
   <div class="moods" id="moods"></div>
+  <div class="row" id="chips"><button class="btn" data-f="all">All</button><button class="btn" data-f="end">Endings -ab</button><button class="btn" data-f="start">Beginnings ab-</button><button class="btn" data-f="mid">Middle & double …ab…</button><button class="btn go" id="mixBtn">🎲 Mix</button><button class="btn go" id="myBtn">✏️ My Words</button></div>
   <div class="grid" id="grid"></div>
 </section>
 <section id="game" class="screen">
@@ -74,12 +76,20 @@ h1{font-size:clamp(28px,6vw,46px);margin:6px 0;text-align:center}
     <div id="gOwl"></div>
     <div class="pic" id="pic"></div>
     <div class="clue" id="clue"></div>
-    <button class="btn" id="say">🔊 Hear it</button>
+    <div class="row"><button class="btn" id="say">🔊 Hear it</button><button class="btn" id="slow">🐢 Slowly</button></div>
     <div class="slots" id="slots"></div>
     <div class="tiles" id="tiles"></div>
     <div class="row"><button class="btn" id="undo">↩ Undo</button><button class="btn" id="hint">💡 Hint</button></div>
   </div>
 </section>
+<section id="custom" class="screen"><div class="top"><button class="btn" id="cBack">⬅ Home</button></div>
+  <h1>✏️ My Words</h1>
+  <div class="stage"><div class="bubble">Type your words, separated by commas or new lines. Or scan a spelling list with the camera!</div>
+  <textarea id="cText" rows="6" placeholder="elephant, friend, because"></textarea>
+  <div class="row"><button class="btn" id="scan">📷 Add photo of words</button><button class="btn go" id="cPlay">▶ Practice</button></div>
+  <input type="file" id="file" accept="image/*" hidden>
+  <img id="prev" alt="Your photo" style="display:none;max-width:100%;max-height:260px;border-radius:18px">
+  <div class="clue" id="cMsg"></div></div></section>
 <section id="end" class="screen">
   <div class="stage"><div id="eOwl"></div><div class="big" id="eTxt"></div><div class="big" id="eStars"></div>
   <div class="row"><button class="btn go" id="again">🔁 Play again</button><button class="btn" id="home2">🏠 Home</button></div></div>
@@ -146,12 +156,150 @@ const FAM=[
 {id:'bl',s:1,c:'#3F37C9',w:[['block','🧱','Toy building piece'],['blue','🔵','Color of the sky'],['blanket','🛏️','Keeps you warm in bed'],['bloom','🌺','Flowers open up'],['blink','😉','Close your eyes quickly'],['blast','🚀','Rocket launch'],['blend','🥤','Mix together'],['blizzard','🌨️','Big snowstorm']]},
 {id:'str',s:1,c:'#E85D04',w:[['street','🛣️','Road with houses'],['strong','💪','Has big muscles'],['straw','🥤','Sip through it'],['stripe','🦓','Zebras have them'],['stream','🏞️','Small river'],['strike','🎳','Knock all the pins down'],['stretch','🤸','Reach out long'],['strange','👽','Weird']]}
 ];
+const EX=`-ack:back,pack,snack,track,black,stack
+-ell:bell,sell,tell,well,smell,shell
+-ill:hill,fill,will,spill,drill,chill
+-all:ball,tall,call,wall,small,fall
+-ang:bang,hang,gang,fang,sang,rang
+-ank:bank,tank,thank,drank,blank,sank
+-ink:pink,sink,drink,wink,think,link
+-unk:junk,skunk,trunk,bunk,sunk,chunk
+-op:stop,hop,top,shop,drop,mop
+-ap:map,cap,tap,snap,clap,trap
+-at:cat,hat,bat,mat,flat,chat
+-ig:big,pig,dig,wig,twig,fig
+-ug:bug,hug,mug,rug,jug,plug
+-ot:hot,pot,dot,spot,knot,shot
+-an:can,fan,man,plan,van,pan
+-en:ten,hen,pen,men,then,when
+-in:pin,win,fin,chin,thin,spin
+-est:best,nest,test,rest,west,chest
+-ust:dust,must,rust,trust,crust,just
+-ast:fast,last,past,mast,blast,cast
+-ift:gift,lift,drift,shift,swift,sift
+-ong:long,song,strong,gong,wrong,belong
+-ent:tent,bent,spent,went,rent,scent
+-and:hand,sand,band,land,stand,brand
+-ind:kind,find,mind,wind,blind,behind
+-old:cold,gold,hold,bold,fold,told
+-ame:game,name,same,flame,frame,blame
+-ace:face,race,place,space,lace,grace
+-ice:ice,rice,nice,mice,dice,twice
+-ike:bike,like,hike,strike,spike,pike
+-ine:line,nine,fine,mine,pine,shine
+-ide:ride,hide,side,wide,slide,pride
+-ite:kite,bite,white,site,write,quite
+-ive:five,dive,hive,drive,alive,arrive
+-one:bone,cone,phone,stone,alone,throne
+-ose:nose,rose,close,those,hose,chose
+-ope:hope,rope,slope,scope,cope,mope
+-ole:hole,pole,mole,stole,whole,role
+-ute:cute,mute,flute,brute,route,salute
+-oon:moon,soon,spoon,noon,balloon,cartoon
+-ool:cool,pool,school,tool,fool,stool
+-oot:boot,root,scoot,shoot,hoot,loot
+-oom:room,zoom,broom,boom,bloom,gloom
+-ew:new,few,grew,chew,flew,stew
+-aw:saw,paw,claw,draw,straw,jaw
+-ue:blue,glue,true,clue,due,rescue
+-ar:car,star,far,jar,scar,guitar
+-ore:more,store,shore,score,before,snore
+-ire:fire,wire,tire,hire,empire,inspire
+-air:air,hair,chair,pair,stair,repair
+-eep:deep,keep,sleep,sheep,sweep,creep
+-eed:feed,seed,need,speed,weed,bleed
+-eet:feet,meet,sweet,street,sheet,greet
+-eat:eat,heat,neat,seat,treat,wheat
+-eam:team,dream,cream,steam,stream,beam
+-eal:meal,deal,real,steal,seal,appeal
+-ail:nail,mail,tail,snail,sail,trail
+-oat:boat,coat,goat,float,throat,oat
+-oy:boy,toy,joy,enjoy,annoy,destroy
+-oil:oil,boil,soil,foil,coil,spoil
+-ought:bought,thought,brought,fought,sought,ought
+-ment:moment,basement,payment,movement,statement,agreement
+-able:capable,suitable,valuable,reliable,adorable,portable
+-ture:picture,nature,future,creature,adventure,capture
+-sion:vision,decision,television,explosion,confusion,invasion
+-ance:dance,chance,glance,distance,balance,romance
+-ence:fence,science,silence,sentence,experience,absence
+-ward:forward,backward,toward,awkward,onward,reward
+-ship:friendship,relationship,hardship,leadership,kinship,worship
+-less:homeless,careless,helpless,endless,fearless,useless
+-ish:fish,dish,wish,English,selfish,foolish
+-tch:match,catch,watch,witch,patch,stretch
+-dge:bridge,badge,fudge,edge,judge,ledge
+st-:stop,star,stick,store,storm,stone
+sp-:spoon,spider,spot,speed,spell,spin
+sl-:sleep,slide,slow,slip,slice,sled
+sn-:snow,snake,snack,snail,sneeze,snap
+sw-:swim,swing,sweet,swan,sweep,sweater
+sc-:scale,scarf,scout,scare,scoop,score
+sm-:smile,smell,smoke,smart,small,smash
+tr-:tree,train,truck,trip,trap,trail
+dr-:drum,dream,drink,drive,drop,dragon
+cr-:crab,crown,cry,crack,cream,crayon
+gr-:grass,grape,green,grow,grin,grab
+fr-:frog,fruit,friend,fresh,frame,fry
+fl-:flag,flower,fly,float,flat,flame
+gl-:glass,glue,globe,glad,glove,glow
+pl-:plane,plant,play,plate,plus,plum
+cl-:clock,clap,cloud,clown,clean,clip
+br-:bread,brush,brick,bring,brown,branch
+pr-:print,prize,pride,present,press,prince
+tw-:twin,twist,twelve,twenty,twig,twice
+sk-:skate,skirt,skip,sky,skunk,skin
+ph-:phone,photo,phrase,phantom,phonics,pharmacy
+qu-:queen,quiz,quick,quiet,quilt,quack
+re-:replay,reread,rewrite,return,rebuild,repeat
+un-:undo,unfair,unkind,unlock,unsafe,unwrap
+pre-:preview,prepare,prevent,predict,preschool,prepay
+dis-:dislike,disagree,discover,disappear,display,distrust
+mis-:mistake,misplace,mislead,misspell,misuse,mistreat
+over-:overcome,overlook,overflow,overheat,overnight,overtake
+sub-:subway,submarine,subtract,subtitle,substance,subject`;
+EX.split('\n').forEach((l,i)=>{const[p,ws]=l.split(':'),s=p.endsWith('-');FAM.push({id:p.replace('-',''),s:s?1:0,c:`hsl(${(i*37+10)%360} 62% 42%)`,w:ws.split(',').map(w=>[w,'🔤','Listen and spell!'])})});
+const EY=`~ll~:bell,ball,doll,spell,yellow,balloon
+~ss~:grass,dress,kiss,glass,class,lesson
+~tt~:butter,letter,better,kitten,mitten,button
+~ff~:off,stuff,cliff,puff,coffee,muffin
+~pp~:happy,puppy,apple,hippo,puppet,slipper
+~rr~:carrot,mirror,berry,sorry,hurry,arrow
+~nn~:funny,bunny,dinner,tennis,penny,winner
+~mm~:swimming,summer,hammer,tummy,drummer,grammar
+~dd~:ladder,puddle,daddy,middle,paddle,riddle
+~gg~:egg,bigger,wiggle,giggle,luggage,buggy
+~bb~:rabbit,bubble,rubber,hobby,ribbon,pebble
+~zz~:buzz,fizz,jazz,puzzle,dizzy,blizzard
+~cc~:soccer,success,accident,accept,account,occur
+~oi~:oil,coin,point,noise,voice,spoil
+~oy~:oyster,royal,loyal,voyage,employ,enjoy
+~ou~:house,mouse,cloud,mouth,shout,proud
+~au~:sauce,august,author,laundry,haunt,pause
+~aw~:lawn,dawn,yawn,hawk,crawl,awful
+~ea~:bread,head,beach,dream,leaf,season
+~oa~:boat,goal,toast,soap,coach,toaster
+~oo~:moon,food,tooth,school,spoon,cool
+~ai~:wait,paint,brain,afraid,mailbox,raining
+~ei~:ceiling,receive,neighbor,weigh,eight,vein
+~ir~:bird,girl,shirt,first,circle,birthday
+~ur~:turn,burn,nurse,purple,turtle,surf
+~or~:corn,horse,storm,fork,north,sport
+~ough~:through,tough,cough,enough,rough,dough
+~sh~:fishing,washing,bushes,ashes,dishes,wishes
+~th~:bathroom,mother,brother,feather,weather,panther
+~ck~:chicken,pocket,jacket,rocket,ticket,sticker
+~ph~:dolphin,elephant,alphabet,telephone,trophy,graph
+~ee~:green,sleep,queen,sheep,sweet,three
+~ch~:teacher,kitchen,peaches,sandwich,watching,catching`;
+EY.split('\n').forEach((l,i)=>{const[p,ws]=l.split(':'),pat=p.replace(/~/g,'');FAM.push({id:'m_'+pat,pat,m:1,k:'…'+pat+'…',c:`hsl(${(i*29+200)%360} 62% 42%)`,w:ws.split(',').map(w=>[w,'🔤','Listen and spell!'])})});
+let filt='all';
 /* ---------- Helpers ---------- */
 let sound=true,ac;
 function beep(f,d=.15,t='sine',when=0){try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();const o=ac.createOscillator(),g=ac.createGain();o.type=t;o.frequency.value=f;g.gain.value=.12;o.connect(g);g.connect(ac.destination);const s=ac.currentTime+when;o.start(s);g.gain.exponentialRampToValueAtTime(.001,s+d);o.stop(s+d)}catch(e){}}
 const yay=()=>[523,659,784,1047].forEach((f,i)=>beep(f,.18,'triangle',i*.1));
 const oops=()=>{beep(220,.2,'sawtooth');beep(165,.3,'sawtooth',.18)};
-function say(t){try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.rate=.8;u.lang='en-US';speechSynthesis.speak(u)}catch(e){}}
+function say(t,r=.8){try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.rate=r;u.lang='en-US';speechSynthesis.speak(u)}catch(e){}}
 const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
 function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('on',s.id===id));scrollTo(0,0)}
 function confetti(){const e=['🎉','⭐','🎈','✨','🍭','💜'];for(let i=0;i<26;i++){const s=document.createElement('span');s.className='conf';s.textContent=e[i%e.length];s.style.left=Math.random()*100+'vw';s.style.animationDelay=Math.random()*.8+'s';document.body.appendChild(s);setTimeout(()=>s.remove(),4000)}}
@@ -160,12 +308,12 @@ const save=()=>{try{localStorage.setItem('hootBest',JSON.stringify(best))}catch(
 /* ---------- Home ---------- */
 $('heroOwl').innerHTML=owl('idle');
 $('moods').innerHTML=[['idle','Hello'],['happy','Yay!'],['cheer','Hooray'],['think','Hmm…'],['sad','Oops'],['sleep','Zzz']].map(m=>`<div class="mood">${owl(m[0])}${m[1]}</div>`).join('');
-function renderGrid(){$('grid').innerHTML=FAM.map(f=>{const b=best[f.id]||0;return `<button class="fam" data-id="${f.id}" style="background:${f.c}"><b>${f.s?f.id+'-':'-'+f.id}</b><small>${f.w.slice(0,2).map(w=>w[0]).join(', ')}…</small><div class="st">${'⭐'.repeat(b)}${'☆'.repeat(Math.max(0,18-b)>0?0:0)}${b?'':'☆☆☆'}</div></button>`}).join('')}
+function renderGrid(){$('grid').innerHTML=FAM.filter(f=>filt==='all'||(filt==='end'?!f.s&&!f.m:filt==='start'?!!f.s:!!f.m)).map(f=>{const b=best[f.id]||0;return `<button class="fam" data-id="${f.id}" style="background:${f.c}"><b>${f.k||(f.s?f.id+'-':'-'+f.id)}</b><small>${f.w.slice(0,2).map(w=>w[0]).join(', ')}…</small><div class="st">${'⭐'.repeat(b)}${'☆'.repeat(Math.max(0,18-b)>0?0:0)}${b?'':'☆☆☆'}</div></button>`}).join('')}
 renderGrid();
 $('grid').onclick=e=>{const b=e.target.closest('.fam');if(b)start(b.dataset.id)};
 /* ---------- Game ---------- */
 let fam,list,i,word,tiles,slots,mistakes,hintN,stars,busy;
-function start(id){fam=FAM.find(f=>f.id===id);list=shuffle(fam.w).slice(0,6);i=0;stars=0;show('game');document.documentElement.style.setProperty('--fc',fam.c);load()}
+function start(id){fam=id==='mix'?{id:'mix',n:0,c:'#FF7B00',w:[...new Map(FAM.flatMap(f=>f.w).concat(mine.map(w=>[w,'⭐','Listen and spell!'])).map(x=>[x[0],x])).values()]}:id==='mine'?{id:'mine',n:0,c:'#FF6FB1',w:mine.map(w=>[w,'⭐','Listen and spell!'])}:FAM.find(f=>f.id===id);list=shuffle(fam.w).slice(0,fam.id==='mix'?10:6);i=0;stars=0;show('game');document.documentElement.style.setProperty('--fc',fam.c);load()}
 function load(){
   const w=list[i];word=w[0];tiles=shuffle([...word].map(c=>({c,used:false})));slots=[];mistakes=0;hintN=0;busy=false;
   $('pic').textContent=w[1];$('clue').textContent=w[2];$('gOwl').innerHTML=owl('think');
@@ -173,8 +321,8 @@ function load(){
   draw();setTimeout(()=>say(word),300);
 }
 function draw(popLast){
-  const n=word.length,endN=fam.id.length;
-  $('slots').innerHTML=[...word].map((_,j)=>`<div class="slot ${(f=>f.s?j<endN:j>=n-endN)(fam)?'end':''} ${popLast&&j===slots.length-1?'pop':''}">${slots[j]!==undefined?tiles[slots[j]].c:''}</div>`).join('');
+  const n=word.length,endN=fam.n??(fam.pat||fam.id).length,ix=fam.m?word.indexOf(fam.pat):0;
+  $('slots').innerHTML=[...word].map((_,j)=>`<div class="slot ${(f=>f.m?(ix>=0&&j>=ix&&j<ix+endN):f.s?j<endN:j>=n-endN)(fam)?'end':''} ${popLast&&j===slots.length-1?'pop':''}">${slots[j]!==undefined?tiles[slots[j]].c:''}</div>`).join('');
   $('tiles').innerHTML=tiles.map((t,k)=>`<button class="tile ${t.used?'used':''}" data-k="${k}">${t.c}</button>`).join('');
 }
 function place(k){
@@ -212,6 +360,20 @@ function finish(){
 $('tiles').onclick=e=>{const b=e.target.closest('.tile');if(b)place(+b.dataset.k)};
 $('slots').onclick=undo;$('undo').onclick=undo;$('hint').onclick=hint;
 $('say').onclick=()=>say(word);
+function slow(){try{speechSynthesis.cancel();[.4,.3].forEach(r=>{const u=new SpeechSynthesisUtterance(word);u.rate=r;u.lang='en-US';speechSynthesis.speak(u)})}catch(e){}}
+$('slow').onclick=slow;
+/* ---------- My Words ---------- */
+let mine=[];try{mine=JSON.parse(localStorage.getItem('hootMine')||'[]')}catch(e){}
+const parseW=t=>[...new Set(t.toLowerCase().split(/[^a-z]+/).filter(w=>w.length>1&&w.length<=14))];
+$('chips').onclick=e=>{const b=e.target.closest('[data-f]');if(b){filt=b.dataset.f;renderGrid()}};
+$('mixBtn').onclick=()=>start('mix');
+$('myBtn').onclick=()=>{$('cText').value=mine.join(', ');$('cMsg').textContent='';show('custom')};
+$('cBack').onclick=()=>show('home');
+$('cPlay').onclick=()=>{const w=parseW($('cText').value);if(!w.length){$('cMsg').textContent='Add at least one word first!';return}mine=w;try{localStorage.setItem('hootMine',JSON.stringify(mine))}catch(e){}start('mine')};
+let smp=null;(async()=>{try{if(window.claude&&claude.use){const s=await claude.use('sample');if(s&&(await s.limits()).images)smp=s}}catch(e){}void 0})();
+$('scan').onclick=()=>$('file').click();
+$('file').onchange=async e=>{const f=e.target.files[0];if(!f)return;const pv=$('prev');pv.src=URL.createObjectURL(f);pv.style.display='block';if(smp)return window.claudeScan(e);let got=[];try{if('TextDetector' in window){const bm=await createImageBitmap(f);const r=await new TextDetector().detect(bm);got=parseW(r.map(x=>x.rawValue).join(' '))}}catch(er){}if(got.length){$('cText').value=parseW($('cText').value).concat(got).filter((w,i,a)=>a.indexOf(w)===i).join(', ');$('cMsg').textContent='Found '+got.length+' words! Check the list, then Practice.'}else $('cMsg').textContent='Photo added above. Type the words you see into the box. Tip: on iPhone or iPad, tap and hold in the box and choose “Scan Text”; on Samsung, use the keyboard’s text-scan button.';e.target.value=''};
+window.claudeScan=async e=>{const f=e.target.files[0];if(!f)return;$('cMsg').textContent='🔍 Hoot is reading…';try{const r=await smp('Read the spelling words in this photo. Reply with ONLY the words, lowercase, separated by commas.',{images:[f]});const got=parseW(r.text);$('cText').value=parseW($('cText').value).concat(got).filter((w,i,a)=>a.indexOf(w)===i).join(', ');$('cMsg').textContent=got.length?'Found '+got.length+' words! Check the list, then Practice.':'No words found. Try a clearer photo.'}catch(er){$('cMsg').textContent='Couldn’t scan that. You can type the words instead.'}e.target.value=''};
 $('back').onclick=()=>{speechSynthesis&&speechSynthesis.cancel();show('home')};
 $('home2').onclick=()=>show('home');$('again').onclick=()=>start(fam.id);
 addEventListener('keydown',e=>{
